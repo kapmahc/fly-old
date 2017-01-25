@@ -14,36 +14,45 @@ const (
 )
 
 // Logger logger
-type Logger struct {
+type Logger interface {
+	Level(level int)
+	Debug(args ...interface{})
+	Info(args ...interface{})
+	Warn(args ...interface{})
+	Error(args ...interface{})
+}
+
+// ConsoleLogger console logger
+type ConsoleLogger struct {
 	level int
 }
 
 // Level set level
-func (p *Logger) Level(l int) {
+func (p *ConsoleLogger) Level(l int) {
 	p.level = l
 }
 
 // Debug print debug message
-func (p *Logger) Debug(args ...interface{}) {
+func (p *ConsoleLogger) Debug(args ...interface{}) {
 	p.print(DEBUG, args...)
 }
 
 // Info print info message
-func (p *Logger) Info(args ...interface{}) {
+func (p *ConsoleLogger) Info(args ...interface{}) {
 	p.print(INFO, args...)
 }
 
 // Warn print warn message
-func (p *Logger) Warn(args ...interface{}) {
+func (p *ConsoleLogger) Warn(args ...interface{}) {
 	p.print(WARN, args...)
 }
 
 // Error print error message
-func (p *Logger) Error(args ...interface{}) {
+func (p *ConsoleLogger) Error(args ...interface{}) {
 	p.print(ERROR, args...)
 }
 
-func (p *Logger) print(level int, args ...interface{}) {
+func (p *ConsoleLogger) print(level int, args ...interface{}) {
 	if level < p.level {
 		return
 	}

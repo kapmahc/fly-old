@@ -43,7 +43,15 @@ func (p *Cache) Get(key string, val interface{}) error {
 func (p *Cache) Keys() ([]string, error) {
 	c := p.Redis.Get()
 	defer c.Close()
-	return _redis.Strings(c.Do("KEYS", p.key("*")))
+	keys, err := _redis.Strings(c.Do("KEYS", p.key("*")))
+	if err != nil {
+		return nil, err
+	}
+	var val []string
+	for _, k := range keys {
+		val = append(val, k[len(p.key("")):])
+	}
+	return val, nil
 }
 
 // Delete delete
