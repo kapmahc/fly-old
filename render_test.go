@@ -9,7 +9,7 @@ import (
 	"golang.org/x/tools/blog/atom"
 )
 
-var rdr = fly.Render{}
+var rdr = fly.Render{Pretty: true}
 
 func TestAtom(t *testing.T) {
 	feed := atom.Feed{Title: "title", Updated: atom.Time(time.Now())}
