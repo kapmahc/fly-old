@@ -9,11 +9,12 @@ type Queue interface {
 // Worker background worker
 type Worker struct {
 	Queue Queue `inject:""`
+	Coder Coder `inject:""`
 }
 
 // Put put task into queue
 func (p *Worker) Put(queue string, task interface{}) error {
-	buf, err := Marshal(task)
+	buf, err := p.Coder.Marshal(task)
 	if err != nil {
 		return err
 	}

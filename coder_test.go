@@ -16,12 +16,14 @@ type M struct {
 
 func TestSerial(t *testing.T) {
 	m := M{I: 100, F: 1.2, S: "hello", D: time.Now()}
-	b, e := fly.Marshal(&m)
+	var c fly.Coder
+	c = &fly.GobCoder{}
+	b, e := c.Marshal(&m)
 	if e != nil {
 		t.Fatal(e)
 	}
 	var tmp M
-	if e = fly.Unmarshal(b, &tmp); e != nil {
+	if e = c.Unmarshal(b, &tmp); e != nil {
 		t.Fatal(e)
 	}
 	t.Logf("want %+v, get %+v", m, tmp)

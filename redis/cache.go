@@ -11,12 +11,13 @@ import (
 // Cache redis cache
 type Cache struct {
 	Redis     *_redis.Pool `inject:""`
+	Coder     fly.Coder    `inject:""`
 	Namespace string       `inject:"namespace"`
 }
 
 // Set set
 func (p *Cache) Set(key string, val interface{}, ttl time.Duration) error {
-	buf, err := fly.Marshal(val)
+	buf, err := p.Coder.Marshal(val)
 	if err != nil {
 		return err
 	}
@@ -35,7 +36,7 @@ func (p *Cache) Get(key string, val interface{}) error {
 	if err != nil {
 		return err
 	}
-	return fly.Unmarshal(buf, val)
+	return p.Coder.Unmarshal(buf, val)
 }
 
 // Keys keys

@@ -27,7 +27,7 @@ var pool = _redis.Pool{
 
 func TestCache(t *testing.T) {
 	var c fly.Cache
-	c = &redis.Cache{Redis: &pool, Namespace: "test"}
+	c = &redis.Cache{Redis: &pool, Namespace: "test", Coder: &fly.GobCoder{}}
 
 	s1 := S{IV: 100, SV: "hello, champak!"}
 	if err := c.Set("hello", &s1, 60*time.Minute); err != nil {
