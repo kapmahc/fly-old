@@ -55,7 +55,7 @@ func (p *IS2) P() {
 	log.Println("--- is2")
 }
 func (p *IS2) P1(s string) {
-	log.Println("--- is2" + s)
+	log.Println("--- is2 " + s)
 }
 
 func TestInject(t *testing.T) {
@@ -75,15 +75,15 @@ func TestInject(t *testing.T) {
 		return nil
 	})
 
-	if _, err := inj.Invoke(func(i I1, s1 *IS1, s2 *IS2) {
+	if _, err := inj.Invoke(func(i I1, s1 *IS1, s2 *IS2, hi string) {
 		t.Log("-------------------------")
 		i.P()
 		s1.P()
 		s2.P()
 		t.Log(s2.S)
-		s2.P1("aaa")
+		s2.P1(hi)
 		t.Log("-------------------------")
-	}); err != nil {
+	}, "hi, invoke"); err != nil {
 		t.Fatal(err)
 	}
 }

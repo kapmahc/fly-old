@@ -172,7 +172,7 @@ func (p *Injector) Walk(fn func(*Object) error) error {
 }
 
 // Invoke attempts to call the interface{} provided as a function
-func (p *Injector) Invoke(f interface{}) ([]reflect.Value, error) {
+func (p *Injector) Invoke(f interface{}, args ...interface{}) ([]reflect.Value, error) {
 	t := reflect.TypeOf(f)
 	if t.Kind() != reflect.Func {
 		return nil, errors.New("must func")
@@ -181,13 +181,24 @@ func (p *Injector) Invoke(f interface{}) ([]reflect.Value, error) {
 	var in = make([]reflect.Value, t.NumIn())
 	for i := 0; i < t.NumIn(); i++ {
 		aty := t.In(i)
-		val := p.get("", aty)
-		if val == nil {
+		ok := false
+		for _, arg := range args {
+			if reflect.TypeOf(arg).AssignableTo(aty) {
+				in[i] = reflect.ValueOf(arg)
+				ok = true
+				break
+			}
+		}
+		if !ok {
+			if val := p.get("", aty); val != nil {
+				in[i] = val.reflectValue
+				ok = true
+			}
+		}
+		if !ok {
 			return nil, fmt.Errorf("value not found for type %v", aty)
 		}
 
-		in[i] = val.reflectValue
-		p.debugf("put value %+v to type %s", val.Value, aty)
 	}
 
 	return reflect.ValueOf(f).Call(in), nil
