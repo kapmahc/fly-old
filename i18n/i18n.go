@@ -35,8 +35,10 @@ type I18N struct {
 // Generate generate locale file
 func (p *I18N) Generate(root string, lang language.Tag, val map[string]interface{}) error {
 	os.MkdirAll(root, 0700)
+	fn := path.Join(root, lang.String()+EXT)
+	p.Logger.Info("generate file", fn)
 	fd, err := os.OpenFile(
-		path.Join(root, lang.String()+EXT),
+		fn,
 		os.O_WRONLY|os.O_CREATE|os.O_EXCL,
 		0600,
 	)
@@ -60,9 +62,11 @@ func (p *I18N) Load(root string) (map[string]map[string]string, error) {
 			return nil
 		}
 		name := info.Name()
-		if filepath.Ext(name) == EXT {
-			p.Logger.Info("find locale file", path)
+		if filepath.Ext(name) != EXT {
+			p.Logger.Warn("ingnore file", path)
+			return nil
 		}
+		p.Logger.Info("find file", path)
 
 		fd, err := os.Open(path)
 		if err != nil {
