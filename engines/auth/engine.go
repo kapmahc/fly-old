@@ -6,3 +6,15 @@ import "github.com/astaxie/beego"
 type Controller struct {
 	beego.Controller
 }
+
+// Index index
+// @router / [get]
+func (c *Controller) Index() {
+
+}
+
+// SignIn sign in
+// @router /sign-in [get]
+func (c *Controller) SignIn() {
+
+}

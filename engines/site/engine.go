@@ -1,16 +1,20 @@
 package site
 
-import "github.com/astaxie/beego"
+import "github.com/kapmahc/fly/engines/base"
 
 // Controller controller
 type Controller struct {
-	beego.Controller
+	base.Controller
 }
 
-// GetHome get home
+// Home index
 // @router / [get]
-func (c *Controller) GetHome() {
-	c.Data["Website"] = "beego.me"
-	c.Data["Email"] = "astaxie@gmail.com"
-	c.TplName = "index.tpl"
+func (p *Controller) Home() {
+	p.TplName = "site/home.html"
+}
+
+// Dashboard get index
+// @router /dashboard [get]
+func (p *Controller) Dashboard() {
+	p.TplName = "site/dashboard.html"
 }

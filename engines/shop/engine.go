@@ -6,3 +6,9 @@ import "github.com/astaxie/beego"
 type Controller struct {
 	beego.Controller
 }
+
+// GetHome get home
+// @router / [get]
+func (c *Controller) GetHome() {
+	c.TplName = "shop/index.tpl"
+}
