@@ -1,10 +1,16 @@
 package routers
 
 import (
-	"github.com/kapmahc/fly/controllers"
 	"github.com/astaxie/beego"
+	"github.com/kapmahc/fly/engines/site"
 )
 
 func init() {
-    beego.Router("/", &controllers.MainController{})
+	beego.Include(
+		// &auth.Controller{},
+		// &forum.Controller{},
+		// &reading.Controller{},
+		// &shop.Controller{},
+		&site.Controller{},
+	)
 }
