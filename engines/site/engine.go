@@ -1,4 +1,4 @@
-package auth
+package site
 
 import (
 	"github.com/go-martini/martini"
@@ -11,7 +11,7 @@ type Engine struct {
 
 // Map objects
 func (p *Engine) Map() interface{} {
-	return nil
+	return func() {}
 }
 
 // Mount web-points

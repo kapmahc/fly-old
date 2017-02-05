@@ -11,7 +11,7 @@ func TestSecurity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	hello := "Hello, Champak!"
+	hello := "Hello, Fly!"
 	code, err := en.Encrypt([]byte(hello))
 	if err != nil {
 		t.Fatal(err)
