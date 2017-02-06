@@ -9,6 +9,30 @@ import (
 	"github.com/kapmahc/fly/engines/base"
 )
 
+// SetSignIn set sign-in info
+func SetSignIn(user *User, ip string) error {
+	// ip, _, err := net.SplitHostPort(req.RemoteAddr)
+	// if err != nil {
+	// 	return err
+	// }
+	o := orm.NewOrm()
+	user.LastSignInAt = user.CurrentSignInAt
+	user.LastSignInIP = user.CurrentSignInIP
+	user.CurrentSignInIP = ip
+	n := time.Now()
+	user.CurrentSignInAt = &n
+	user.SignInCount++
+
+	_, err := o.Update(
+		user,
+		"last_sign_in_at", "last_sign_in_ip",
+		"current_sign_in_at", "current_sign_in_ip",
+		"sign_in_count", "updated_at",
+	)
+	return err
+
+}
+
 // AddEmailUser add user
 func AddEmailUser(name, email, password string) (*User, error) {
 	var u User
@@ -22,7 +46,7 @@ func AddEmailUser(name, email, password string) (*User, error) {
 	}
 	u.Email = email
 	u.Name = name
-	u.Password = base64.StdEncoding.EncodeToString(base.HmacSum([]byte(u.Password)))
+	u.Password = base64.StdEncoding.EncodeToString(base.HmacSum([]byte(password)))
 	u.ProviderID = email
 	u.ProviderType = UserTypeEmail
 	u.CurrentSignInIP = DefaultIP
@@ -34,12 +58,11 @@ func AddEmailUser(name, email, password string) (*User, error) {
 }
 
 // ConfirmUser confirm
-func ConfirmUser(user uint) error {
+func ConfirmUser(user *User) error {
+	n := time.Now()
+	user.ConfirmedAt = &n
 	o := orm.NewOrm()
-	_, err := o.QueryTable(&User{}).Filter("id", user).Update(orm.Params{
-		"confirmed_at": time.Now(),
-		"updated_at":   time.Now(),
-	})
+	_, err := o.Update(user, "confirmed_at", "updated_at")
 	return err
 }
 
@@ -58,11 +81,9 @@ func Allow(user *User, role string, years, months, days int) error {
 	begin := time.Now()
 	end := begin.AddDate(years, months, days)
 	if err == nil {
-		_, err = o.QueryTable(&p).Filter("id", p.ID).Update(orm.Params{
-			"start_up":   begin,
-			"shut_down":  end,
-			"updated_at": time.Now(),
-		})
+		p.StartUp = begin
+		p.ShutDown = end
+		_, err = o.Update(&p, "start_up", "shut_down", "updated_at")
 	} else if err == orm.ErrNoRows {
 		p.StartUp = begin
 		p.ShutDown = end

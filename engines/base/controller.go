@@ -1,6 +1,7 @@
 package base
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"strings"
@@ -46,6 +47,11 @@ func (p *Controller) ParseForm(fm interface{}) (ok bool, fsh *beego.FlashData) {
 	}
 	ok = true
 	return
+}
+
+// E i18n error
+func (p *Controller) E(format string, args ...interface{}) error {
+	return errors.New(p.T(format, args...))
 }
 
 // T t

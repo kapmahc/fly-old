@@ -19,7 +19,6 @@ func Tr(lang, format string, args ...interface{}) string {
 	if err != orm.ErrNoRows {
 		beego.Error(err)
 	}
-
 	return i18n.Tr(lang, format, args...)
 }
 
