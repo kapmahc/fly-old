@@ -9,7 +9,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"
 	"github.com/kapmahc/fly/engines/auth"
-	"github.com/kapmahc/fly/engines/base"
 	"github.com/kapmahc/fly/engines/forum"
 	"github.com/kapmahc/fly/engines/reading"
 	"github.com/kapmahc/fly/engines/shop"
@@ -40,7 +39,6 @@ func init() {
 	}); err != nil {
 		beego.Error(err)
 	}
-	beego.AddFuncMap("t", base.Tr)
 
 	// controllers
 	beego.Include(

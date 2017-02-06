@@ -22,3 +22,7 @@ func Tr(lang, format string, args ...interface{}) string {
 
 	return i18n.Tr(lang, format, args...)
 }
+
+func init() {
+	beego.AddFuncMap("t", Tr)
+}

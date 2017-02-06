@@ -5,9 +5,20 @@ import (
 	"github.com/beego/i18n"
 )
 
+const (
+	// LOCALE locale key
+	LOCALE        = "locale"
+	localeDataKey = "l"
+)
+
 // Controller base
 type Controller struct {
 	beego.Controller
+}
+
+// T t
+func (p *Controller) T(code string, args ...interface{}) string {
+	return Tr(p.Data[localeDataKey].(string), code, args...)
 }
 
 // Prepare prepare
@@ -15,17 +26,16 @@ func (p *Controller) Prepare() {
 	p.Layout = "application.html"
 	p.setLang()
 }
-
 func (p *Controller) setLang() {
-	const key = "locale"
+
 	hasCookie := false
 
 	// 1. Check URL arguments.
-	lang := p.Input().Get(key)
+	lang := p.Input().Get(LOCALE)
 
 	// 2. Get language information from cookies.
 	if len(lang) == 0 {
-		lang = p.Ctx.GetCookie(key)
+		lang = p.Ctx.GetCookie(LOCALE)
 		hasCookie = true
 	}
 	// 3. Get language information from 'Accept-Language'.
@@ -47,10 +57,10 @@ func (p *Controller) setLang() {
 
 	// Save language information in cookies.
 	if !hasCookie {
-		p.Ctx.SetCookie(key, lang, 1<<31-1, "/")
+		p.Ctx.SetCookie(LOCALE, lang, 1<<31-1, "/")
 	}
 
 	// Set language properties.
-	p.Data["l"] = lang
+	p.Data[localeDataKey] = lang
 	p.Data["languages"] = i18n.ListLangs()
 }
