@@ -1,10 +1,10 @@
 package auth
 
-import "github.com/astaxie/beego"
+import "github.com/kapmahc/fly/engines/base"
 
 // Controller controller
 type Controller struct {
-	beego.Controller
+	base.Controller
 }
 
 // Index index
