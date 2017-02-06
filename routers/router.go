@@ -9,6 +9,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"
 	"github.com/kapmahc/fly/engines/auth"
+	"github.com/kapmahc/fly/engines/base"
 	"github.com/kapmahc/fly/engines/forum"
 	"github.com/kapmahc/fly/engines/reading"
 	"github.com/kapmahc/fly/engines/shop"
@@ -16,7 +17,6 @@ import (
 )
 
 func init() {
-	// orm
 	// i18n
 	if err := filepath.Walk(filepath.Join("conf", "locales"), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -40,7 +40,7 @@ func init() {
 	}); err != nil {
 		beego.Error(err)
 	}
-	beego.AddFuncMap("t", i18n.Tr)
+	beego.AddFuncMap("t", base.Tr)
 
 	// controllers
 	beego.Include(

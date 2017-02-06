@@ -52,5 +52,5 @@ func (p *Controller) setLang() {
 
 	// Set language properties.
 	p.Data["l"] = lang
-
+	p.Data["languages"] = i18n.ListLangs()
 }
