@@ -28,7 +28,7 @@ func (p *Controller) PostSignIn() {
 		user, err := p.signIn(fm.Email, fm.Password)
 
 		if err == nil {
-			p.SetSession(uidKey, user.ID)
+			p.SetSession(uidKey, user.UID)
 			p.Redirect(p.URLFor("site.Controller.GetHome"), http.StatusFound)
 			return
 		}

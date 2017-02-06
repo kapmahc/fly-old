@@ -1,0 +1,20 @@
+<li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="personal-bar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{if .currentUser}}
+          {{t .l "shared.personal-bar.welcome" .currentUser.Name}}
+          {{else}}
+          {{t .l "shared.personal-bar.sign-in-up"}}
+          {{end}}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="personal-bar">
+          {{if .currentUser}}
+          <a class="dropdown-item" href="{{urlfor "site.Controller.GetDashboard"}}">
+            {{t .l "site.dashboard.title"}}
+          </a>
+          {{else}}
+          <a class="dropdown-item" href="{{urlfor "auth.Controller.GetSignIn"}}">
+            {{t .l "auth.sign-in.title"}}
+          </a>
+          {{end}}
+        </div>
+      </li>

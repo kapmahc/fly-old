@@ -23,8 +23,8 @@ func (p *Controller) GetHome() {
 	p.HTML(p.T("site.home.title"), "site/home.html")
 }
 
-// Dashboard get index
+// GetDashboard dashboard
 // @router /dashboard [get]
-func (p *Controller) Dashboard() {
-	p.HTML(p.T("site.dashboard"), "site/dashboard.html")
+func (p *Controller) GetDashboard() {
+	p.HTML(p.T("site.dashboard.title"), "site/dashboard.html")
 }

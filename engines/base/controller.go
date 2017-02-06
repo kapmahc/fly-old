@@ -114,5 +114,9 @@ func (p *Controller) setLang() {
 
 	// Set language properties.
 	p.Data[localeDataKey] = lang
-	p.Data["languages"] = i18n.ListLangs()
+	langs := make(map[string]string)
+	for _, l := range i18n.ListLangs() {
+		langs[l] = p.T(fmt.Sprintf("languages.%s", l))
+	}
+	p.Data["languages"] = langs
 }
