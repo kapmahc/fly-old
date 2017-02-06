@@ -1,0 +1,24 @@
+<h2>{{.title}}</h2>
+<hr/>
+<form method="post" action="{{urlfor "site.Controller.PostInstall"}}">
+    <div class="form-group">
+        <label for="name">{{t .l "attributes.username"}}</label>
+        <input type="text" class="form-control" id="name" name="name">
+    </div>
+    <div class="form-group">
+        <label for="email">{{t .l "attributes.email"}}</label>
+        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+        <small id="emailHelp" class="form-text text-muted">{{t .l "hints.email"}}</small>
+    </div>
+    <div class="form-group">
+        <label for="password">{{t .l "attributes.password"}}</label>
+        <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp">
+        <small id="passwordHelp" class="form-text text-muted">{{t .l "hints.password"}}</small>
+    </div>
+    <div class="form-group">
+        <label for="passwordConfirmation">{{t .l "attributes.password-confirmation"}}</label>
+        <input type="password" class="form-control" id="passwordConfirmation" name="passwordConfirmation" aria-describedby="passwordConfirmationHelp">
+        <small id="passwordConfirmationHelp" class="form-text text-muted">{{t .l "hints.password-confirmation"}}</small>
+    </div>
+    {{template "shared/form-buttons.html" .}}
+</form>

@@ -1,0 +1,29 @@
+{{if .flash.error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+    <h4 class="alert-heading">{{t .l "flash.error"}}</h4>
+    <p>{{str2html .flash.error}}</p>
+</div>
+{{end}}
+
+{{if .flash.warning}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+    <h4 class="alert-heading">{{t .l "flash.warning"}}</h4>
+    <p>{{str2html .flash.warning}}</p>
+</div>
+{{end}}
+
+{{if .flash.notice}}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+    <h4 class="alert-heading">{{t .l "flash.notice"}}</h4>
+    <p>{{str2html .flash.notice}}</p>
+</div>
+{{end}}

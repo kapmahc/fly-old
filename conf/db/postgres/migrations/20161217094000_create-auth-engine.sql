@@ -3,7 +3,7 @@
 
 CREATE TABLE users (
   id                 SERIAL PRIMARY KEY,
-  full_name          VARCHAR(32)                 NOT NULL,
+  name          VARCHAR(32)                 NOT NULL,
   email              VARCHAR(255)                NOT NULL,
   uid                VARCHAR(36)                 NOT NULL,
   password           VARCHAR(255),
@@ -27,8 +27,8 @@ CREATE UNIQUE INDEX idx_users_email
   ON users (email);
 CREATE UNIQUE INDEX idx_users_provider_id_type
   ON users (provider_id, provider_type);
-CREATE INDEX idx_users_full_name
-  ON users (full_name);
+CREATE INDEX idx_users_name
+  ON users (name);
 CREATE INDEX idx_users_provider_id
   ON users (provider_id);
 CREATE INDEX idx_users_provider_type

@@ -6,6 +6,7 @@
   <body>
     {{template "shared/header.html" .}}
     <div class="container">
+      {{template "shared/flash.html" .}}
       {{.LayoutContent}}
     </div>
     {{template "shared/footer.html" .}}

@@ -1,19 +1,51 @@
 package base
 
 import (
+	"fmt"
+	"html/template"
+	"strings"
+
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/validation"
 	"github.com/beego/i18n"
 )
 
 const (
 	// LOCALE locale key
-	LOCALE        = "locale"
+	LOCALE = "locale"
+
 	localeDataKey = "l"
 )
 
 // Controller base
 type Controller struct {
 	beego.Controller
+}
+
+// ParseForm parse form
+func (p *Controller) ParseForm(fm interface{}) (ok bool, fsh *beego.FlashData) {
+	fsh = beego.NewFlash()
+	err := p.Controller.ParseForm(fm)
+	if err != nil {
+		fsh.Error(err.Error())
+		return
+	}
+	valid := validation.Validation{}
+	ok, err = valid.Valid(fm)
+	if err != nil {
+		fsh.Error(err.Error())
+		return
+	}
+	if !ok {
+		var msg []string
+		for _, err := range valid.Errors {
+			msg = append(msg, fmt.Sprintf("%s: %s", err.Key, err.Message))
+		}
+		fsh.Error(strings.Join(msg, "<br/>"))
+		return
+	}
+	ok = true
+	return
 }
 
 // T t
@@ -25,7 +57,21 @@ func (p *Controller) T(code string, args ...interface{}) string {
 func (p *Controller) Prepare() {
 	p.Layout = "application.html"
 	p.setLang()
+	p.setXSRF()
 }
+
+// HTML render html
+func (p *Controller) HTML(title, tpl string) {
+	beego.ReadFromRequest(&p.Controller)
+	p.TplName = tpl
+	p.Data["title"] = title
+}
+
+func (p *Controller) setXSRF() {
+	p.Data["xsrf"] = template.HTML(p.XSRFFormHTML())
+	p.Data["xsrf_token"] = p.XSRFToken()
+}
+
 func (p *Controller) setLang() {
 
 	hasCookie := false

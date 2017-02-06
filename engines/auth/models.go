@@ -24,25 +24,27 @@ const (
 	DefaultResourceType = "-"
 	// DefaultResourceID default resourc id
 	DefaultResourceID = 0
+	// DefaultIP default ip
+	DefaultIP = "0.0.0.0"
 )
 
 // User user
 type User struct {
 	base.Model
 
-	FullName        string     `json:"fullName"`
+	Name            string     `json:"name"`
 	Email           string     `json:"email"`
-	UID             string     `json:"uid"`
+	UID             string     `json:"uid" orm:"column(uid)"`
 	Password        string     `json:"-"`
-	ProviderID      string     `json:"-"`
+	ProviderID      string     `json:"-" orm:"column(provider_id)"`
 	ProviderType    string     `json:"providerNype"`
 	Home            string     `json:"home"`
 	Logo            string     `json:"logo"`
 	SignInCount     uint       `json:"signInCount"`
 	LastSignInAt    *time.Time `json:"lastSignInAt"`
-	LastSignInIP    string     `json:"lastSignInIp"`
+	LastSignInIP    string     `json:"lastSignInIp" orm:"column(last_sign_in_ip)"`
 	CurrentSignInAt *time.Time `json:"currentSignInAt"`
-	CurrentSignInIP string     `json:"currentSignInIp"`
+	CurrentSignInIP string     `json:"currentSignInIp" orm:"column(current_sign_in_ip)"`
 	ConfirmedAt     *time.Time `json:"confirmedAt"`
 	LockedAt        *time.Time `json:"lockedAt"`
 
@@ -76,7 +78,7 @@ func (p *User) SetUID() {
 }
 
 func (p User) String() string {
-	return fmt.Sprintf("%s<%s>", p.FullName, p.Email)
+	return fmt.Sprintf("%s<%s>", p.Name, p.Email)
 }
 
 // Attachment attachment
@@ -87,9 +89,9 @@ type Attachment struct {
 	Length       uint
 	MediaType    string
 	ResourceType string
-	ResourceID   uint
+	ResourceID   uint `orm:"column(resource_id)"`
 	SortOrder    int
-	CreatedAt    time.Time
+	CreatedAt    time.Time `orm:"auto_now_add"`
 
 	User *User `orm:"rel(fk)"`
 }
@@ -103,7 +105,7 @@ func (Attachment) TableName() string {
 type Log struct {
 	ID        uint      `json:"id"`
 	Message   string    `json:"message"`
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" orm:"auto_now_add"`
 	IP        string    `json:"ip"`
 
 	User *User `orm:"rel(fk)" json:"-"`
@@ -141,7 +143,7 @@ type Role struct {
 	base.Model
 
 	Name         string
-	ResourceID   uint
+	ResourceID   uint `orm:"column(resource_id)"`
 	ResourceType string
 }
 

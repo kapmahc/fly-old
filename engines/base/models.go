@@ -8,9 +8,9 @@ import (
 
 // Model base model
 type Model struct {
-	ID      uint `orm:"column(id)"`
-	Updated time.Time
-	Created time.Time
+	ID        uint      `orm:"column(id)"`
+	UpdatedAt time.Time `orm:"auto_now"`
+	CreatedAt time.Time `orm:"auto_now_add"`
 }
 
 // Locale locale
