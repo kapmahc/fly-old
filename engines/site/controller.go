@@ -1,6 +1,13 @@
 package site
 
-import "github.com/kapmahc/fly/engines/base"
+import (
+	"net/http"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
+	"github.com/kapmahc/fly/engines/auth"
+	"github.com/kapmahc/fly/engines/base"
+)
 
 // Controller controller
 type Controller struct {
@@ -10,6 +17,16 @@ type Controller struct {
 // GetHome index
 // @router / [get]
 func (p *Controller) GetHome() {
+	o := orm.NewOrm()
+	count, err := o.QueryTable(&auth.User{}).Count()
+	if err != nil {
+		beego.Error(err)
+		p.Abort("500")
+	}
+	if count == 0 {
+		p.Redirect(p.URLFor("site.Controller.GetInstall"), http.StatusFound)
+		return
+	}
 	p.Data["title"] = p.T("site.home.title")
 	p.TplName = "site/home.html"
 }

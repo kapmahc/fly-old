@@ -6,14 +6,20 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+// Model base model
+type Model struct {
+	ID      uint `orm:"column(id)"`
+	Updated time.Time
+	Created time.Time
+}
+
 // Locale locale
 type Locale struct {
-	ID        uint `orm:"column(id)"`
-	Code      string
-	Message   string
-	Lang      string
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	Model
+
+	Code    string
+	Message string
+	Lang    string
 }
 
 // TableName table name
