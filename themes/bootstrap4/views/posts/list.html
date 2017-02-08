@@ -1,0 +1,7 @@
+<h4>{{t .l "posts.home.title"}}</h4>
+<hr/>
+<ul>
+  {{range .posts}}
+    <li><a href="{{urlfor "posts.Controller.GetShow" ":splat" .Href}}">{{.Title}}</a></li>
+  {{end}}
+</ul>

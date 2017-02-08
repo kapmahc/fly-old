@@ -4,9 +4,9 @@
     </a>
     <div class="dropdown-menu" aria-labelledby="switch-lang-bar">
       {{$l := .l}}
-      {{range $_, $k := .languages}}
-      {{$v := fmt "languages.%s" $k}}
-      <a class="dropdown-item" href="/?locale={{t $l $k}}">{{$v}}</a>
+      {{range .languages}}
+      {{$v := fmt "languages.%s" .}}
+      <a class="dropdown-item" href="/?locale={{.}}">{{t $l $v}}</a>
       {{end}}
     </div>
 </li>

@@ -1,26 +1,27 @@
 package site
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/astaxie/beego"
 	"github.com/kapmahc/fly/engines/auth"
 )
 
 // Controller controller
 type Controller struct {
 	auth.UserController
-	// base.Controller
 }
 
 // GetHome index
 // @router / [get]
 func (p *Controller) GetHome() {
+	u := fmt.Sprintf("%s.Controller.GetHome", beego.AppConfig.String("homeengine"))
 	if p.dbEmpty() {
-		p.Redirect(p.URLFor("site.Controller.GetInstall"), http.StatusFound)
+		u = "site.Controller.GetInstall"
 		return
 	}
-
-	p.HTML(p.T("site.home.title"), "site/home.html")
+	p.Redirect(p.URLFor(u), http.StatusFound)
 }
 
 // GetDashboard dashboard

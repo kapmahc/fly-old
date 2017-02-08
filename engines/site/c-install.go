@@ -11,7 +11,7 @@ import (
 // @router /install [get]
 func (p *Controller) GetInstall() {
 	if !p.dbEmpty() {
-		p.Abort("404")
+		p.Abort(http.StatusNotFound)
 	}
 	p.HTML(p.T("site.install.title"), "site/install.html")
 }
@@ -33,7 +33,7 @@ func (p *fmInstall) Valid(v *validation.Validation) {
 // @router /install [post]
 func (p *Controller) PostInstall() {
 	if !p.dbEmpty() {
-		p.Abort("404")
+		p.Abort(http.StatusNotFound)
 	}
 
 	var fm fmInstall

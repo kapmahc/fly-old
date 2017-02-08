@@ -1,0 +1,8 @@
+<h1>
+  <a href="{{urlfor "posts.Controller.GetShow" ":splat" .Href}}">
+    {{.Title}}
+  </a>
+</h1>
+{{date .Published "Y-m-d H:i:s"}}
+<hr/>
+{{md2ht .Body}}

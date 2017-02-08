@@ -9,11 +9,11 @@
                 <a class="nav-link" href="{{urlfor "site.Controller.GetHome"}}">{{t .l "shared.header.home"}}<span class="sr-only">(current)</span></a>
             </li>
             {{$l := .l}}
-            {{range $_, $e := .engines}}
+            {{range .engines}}
             <li class="nav-item">
-              {{$v := fmt "%s.home.title" $e}}
+              {{$v := fmt "%s.home.title" .}}
               {{$v := t $l $v}}
-              {{$k := fmt "%s.Controller.GetHome" $e}}
+              {{$k := fmt "%s.Controller.GetHome" .}}
               <a class="nav-link" href="{{urlfor $k}}">{{$v}}</a>
             </li>
             {{end}}

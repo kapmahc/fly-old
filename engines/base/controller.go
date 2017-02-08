@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -21,6 +22,11 @@ const (
 // Controller base
 type Controller struct {
 	beego.Controller
+}
+
+// Abort abort
+func (p *Controller) Abort(s int) {
+	p.Controller.Abort(strconv.Itoa(s))
 }
 
 // ParseForm parse form

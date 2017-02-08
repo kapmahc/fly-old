@@ -1,3 +1,4 @@
 /fly*
 /routers/commentsRouter_*.go
 /lastupdate.tmp
+/tmp
