@@ -9,14 +9,14 @@
         {{end}}
         <div class="card-block">
           <h4 class="card-title">
-            <a href="{{urlfor "reading.Controller.ShowBook" ":id" .ID}}">{{.Title}}</a>
+            <a target="_blank" href="{{urlfor "reading.Controller.ShowBook" ":id" .ID}}">{{.Title}}</a>
           </h4>
           <p class="card-text">
             {{.Subject}}
             <br/>
             {{.Description}}
           </p>
-          <a href="{{urlfor "reading.Controller.ShowBook" ":id" .ID}}" class="btn btn-secondary">{{t $l "buttons.view"}}</a>
+          <a target="_blank" href="{{urlfor "reading.Controller.ShowBook" ":id" .ID}}" class="btn btn-secondary">{{t $l "buttons.view"}}</a>
         </div>
       </div>
     </div>
