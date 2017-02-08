@@ -19,7 +19,6 @@ func (p *Controller) GetHome() {
 	u := fmt.Sprintf("%s.Controller.GetHome", beego.AppConfig.String("homeengine"))
 	if p.dbEmpty() {
 		u = "site.Controller.GetInstall"
-		return
 	}
 	p.Redirect(p.URLFor(u), http.StatusFound)
 }
