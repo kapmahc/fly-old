@@ -2,13 +2,11 @@ package base
 
 import (
 	"fmt"
-	"html/template"
 	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/beego/i18n"
-	"github.com/russross/blackfriday"
 )
 
 // Tr translate content to target language
@@ -40,7 +38,7 @@ func Tr(lang, format string, args ...interface{}) string {
 func init() {
 	beego.AddFuncMap("t", Tr)
 	beego.AddFuncMap("fmt", fmt.Sprintf)
-	beego.AddFuncMap("md2ht", func(md string) template.HTML {
-		return template.HTML(blackfriday.MarkdownBasic([]byte(md)))
-	})
+	// beego.AddFuncMap("md2ht", func(md string) template.HTML {
+	// 	return template.HTML(blackfriday.MarkdownBasic([]byte(md)))
+	// })
 }

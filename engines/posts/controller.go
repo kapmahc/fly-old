@@ -1,6 +1,7 @@
 package posts
 
 import (
+	"bufio"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -77,9 +78,23 @@ func (p *Controller) getPosts() []Post {
 		if err != nil {
 			return err
 		}
+
+		fd, err := os.Open(path)
+		if err != nil {
+			return err
+		}
+		defer fd.Close()
+		san := bufio.NewScanner(fd)
+		for san.Scan() {
+			txt := san.Text()
+			if txt != "" {
+				break
+			}
+		}
+
 		items = append(items, Post{
 			Href:      path[len(root)+1:],
-			Title:     name[:len(name)-len(MARKDOWN)],
+			Title:     san.Text(),
 			Body:      string(body),
 			Published: info.ModTime(),
 		})
