@@ -1,0 +1,16 @@
+<h1>{{.title}}</h1>
+<hr/>
+{{if .book.Ncx.Points}}
+{{.ncx}}
+{{else}}
+<ol>
+  {{$href := .href}}
+  {{range .book.Opf.Manifest}}
+    {{ if compare .MediaType "application/xhtml+xml"}}
+    <li>
+      <a href="{{$href}}/{{.Href}}">{{.Href}}</a>
+    </li>
+    {{end}}
+  {{end}}
+</ol>
+{{end}}

@@ -67,7 +67,12 @@ func scanBook() (int, error) {
 			return nil
 		}
 		if len(mt.Date) > 0 {
-			book.PublishedAt, err = time.Parse("2006-01-02", mt.Date[0].Data)
+			date := mt.Date[0].Data
+			layout := "2006-01-02"
+			if len(date) > len(layout) {
+				date = date[:len(layout)]
+			}
+			book.PublishedAt, err = time.Parse(layout, date)
 			if err != nil {
 				return err
 			}
