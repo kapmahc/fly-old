@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	_ "github.com/astaxie/beego/session/redis"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/kapmahc/fly/engines/base"
 	"github.com/kapmahc/fly/engines/site"
 	_ "github.com/kapmahc/fly/routers"
 	_ "github.com/lib/pq"
@@ -26,6 +27,9 @@ func main() {
 		beego.Error(err)
 		return
 	}
+
+	// worker
+	go base.Worker()
 	// web
 	beego.Run()
 }
