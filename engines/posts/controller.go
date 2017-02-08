@@ -31,6 +31,13 @@ func (p *Controller) Prepare() {
 // GetHome home
 // @router / [get]
 func (p *Controller) GetHome() {
+	posts := p.Data["posts"].([]Post)
+	const size = 12
+	if len(posts) > 12 {
+		p.Data["items"] = posts[:12]
+	} else {
+		p.Data["items"] = posts[:]
+	}
 	p.HTML(p.T("posts.home.title"), "posts/home.html")
 }
 
@@ -49,6 +56,7 @@ func (p *Controller) GetShow() {
 		if p.Data["post"] == nil {
 			p.Abort(http.StatusNotFound)
 		}
+
 		p.HTML(name, "posts/show.html")
 	case ".png":
 		body, err := ioutil.ReadFile(filepath.Join(p.postsRoot(), name))
@@ -74,10 +82,6 @@ func (p *Controller) getPosts() []Post {
 		if info.IsDir() || filepath.Ext(name) != MARKDOWN {
 			return nil
 		}
-		body, err := ioutil.ReadFile(path)
-		if err != nil {
-			return err
-		}
 
 		fd, err := os.Open(path)
 		if err != nil {
@@ -85,17 +89,20 @@ func (p *Controller) getPosts() []Post {
 		}
 		defer fd.Close()
 		san := bufio.NewScanner(fd)
+		var title, body string
 		for san.Scan() {
-			txt := san.Text()
-			if txt != "" {
-				break
+			line := san.Text()
+			if title == "" && line != "" {
+				title = line
+				continue
 			}
+			body += line + "\n"
 		}
 
 		items = append(items, Post{
 			Href:      path[len(root)+1:],
-			Title:     san.Text(),
-			Body:      string(body),
+			Title:     title,
+			Body:      body,
 			Published: info.ModTime(),
 		})
 		return nil
