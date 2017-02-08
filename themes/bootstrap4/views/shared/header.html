@@ -5,9 +5,18 @@
     <a class="navbar-brand" href="{{urlfor "site.Controller.GetHome"}}">{{t .l "site.sub-title"}}</a>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="{{urlfor "site.Controller.GetHome"}}">{{t .l "shared.header.home"}}<span class="sr-only">(current)</span></a>
-            </li>            
+            </li>
+            {{$l := .l}}
+            {{range $_, $e := .engines}}
+            <li class="nav-item">
+              {{$v := fmt "%s.home.title" $e}}
+              {{$v := t $l $v}}
+              {{$k := fmt "%s.Controller.GetHome" $e}}
+              <a class="nav-link" href="{{urlfor $k}}">{{$v}}</a>
+            </li>
+            {{end}}
             {{template "shared/switch-lang-bar.html" .}} {{template "shared/personal-bar.html" .}}
         </ul>
         <form class="form-inline mt-2 mt-md-0" method="post" action="/search">

@@ -56,6 +56,8 @@ func (p *Controller) E(format string, args ...interface{}) error {
 
 // T t
 func (p *Controller) T(code string, args ...interface{}) string {
+	beego.Debug("T", code)
+	beego.Debug("DATA", p.Data)
 	return Tr(p.Data[localeDataKey].(string), code, args...)
 }
 
@@ -64,6 +66,11 @@ func (p *Controller) Prepare() {
 	p.Layout = "application.html"
 	p.setLang()
 	p.setXSRF()
+	p.setEngines()
+}
+
+func (p *Controller) setEngines() {
+	p.Data["engines"] = beego.AppConfig.Strings("engines")
 }
 
 // HTML render html
@@ -114,9 +121,5 @@ func (p *Controller) setLang() {
 
 	// Set language properties.
 	p.Data[localeDataKey] = lang
-	langs := make(map[string]string)
-	for _, l := range i18n.ListLangs() {
-		langs[l] = p.T(fmt.Sprintf("languages.%s", l))
-	}
-	p.Data["languages"] = langs
+	p.Data["languages"] = i18n.ListLangs()
 }

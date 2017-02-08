@@ -10,6 +10,7 @@ import (
 	"github.com/beego/i18n"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/engines/forum"
+	"github.com/kapmahc/fly/engines/posts"
 	"github.com/kapmahc/fly/engines/reading"
 	"github.com/kapmahc/fly/engines/shop"
 	"github.com/kapmahc/fly/engines/site"
@@ -49,5 +50,6 @@ func init() {
 		beego.NewNamespace("/forum", beego.NSInclude(&forum.Controller{})),
 		beego.NewNamespace("/reading", beego.NSInclude(&reading.Controller{})),
 		beego.NewNamespace("/shop", beego.NSInclude(&shop.Controller{})),
+		beego.NewNamespace("/posts", beego.NSInclude(&posts.Controller{})),
 	)
 }

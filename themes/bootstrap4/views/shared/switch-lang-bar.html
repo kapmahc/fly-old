@@ -3,8 +3,10 @@
         {{t .l "shared.switch-lang-bar.title"}}
     </a>
     <div class="dropdown-menu" aria-labelledby="switch-lang-bar">
-      {{range $k, $v:= .languages}}
-      <a class="dropdown-item" href="/?locale={{$k}}">{{$v}}</a>
+      {{$l := .l}}
+      {{range $_, $k := .languages}}
+      {{$v := fmt "languages.%s" $k}}
+      <a class="dropdown-item" href="/?locale={{t $l $k}}">{{$v}}</a>
       {{end}}
     </div>
 </li>

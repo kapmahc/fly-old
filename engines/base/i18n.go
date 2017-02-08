@@ -24,4 +24,8 @@ func Tr(lang, format string, args ...interface{}) string {
 
 func init() {
 	beego.AddFuncMap("t", Tr)
+	beego.AddFuncMap("fmt", fmt.Sprintf)
+	beego.AddFuncMap("eq", func(arg1, arg2 interface{}) bool {
+		return arg1 == arg2
+	})
 }
