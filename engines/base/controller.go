@@ -62,8 +62,6 @@ func (p *Controller) E(format string, args ...interface{}) error {
 
 // T t
 func (p *Controller) T(code string, args ...interface{}) string {
-	beego.Debug("T", code)
-	beego.Debug("DATA", p.Data)
 	return Tr(p.Data[localeDataKey].(string), code, args...)
 }
 

@@ -59,6 +59,13 @@ func scanBook() (int, error) {
 			Type:        bk.Mimetype,
 			File:        path[len(root)+1:],
 		}
+		ct, err := o.QueryTable(&Book{}).Filter("file", book.File).Count()
+		if err != nil {
+			return err
+		}
+		if ct > 0 {
+			return nil
+		}
 		if len(mt.Date) > 0 {
 			book.PublishedAt, err = time.Parse("2006-01-02", mt.Date[0].Data)
 			if err != nil {
