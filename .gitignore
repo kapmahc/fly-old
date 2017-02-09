@@ -1,4 +1,8 @@
+# bee
 /fly*
 /routers/commentsRouter_*.go
 /lastupdate.tmp
+
+# build
 /tmp
+/dist
