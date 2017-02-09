@@ -129,7 +129,7 @@ func (p *Controller) IndexBooks() {
 		beego.Error(err)
 		p.Abort(http.StatusInternalServerError)
 	}
-	p.HTML(p.T("reading.home.title"), "reading/home.html")
+	p.HTML(p.T("reading.home.title"), "reading/books/index.html")
 }
 
 func (p *Controller) getBooks(page, size int64) (*base.Pagination, error) {

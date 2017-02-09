@@ -29,7 +29,7 @@ func (p *Controller) Prepare() {
 }
 
 // GetHome home
-// @router / [get]
+// @router /posts [get]
 func (p *Controller) GetHome() {
 	posts := p.Data["posts"].([]Post)
 	const size = 12
@@ -38,7 +38,7 @@ func (p *Controller) GetHome() {
 	} else {
 		p.Data["items"] = posts[:]
 	}
-	p.HTML(p.T("posts.home.title"), "posts/home.html")
+	p.HTML(p.T("posts.home.title"), "posts/index.html")
 }
 
 // GetShow show

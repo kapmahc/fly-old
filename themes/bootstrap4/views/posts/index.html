@@ -1,10 +1,11 @@
 <div class="row">
-  <div class="col-9">
+  <div class="col-md-9">
     {{range .items}}
       {{template "posts/item.html" .}}
+      <br/>
     {{end}}
   </div>
-  <div class="col-3">
+  <div class="col-md-3">
     {{template "posts/list.html" .}}
   </div>
 </div>
