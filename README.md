@@ -31,6 +31,11 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 
 ## Issues
 
+- "RPC failed; HTTP 301 curl 22 The requested URL returned error: 301"
+```bash
+ git config --global http.https://gopkg.in.followRedirects true
+```
+
 - 'Peer authentication failed for user', open file "/etc/postgresql/9.5/main/pg_hba.conf" change line:
 
   ```
