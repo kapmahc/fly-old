@@ -113,10 +113,10 @@ func (p *Engine) Shell() []cli.Command {
 					Action:  web.Action(p.connectDatabase),
 				},
 				{
-					Name:    "connect",
-					Usage:   "connect database",
-					Aliases: []string{"c"},
-					Action:  web.Action(p.connectDatabase),
+					Name:    "create",
+					Usage:   "create database",
+					Aliases: []string{"n"},
+					Action:  web.Action(p.createDatabase),
 				},
 				{
 					Name:    "drop",
@@ -201,6 +201,31 @@ func (p *Engine) Shell() []cli.Command {
 					},
 					Action: web.Action(p.generateLocale),
 				},
+			},
+		},
+		{
+			Name:    "routes",
+			Aliases: []string{"rt"},
+			Usage:   "print out all defined routes",
+			Action: func(*cli.Context) error {
+				rt := mux.NewRouter()
+				web.Walk(func(en web.Engine) error {
+					en.Mount(rt)
+					return nil
+				})
+				tpl := "%-8s %-16s %s\n"
+				fmt.Printf(tpl, "METHOD", "NAME", "PATH")
+				// n :=runtime.FuncForPC(reflect.ValueOf(h).Pointer()).Name()
+
+				rt.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+					t, err := route.GetPathTemplate()
+					if err != nil {
+						return err
+					}
+					fmt.Printf(tpl, "", route.GetName(), t)
+					return nil
+				})
+				return nil
 			},
 		},
 	}

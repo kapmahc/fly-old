@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	machinery "github.com/RichardKnop/machinery/v1"
-	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/fly/web"
 	"golang.org/x/tools/blog/atom"
@@ -14,11 +13,6 @@ import (
 type Engine struct {
 	Server *machinery.Server `inject:""`
 	Cache  *web.Cache        `inject:""`
-}
-
-// Mount web mount points
-func (p *Engine) Mount(*mux.Router) {
-
 }
 
 // Do background jobs
