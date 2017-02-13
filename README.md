@@ -58,3 +58,5 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   - [negroni](https://github.com/urfave/negroni)
   - [cli](https://github.com/urfave/cli)  
   - [govendor](https://github.com/kardianos/govendor)
+  - [logrus](https://github.com/sirupsen/logrus)
+  - [machinery](https://github.com/RichardKnop/machinery)

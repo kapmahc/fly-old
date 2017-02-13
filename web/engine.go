@@ -1,6 +1,8 @@
 package web
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/urfave/cli"
@@ -14,6 +16,8 @@ type Engine interface {
 	Shell() []cli.Command
 	Atom() ([]*atom.Entry, error)
 	Sitemap() ([]stm.URL, error)
+	Home() http.HandlerFunc
+	Dashboard(*http.Request) ([]Dropdown, error)
 }
 
 // -----------------------------------------------------------------------------

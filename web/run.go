@@ -69,7 +69,7 @@ func init() {
 	})
 
 	viper.SetDefault("server", map[string]interface{}{
-		"port":  8080,
+		"port":  3000,
 		"name":  "www.change-me.com",
 		"theme": "bootstrap",
 		"root":  "site",

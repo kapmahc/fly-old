@@ -1,8 +1,7 @@
 package main
 
 import (
-	"log"
-
+	log "github.com/Sirupsen/logrus"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/kapmahc/fly/engines/auth"
