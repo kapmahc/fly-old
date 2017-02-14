@@ -626,7 +626,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		viper.GetString("env"),
 		port,
 	)
-	rt := mux.NewRouter()
+	rt := p.RT
 	web.Walk(func(en web.Engine) error {
 		en.Mount(rt)
 		return nil

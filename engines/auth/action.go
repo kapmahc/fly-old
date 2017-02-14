@@ -9,6 +9,7 @@ import (
 	"github.com/SermoDigital/jose/crypto"
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
+	"github.com/gorilla/mux"
 	"github.com/kapmahc/fly/web"
 	"github.com/spf13/viper"
 	"github.com/unrolled/render"
@@ -49,6 +50,8 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			return err
 		}
 		// -------------------
+		rt := mux.NewRouter()
+		// -------------------
 		rdr := render.New(render.Options{
 			Directory:  path.Join("themes", viper.GetString("server.theme"), "views"),
 			IndentJSON: !web.IsProduction(),
@@ -69,6 +72,20 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 					"assets_js": func(name string) template.HTML {
 						return template.HTML(fmt.Sprintf(`<script src="/js/%s.js"></script>`, name))
 					},
+					"str2htm": func(s string) template.HTML {
+						return template.HTML(s)
+					},
+					"uf": func(name string, args ...interface{}) string {
+						var pairs []string
+						for _, arg := range args {
+							pairs = append(pairs, fmt.Sprintf("%v", arg))
+						}
+						url, err := rt.Get(name).URL(pairs...)
+						if err != nil {
+							return err.Error()
+						}
+						return url.String()
+					},
 				},
 			},
 		})
@@ -80,6 +97,7 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			&inject.Object{Value: cip},
 			&inject.Object{Value: i18n},
 			&inject.Object{Value: rdr},
+			&inject.Object{Value: rt},
 			&inject.Object{Value: cip, Name: "aes.cip"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.jwt")), Name: "jwt.key"},
