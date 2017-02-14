@@ -39,6 +39,11 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		if err != nil {
 			return err
 		}
+		// -----------------
+		i18n, err := web.NewI18n()
+		if err != nil {
+			return err
+		}
 		// -------------------
 
 		if err := inj.Provide(
@@ -46,6 +51,7 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			&inject.Object{Value: bws},
 			&inject.Object{Value: rep},
 			&inject.Object{Value: cip},
+			&inject.Object{Value: i18n},
 			&inject.Object{Value: cip, Name: "aes.cip"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.jwt")), Name: "jwt.key"},

@@ -13,6 +13,7 @@ import (
 type Engine struct {
 	Server *machinery.Server `inject:""`
 	Cache  *web.Cache        `inject:""`
+	I18n   *web.I18n         `inject:""`
 }
 
 // Do background jobs

@@ -207,28 +207,44 @@ func (p *Engine) Shell() []cli.Command {
 			Name:    "routes",
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
-			Action: func(*cli.Context) error {
-				rt := mux.NewRouter()
-				web.Walk(func(en web.Engine) error {
-					en.Mount(rt)
-					return nil
-				})
-				tpl := "%-8s %-16s %s\n"
-				fmt.Printf(tpl, "METHOD", "NAME", "PATH")
-				// n :=runtime.FuncForPC(reflect.ValueOf(h).Pointer()).Name()
-
-				rt.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
-					t, err := route.GetPathTemplate()
-					if err != nil {
-						return err
-					}
-					fmt.Printf(tpl, "", route.GetName(), t)
-					return nil
-				})
-				return nil
+			Action:  p.printRoutes,
+		},
+		{
+			Name:  "i18n",
+			Usage: "i18n operations",
+			Subcommands: []cli.Command{
+				{
+					Name:    "sync",
+					Aliases: []string{"s"},
+					Usage:   "sync locales from files",
+					Action: Action(func(*cli.Context, *inject.Graph) error {
+						return p.I18n.Sync("locales")
+					}),
+				},
 			},
 		},
 	}
+}
+
+func (p *Engine) printRoutes(*cli.Context) error {
+	rt := mux.NewRouter()
+	web.Walk(func(en web.Engine) error {
+		en.Mount(rt)
+		return nil
+	})
+	tpl := "%-8s %-16s %s\n"
+	fmt.Printf(tpl, "METHOD", "NAME", "PATH")
+	// n :=runtime.FuncForPC(reflect.ValueOf(h).Pointer()).Name()
+
+	rt.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		t, err := route.GetPathTemplate()
+		if err != nil {
+			return err
+		}
+		fmt.Printf(tpl, "", route.GetName(), t)
+		return nil
+	})
+	return nil
 }
 
 func (p *Engine) generateConfig(c *cli.Context) error {
