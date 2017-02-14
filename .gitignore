@@ -1,0 +1,13 @@
+# Go
+/vendor/*/
+
+# Build
+/dist
+
+# Test
+/etc
+/config.toml
+
+# Editor
+.*.swp
+.*.un~
