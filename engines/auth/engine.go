@@ -6,6 +6,7 @@ import (
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/fly/web"
+	"github.com/unrolled/render"
 	"golang.org/x/tools/blog/atom"
 )
 
@@ -14,6 +15,7 @@ type Engine struct {
 	Server *machinery.Server `inject:""`
 	Cache  *web.Cache        `inject:""`
 	I18n   *web.I18n         `inject:""`
+	R      *render.Render    `inject:""`
 }
 
 // Do background jobs

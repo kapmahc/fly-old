@@ -22,6 +22,8 @@ import (
 const (
 	// LOCALE locale key
 	LOCALE = K("locale")
+	// DATA data key
+	DATA = K("data")
 )
 
 //Locale locale model
@@ -236,6 +238,10 @@ func (p *I18n) ServeHTTP(w http.ResponseWriter, r *http.Request, next http.Handl
 		})
 	}
 	ctx := context.WithValue(r.Context(), LOCALE, tag.String())
+	ctx = context.WithValue(ctx, DATA, H{
+		"l":         tag.String(),
+		"languages": viper.GetStringSlice("languages"),
+	})
 	next(w, r.WithContext(ctx))
 }
 

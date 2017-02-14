@@ -2,12 +2,16 @@ package auth
 
 import (
 	"crypto/aes"
+	"fmt"
+	"html/template"
+	"path"
 
 	"github.com/SermoDigital/jose/crypto"
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
 	"github.com/kapmahc/fly/web"
 	"github.com/spf13/viper"
+	"github.com/unrolled/render"
 	"github.com/urfave/cli"
 )
 
@@ -45,6 +49,29 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			return err
 		}
 		// -------------------
+		rdr := render.New(render.Options{
+			Directory:  path.Join("themes", viper.GetString("server.theme"), "views"),
+			IndentJSON: !web.IsProduction(),
+			IndentXML:  !web.IsProduction(),
+			Layout:     "application",
+			Extensions: []string{".html"},
+			Funcs: []template.FuncMap{
+				{
+					"t": func(lang, code string, args ...interface{}) string {
+						return i18n.T(lang, code, args...)
+					},
+					"f": func(code string, args ...interface{}) string {
+						return fmt.Sprintf(code, args...)
+					},
+					"assets_css": func(name string) template.HTML {
+						return template.HTML(fmt.Sprintf(`<link rel="stylesheet" href="/css/%s.css">`, name))
+					},
+					"assets_js": func(name string) template.HTML {
+						return template.HTML(fmt.Sprintf(`<script src="/js/%s.js"></script>`, name))
+					},
+				},
+			},
+		})
 
 		if err := inj.Provide(
 			&inject.Object{Value: db},
@@ -52,6 +79,7 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			&inject.Object{Value: rep},
 			&inject.Object{Value: cip},
 			&inject.Object{Value: i18n},
+			&inject.Object{Value: rdr},
 			&inject.Object{Value: cip, Name: "aes.cip"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.jwt")), Name: "jwt.key"},

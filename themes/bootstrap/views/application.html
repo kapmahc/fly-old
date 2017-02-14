@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="{{.l}}">
+  <head>
+    {{ template "shared/meta" .}}
+    {{ partial "css" }}
+    {{ partial "js" }}
+  </head>
+  <body>
+    <!-- render the partial template called `header-$current_template` here -->
+    {{ partial "header" }}
+    <!-- Render the current template here -->
+    {{ yield }}
+    <!-- render the partial template called `footer-$current_template` here -->
+    {{ partial "footer" }}
+  </body>
+</html>

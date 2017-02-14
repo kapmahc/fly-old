@@ -4,12 +4,11 @@ import (
 	"crypto/x509/pkix"
 	"fmt"
 	"html/template"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"time"
-
-	"golang.org/x/text/language"
 
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
@@ -21,6 +20,7 @@ import (
 	"github.com/steinbacher/goose"
 	"github.com/urfave/cli"
 	"github.com/urfave/negroni"
+	"golang.org/x/text/language"
 	graceful "gopkg.in/tylerb/graceful.v1"
 )
 
@@ -635,7 +635,13 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	ng := negroni.New()
 	ng.Use(negroni.NewRecovery())
 	ng.Use(negronilogrus.NewMiddleware())
+	ng.Use(negroni.NewStatic(http.Dir(path.Join("themes", viper.GetString("server.theme"), "static"))))
+	ng.Use(p.I18n)
 	ng.UseHandler(rt)
-
-	return graceful.RunWithErr(fmt.Sprintf(":%d", port), 10*time.Second, ng)
+	addr := fmt.Sprintf(":%d", port)
+	if web.IsProduction() {
+		return graceful.RunWithErr(addr, 10*time.Second, ng)
+	}
+	ng.Run(addr)
+	return nil
 }
