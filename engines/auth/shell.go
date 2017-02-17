@@ -635,7 +635,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	ng := negroni.New()
 	ng.Use(negroni.NewRecovery())
 	ng.Use(negronilogrus.NewMiddleware())
-	ng.Use(negroni.NewStatic(http.Dir(path.Join("themes", viper.GetString("server.theme"), "static"))))
+	ng.Use(negroni.NewStatic(http.Dir(path.Join("themes", viper.GetString("server.theme"), "assets"))))
 	ng.Use(p.I18n)
 	ng.UseHandler(rt)
 	addr := fmt.Sprintf(":%d", port)

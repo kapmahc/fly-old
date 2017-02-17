@@ -17,7 +17,6 @@ type Engine interface {
 	Atom() ([]*atom.Entry, error)
 	Sitemap() ([]stm.URL, error)
 	Home() http.HandlerFunc
-	Dashboard(*http.Request) ([]Dropdown, error)
 }
 
 // -----------------------------------------------------------------------------

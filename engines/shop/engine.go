@@ -42,11 +42,6 @@ func (p *Engine) Home() http.HandlerFunc {
 	return func(http.ResponseWriter, *http.Request) {}
 }
 
-// Dashboard dashboard
-func (p *Engine) Dashboard(*http.Request) ([]web.Dropdown, error) {
-	return []web.Dropdown{}, nil
-}
-
 func init() {
 	web.Register(&Engine{})
 }

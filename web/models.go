@@ -21,15 +21,3 @@ type Model struct {
 	CreatedAt time.Time `json:"updatedAt"`
 	UpdatedAt time.Time `json:"createdAt"`
 }
-
-// Link link
-type Link struct {
-	Label string
-	Href  string
-}
-
-// Dropdown dropdown
-type Dropdown struct {
-	Label string
-	Items []Link
-}
