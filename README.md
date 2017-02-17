@@ -6,8 +6,8 @@ A complete open source ecommerce solution for for the Go language.
 
 ```bash
 zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
-gvm install go1.8rc3 -B
-gvm use go1.8rc3 --default
+gvm install go1.8 -B
+gvm use go1.8 --default
 ```
 
 ## Usage
