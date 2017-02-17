@@ -16,6 +16,7 @@ gvm use go1.8 --default
 go get -u github.com/kardianos/govendor
 go get -u github.com/kapmahc/fly
 cd $GOPATH/src/github.com/kapmahc/fly
+govendor sync
 make
 ls dist
 ```
@@ -32,9 +33,10 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 ## Issues
 
 - "RPC failed; HTTP 301 curl 22 The requested URL returned error: 301"
-```bash
- git config --global http.https://gopkg.in.followRedirects true
-```
+
+  ```bash
+  git config --global http.https://gopkg.in.followRedirects true
+  ```
 
 - 'Peer authentication failed for user', open file "/etc/postgresql/9.5/main/pg_hba.conf" change line:
 
@@ -56,7 +58,7 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   - [gorm](http://jinzhu.me/gorm/)
   - [mux](https://github.com/gorilla/mux)
   - [negroni](https://github.com/urfave/negroni)
-  - [cli](https://github.com/urfave/cli)  
+  - [cli](https://github.com/urfave/cli)
   - [govendor](https://github.com/kardianos/govendor)
   - [logrus](https://github.com/sirupsen/logrus)
   - [machinery](https://github.com/RichardKnop/machinery)

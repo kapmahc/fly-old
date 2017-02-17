@@ -1,0 +1,40 @@
+{
+  "name": "fly",
+  "version": "1.0.0",
+  "description": "A complete open source e-commerce solution by the Go language.",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack --watch --config webpack.config.js",
+    "build": "webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kapmahc/fly.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kapmahc/fly/issues"
+  },
+  "homepage": "https://github.com/kapmahc/fly#readme",
+  "dependencies": {
+    "blueimp-file-upload": "^9.14.2",
+    "bootstrap": "^4.0.0-alpha.5",
+    "highlight.js": "^9.9.0",
+    "jquery-ui": "^1.12.1",
+    "marked": "^0.3.6",
+    "tether": "^1.4.0"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.14",
+    "css-loader": "^0.26.1",
+    "extract-text-webpack-plugin": "^2.0.0-beta.4",
+    "file-loader": "^0.10.0",
+    "node-sass": "^4.1.1",
+    "sass-loader": "^6.0.0",
+    "stats-webpack-plugin": "^0.4.2",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.1.0-beta.28"
+  }
+}
