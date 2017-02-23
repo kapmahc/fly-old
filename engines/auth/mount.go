@@ -8,7 +8,10 @@ import (
 
 // Mount web mount points
 func (p *Engine) Mount(rt *mux.Router) {
+	rt.HandleFunc("/", p.home).Methods(http.MethodGet).Name("home")
+
 	ug := rt.PathPrefix("/users").Subrouter()
+
 	ug.HandleFunc("/sign-in", p.signIn).Methods(http.MethodGet, http.MethodPost).Name("users.sign-in")
 	ug.HandleFunc("/sign-up", p.signUp).Methods(http.MethodGet, http.MethodPost).Name("users.sign-up")
 	ug.HandleFunc("/confirm", p.confirm).Methods(http.MethodGet, http.MethodPost).Name("users.confirm")

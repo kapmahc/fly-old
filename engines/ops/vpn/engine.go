@@ -39,8 +39,8 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 }
 
 // Home home
-func (p *Engine) Home(http.ResponseWriter, *http.Request) {
-
+func (p *Engine) Home() http.HandlerFunc {
+	return nil
 }
 
 // Mount web mount points

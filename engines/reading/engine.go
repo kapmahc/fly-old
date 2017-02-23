@@ -1,6 +1,8 @@
 package reading
 
 import (
+	"net/http"
+
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
@@ -29,6 +31,11 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
+}
+
+// Home home
+func (p *Engine) Home() http.HandlerFunc {
+	return p.indexBooks
 }
 
 func init() {

@@ -54,6 +54,8 @@ func (p *Engine) showPost(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// -------------
+
 func (p *Engine) getPosts() []Post {
 	var items []Post
 	root := p.root()

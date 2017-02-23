@@ -1,6 +1,8 @@
 package web
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/urfave/cli"
@@ -10,6 +12,7 @@ import (
 // Engine engine
 type Engine interface {
 	Mount(*mux.Router)
+	Home() http.HandlerFunc
 	Do()
 	Shell() []cli.Command
 	Atom() ([]*atom.Entry, error)

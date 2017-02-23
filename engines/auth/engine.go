@@ -1,10 +1,14 @@
 package auth
 
 import (
+	"net/http"
+	"reflect"
+
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/web"
+	"github.com/spf13/viper"
 	"github.com/unrolled/render"
 	"golang.org/x/tools/blog/atom"
 )
@@ -33,6 +37,13 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
 }
 
+// Home home
+func (p *Engine) Home() http.HandlerFunc {
+	return p.indexNotices
+}
+
 func init() {
-	web.Register(&Engine{})
+	en := Engine{}
+	web.Register(&en)
+	viper.SetDefault("server.home", reflect.ValueOf(&en).Elem().Type().PkgPath())
 }

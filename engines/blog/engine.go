@@ -1,6 +1,8 @@
 package blog
 
 import (
+	"net/http"
+
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
@@ -40,6 +42,10 @@ func (p *Engine) Shell() []cli.Command {
 	return []cli.Command{}
 }
 
+// Home home
+func (p *Engine) Home() http.HandlerFunc {
+	return p.indexPosts
+}
 func init() {
 	web.Register(&Engine{})
 }
