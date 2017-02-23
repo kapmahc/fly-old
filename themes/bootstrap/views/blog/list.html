@@ -1,0 +1,7 @@
+<h4>{{t .l "blog.list.title"}}</h4>
+<hr/>
+<ul>
+  {{range .posts}}
+    <li><a href="/blog/{{.Href}}">{{.Title}}</a></li>
+  {{end}}
+</ul>

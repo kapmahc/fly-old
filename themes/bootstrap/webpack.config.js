@@ -9,7 +9,13 @@ const dist = 'assets'
 module.exports = {
   entry: {
     'main': path.join(__dirname, 'src', 'main.js'),
-    'vendor': ['jquery', 'tether', 'bootstrap', 'marked'],
+    'vendor': [
+      'jquery',
+      'tether',
+      'bootstrap',
+      'marked',
+      'highlight.js',
+    ],
   },
   output: {
     filename: '[name].[chunkhash].js',

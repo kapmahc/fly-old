@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"net/http"
-
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
@@ -33,11 +31,6 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
-}
-
-// Home home
-func (p *Engine) Home(http.ResponseWriter, *http.Request) {
-
 }
 
 func init() {

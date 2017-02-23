@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import marked from 'marked'
+import hljs from 'highlight.js'
 
 require("./main.css");
 
@@ -51,6 +52,9 @@ $(function() {
         }.bind(this)
     })
   });
-  // ---------------------  
+  // ---------------------
+  $('pre code').each(function(i, block) {
+    hljs.highlightBlock(block);
+  });
   // ---------------------
 });
