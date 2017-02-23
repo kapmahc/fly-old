@@ -1,13 +1,17 @@
 package auth
 
-import "net/http"
+import (
+	"net/http"
 
-func (p *Engine) signUp(http.ResponseWriter, *http.Request) {
+	"github.com/kapmahc/fly/web"
+)
 
+func (p *Engine) signUp(w http.ResponseWriter, r *http.Request) {
+	p.Render.HTML(w, http.StatusOK, "auth/users/sign-up", web.H{})
 }
 
-func (p *Engine) signIn(http.ResponseWriter, *http.Request) {
-
+func (p *Engine) signIn(w http.ResponseWriter, r *http.Request) {
+	p.Render.HTML(w, http.StatusOK, "auth/users/sign-in", web.H{})
 }
 
 func (p *Engine) confirm(http.ResponseWriter, *http.Request) {

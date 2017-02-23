@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="{{asset "favicon.png"}}">
+    <link rel="stylesheet" href="{{asset "main.css"}}">
+    <title>My Lay</title>
+    <script src="{{asset "manifest.js"}}"></script>
+    <script src="{{asset "vendor.js"}}"></script>
+    <script src="{{asset "main.js"}}"></script>
+    {{ partial "css" }}
+  </head>
+  <body>    
+    {{ partial "header" }}
+    {{ yield }}
+    {{ partial "footer" }}
+  </body>
+</html>

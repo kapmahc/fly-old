@@ -18,6 +18,7 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/kapmahc/fly/web"
+	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/spf13/viper"
 	"github.com/steinbacher/goose"
 	"github.com/urfave/cli"
@@ -644,6 +645,9 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	})
 
 	ng := negroni.New()
+	ng.Use(negroni.NewRecovery())
+	ng.Use(negronilogrus.NewMiddleware())
+	ng.Use(negroni.NewStatic(http.Dir(path.Join("themes", viper.GetString("server.theme"), "assets"))))
 	ng.UseHandler(csrf.Protect(
 		[]byte(viper.GetString("secrets.csrf")),
 		csrf.Secure(web.IsProduction()),

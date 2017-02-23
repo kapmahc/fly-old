@@ -52,7 +52,7 @@ func openRender(theme string, i18n *web.I18n) (*render.Render, error) {
 			return reflect.TypeOf(v).String()
 		},
 		"asset": func(k string) string {
-			return fmt.Sprintf("/assets/%s", assets[k])
+			return fmt.Sprintf("/%s", assets[k])
 		},
 		"fmt": fmt.Sprintf,
 		"eq": func(arg1, arg2 interface{}) bool {
@@ -68,9 +68,10 @@ func openRender(theme string, i18n *web.I18n) (*render.Render, error) {
 
 	// ---------------
 	return render.New(render.Options{
-		Directory: path.Join("themes", theme, "views"),
-		Layout:    "application",
-		Funcs:     []template.FuncMap{funcs},
+		Directory:  path.Join("themes", theme, "views"),
+		Layout:     "application",
+		Extensions: []string{".html"},
+		Funcs:      []template.FuncMap{funcs},
 	}), nil
 
 }
