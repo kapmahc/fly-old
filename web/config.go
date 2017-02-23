@@ -8,8 +8,12 @@ import (
 
 // Home home url
 func Home() string {
+	ssl := viper.GetBool("server.ssl")
 	if IsProduction() {
-		return fmt.Sprintf("https://%s", viper.GetString("server.name"))
+		if ssl {
+			return fmt.Sprintf("https://%s", viper.GetString("server.name"))
+		}
+		return fmt.Sprintf("http://%s", viper.GetString("server.name"))
 	}
 	return fmt.Sprintf("http://localhost:%d", viper.GetInt("server.port"))
 }

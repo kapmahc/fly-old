@@ -17,6 +17,7 @@ import (
 	"github.com/fvbock/endless"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
+	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/fly/web"
 	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/spf13/viper"
@@ -38,6 +39,16 @@ func (p *Engine) Shell() []cli.Command {
 			Aliases: []string{"s"},
 			Usage:   "start the app server",
 			Action:  Action(p.runServer),
+		},
+		{
+			Name:  "seo",
+			Usage: "generate sitemap.xml.gz/rss.atom/robots.txt ...etc",
+			Action: Action(func(*cli.Context, *inject.Graph) error {
+				if err := p.writeSitemap(); err != nil {
+					return err
+				}
+				return nil
+			}),
 		},
 		{
 			Name:    "worker",
@@ -229,10 +240,7 @@ func (p *Engine) Shell() []cli.Command {
 }
 
 func (p *Engine) printRoutes(*cli.Context, *inject.Graph) error {
-	web.Walk(func(en web.Engine) error {
-		en.Mount()
-		return nil
-	})
+
 	tpl := "%-24s %s\n"
 	fmt.Printf(tpl, "NAME", "PATH")
 	p.Router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
@@ -635,11 +643,6 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		port,
 	)
 
-	web.Walk(func(en web.Engine) error {
-		en.Mount()
-		return nil
-	})
-
 	ng := negroni.New()
 	ng.Use(negroni.NewRecovery())
 	ng.Use(negronilogrus.NewMiddleware())
@@ -672,4 +675,32 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	}
 
 	return http.ListenAndServe(addr, ng)
+}
+
+func (p *Engine) writeSitemap() error {
+	sm := stm.NewSitemap()
+	sm.SetDefaultHost(web.Home())
+	sm.SetPublicPath(path.Join("themes", viper.GetString("server.theme"), "assets"))
+	sm.SetCompress(true)
+	sm.SetSitemapsPath("/")
+	sm.Create()
+
+	if err := web.Walk(func(en web.Engine) error {
+		urls, err := en.Sitemap()
+		if err != nil {
+			return err
+		}
+		for _, u := range urls {
+			sm.Add(u)
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	if web.IsProduction() {
+		sm.Finalize().PingSearchEngines()
+	} else {
+		sm.Finalize()
+	}
+	return nil
 }

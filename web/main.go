@@ -74,6 +74,7 @@ func init() {
 		"theme": "bootstrap",
 		"root":  "site",
 		"home":  "auth.engine",
+		"ssl":   false,
 	})
 
 	viper.SetDefault("secrets", map[string]interface{}{

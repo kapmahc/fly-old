@@ -1,6 +1,8 @@
 package reading
 
 import (
+	"log"
+
 	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
@@ -31,7 +33,21 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
-	return []stm.URL{}, nil
+	var books []Book
+	if err := p.Db.Select([]string{"id"}).Find(&books).Error; err != nil {
+		return nil, err
+	}
+	urls := []stm.URL{
+		{"loc": p.UF.Path("reading.books.index")},
+	}
+	for _, b := range books {
+		log.Println(p.UF.Path("reading.book.show", "id", b.ID))
+		urls = append(
+			urls,
+			stm.URL{"loc": p.UF.Path("reading.book.show", "id", b.ID)},
+		)
+	}
+	return urls, nil
 }
 
 func init() {

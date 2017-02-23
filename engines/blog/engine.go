@@ -22,6 +22,7 @@ type Engine struct {
 	Session  *auth.Session     `inject:""`
 	Render   *render.Render    `inject:""`
 	Router   *mux.Router       `inject:""`
+	UF       *auth.UrlFor      `inject:""`
 }
 
 // Do background jobs
@@ -34,7 +35,17 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
-	return []stm.URL{}, nil
+	posts := p.getPosts()
+	urls := []stm.URL{
+		{"loc": p.UF.Path("blog.engine.home")},
+	}
+	for _, i := range posts {
+		urls = append(
+			urls,
+			stm.URL{"loc": p.UF.Path("blog.show", "name", i.Href)},
+		)
+	}
+	return urls, nil
 }
 
 // Shell shell commands

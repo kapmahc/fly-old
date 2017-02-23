@@ -88,6 +88,10 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		if err := inj.Populate(); err != nil {
 			return err
 		}
+		web.Walk(func(en web.Engine) error {
+			en.Mount()
+			return nil
+		})
 		return fn(ctx, &inj)
 	})
 }
