@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
@@ -30,7 +31,8 @@ func Main() error {
 		cmd := en.Shell()
 		app.Commands = append(app.Commands, cmd...)
 	}
-
+	sort.Sort(cli.FlagsByName(app.Flags))
+	sort.Sort(cli.CommandsByName(app.Commands))
 	return app.Run(os.Args)
 }
 

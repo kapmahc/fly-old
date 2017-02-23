@@ -56,6 +56,15 @@ func (p *Engine) Shell() []cli.Command {
 						return err
 					}
 				}
+				if err := p.writeRobotsTxt(root); err != nil {
+					return err
+				}
+				if err := p.writeGoogleVerify(root); err != nil {
+					return err
+				}
+				if err := p.writeBaiduVerify(root); err != nil {
+					return err
+				}
 				return nil
 			}),
 		},
@@ -752,4 +761,60 @@ func (p *Engine) writeRssAtom(root string, lang string) error {
 	enc := xml.NewEncoder(fd)
 	return enc.Encode(feed)
 
+}
+
+func (p *Engine) writeRobotsTxt(root string) error {
+	tpl := `
+User-agent: *
+Disallow:
+Crawl-delay: 10
+Sitemap: {{.Home}}/sitemap.xml.gz
+`
+	t, err := template.New("").Parse(tpl)
+	if err != nil {
+		return err
+	}
+	fn := path.Join(root, "robots.txt")
+	log.Infof("generate file %s", fn)
+	fd, err := os.OpenFile(fn, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+	return t.Execute(fd, struct {
+		Home string
+	}{Home: web.Home()})
+}
+
+func (p *Engine) writeGoogleVerify(root string) error {
+	var code string
+	if err := p.Settings.Get("site.google.verify", &code); err != nil {
+		return err
+	}
+	fn := path.Join(root, fmt.Sprintf("google%s.html", code))
+	log.Infof("generate file %s", fn)
+	fd, err := os.OpenFile(fn, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+	_, err = fmt.Fprintf(fd, "google-site-verification: google%s.html", code)
+	return err
+
+}
+
+func (p *Engine) writeBaiduVerify(root string) error {
+	var code string
+	if err := p.Settings.Get("site.baidu.verify", &code); err != nil {
+		return err
+	}
+	fn := path.Join(root, fmt.Sprintf("baidu_verify_%s.html", code))
+	log.Infof("generate file %s", fn)
+	fd, err := os.OpenFile(fn, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+	_, err = fd.WriteString(code)
+	return err
 }
