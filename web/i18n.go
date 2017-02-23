@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -37,8 +38,42 @@ func (Locale) TableName() string {
 
 // I18n i18n helper
 type I18n struct {
-	Db    *gorm.DB `inject:""`
-	Cache *Cache   `inject:""`
+	Db      *gorm.DB         `inject:""`
+	Cache   *Cache           `inject:""`
+	Matcher language.Matcher `inject:""`
+}
+
+// Parse parse locale from request
+func (p *I18n) Parse(w http.ResponseWriter, r *http.Request) string {
+
+	// 1. Check URL arguments.
+	lang := r.URL.Query().Get(LOCALE)
+
+	// 2. Get language information from cookies.
+	if len(lang) == 0 {
+		if ck, er := r.Cookie(LOCALE); er == nil {
+			lang = ck.Value
+		}
+	}
+	// 3. Get language information from 'Accept-Language'.
+	if len(lang) == 0 {
+		al := r.Header.Get("Accept-Language")
+		if len(al) > 4 {
+			lang = al[:5] // Only compare first 5 letters.
+		}
+	}
+
+	tag, _, _ := p.Matcher.Match(language.Make(lang))
+	ts := tag.String()
+	if ts != lang {
+		http.SetCookie(w, &http.Cookie{
+			Name:    LOCALE,
+			Value:   ts,
+			Expires: time.Now().AddDate(10, 0, 0),
+			Path:    "/",
+		})
+	}
+	return ts
 }
 
 // F format message

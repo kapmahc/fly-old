@@ -3,6 +3,8 @@ package auth
 import (
 	"crypto/aes"
 
+	"golang.org/x/text/language"
+
 	"github.com/SermoDigital/jose/crypto"
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
@@ -23,6 +25,15 @@ func (p *injectLogger) Debugf(format string, v ...interface{}) {
 func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 	return web.Action(func(ctx *cli.Context) error {
 		inj := inject.Graph{Logger: &injectLogger{}}
+		// -------
+		var tags []language.Tag
+		for _, l := range viper.GetStringSlice("languages") {
+			if lng, err := language.Parse(l); err == nil {
+				tags = append(tags, lng)
+			} else {
+				return err
+			}
+		}
 		// -------------------
 		db, err := web.OpenDatabase()
 		if err != nil {
@@ -53,6 +64,7 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			&inject.Object{Value: rep},
 			&inject.Object{Value: rdr},
 			&inject.Object{Value: &i18n},
+			&inject.Object{Value: language.NewMatcher(tags)},
 			&inject.Object{Value: cip, Name: "aes.cip"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.jwt")), Name: "jwt.key"},
