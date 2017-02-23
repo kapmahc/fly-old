@@ -11,9 +11,11 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/kapmahc/fly/web"
+	"github.com/unrolled/render"
 )
 
-func (p *Engine) loadTheme(theme string) (*template.Template, error) {
+func openRender(theme string, i18n *web.I18n) (*render.Render, error) {
 	assets := make(map[string]string)
 	if err := filepath.Walk(
 		path.Join("themes", theme, "assets"),
@@ -45,23 +47,12 @@ func (p *Engine) loadTheme(theme string) (*template.Template, error) {
 	// ----------------
 
 	funcs := template.FuncMap{
-		"t": p.I18n.T,
+		"t": i18n.T,
 		"tn": func(v interface{}) string {
 			return reflect.TypeOf(v).String()
 		},
 		"asset": func(k string) string {
 			return fmt.Sprintf("/assets/%s", assets[k])
-		},
-		"links": func(loc string) []Link {
-			var items []Link
-			if err := p.Db.
-				Select([]string{"label", "href"}).
-				Where("loc = ?", loc).
-				Order("sort_order ASC").
-				Find(&items).Error; err != nil {
-				log.Error(err)
-			}
-			return items
 		},
 		"fmt": fmt.Sprintf,
 		"eq": func(arg1, arg2 interface{}) bool {
@@ -76,6 +67,10 @@ func (p *Engine) loadTheme(theme string) (*template.Template, error) {
 	}
 
 	// ---------------
+	return render.New(render.Options{
+		Directory: path.Join("themes", theme, "views"),
+		Layout:    "application",
+		Funcs:     []template.FuncMap{funcs},
+	}), nil
 
-	return template.New("").Funcs(funcs).ParseGlob(path.Join("themes", theme, "views", "*.html"))
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/SermoDigital/jose/crypto"
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
+	"github.com/gorilla/sessions"
 	"github.com/kapmahc/fly/web"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
@@ -39,17 +40,25 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		if err != nil {
 			return err
 		}
+		// -----------
+		var i18n web.I18n
+		rdr, err := openRender(viper.GetString("server.theme"), &i18n)
+		if err != nil {
+			return err
+		}
 
 		if err := inj.Provide(
 			&inject.Object{Value: db},
 			&inject.Object{Value: bws},
 			&inject.Object{Value: rep},
-			&inject.Object{Value: cip},
+			&inject.Object{Value: rdr},
+			&inject.Object{Value: &i18n},
 			&inject.Object{Value: cip, Name: "aes.cip"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.jwt")), Name: "jwt.key"},
 			&inject.Object{Value: viper.GetString("app.name"), Name: "namespace"},
 			&inject.Object{Value: crypto.SigningMethodHS512, Name: "jwt.method"},
+			&inject.Object{Value: sessions.NewCookieStore([]byte("secrets.session"))},
 		); err != nil {
 			return err
 		}

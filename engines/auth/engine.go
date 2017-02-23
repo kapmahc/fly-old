@@ -17,6 +17,7 @@ type Engine struct {
 	I18n     *web.I18n         `inject:""`
 	Settings *web.Settings     `inject:""`
 	Db       *gorm.DB          `inject:""`
+	Session  *Session          `inject:""`
 }
 
 // Do background jobs
