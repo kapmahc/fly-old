@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	machinery "github.com/RichardKnop/machinery/v1"
+	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
@@ -22,6 +23,7 @@ type Engine struct {
 	Db       *gorm.DB          `inject:""`
 	Session  *auth.Session     `inject:""`
 	Render   *render.Render    `inject:""`
+	Router   *mux.Router       `inject:""`
 }
 
 // Do background jobs

@@ -45,7 +45,7 @@ func (p *Engine) showBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data["book"] = bk
-	href := fmt.Sprintf("/reading/books/%s", id)
+	href := p.UF.Path("reading.book.show", "id", id)
 	data["href"] = href
 
 	var ncx bytes.Buffer
@@ -107,7 +107,7 @@ func (p *Engine) getBooks(r *http.Request) (*web.Pagination, error) {
 		return nil, err
 	}
 	pag := web.NewPagination(
-		"/reading/books",
+		p.UF.Path("reading.books.index"),
 		int64(page), int64(size), total,
 	)
 

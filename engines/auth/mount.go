@@ -2,15 +2,13 @@ package auth
 
 import (
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
 // Mount web mount points
-func (p *Engine) Mount(rt *mux.Router) {
-	rt.HandleFunc("/", p.home).Methods(http.MethodGet).Name("home")
+func (p *Engine) Mount() {
+	p.Router.HandleFunc("/", p.home).Methods(http.MethodGet).Name("home")
 
-	ug := rt.PathPrefix("/users").Subrouter()
+	ug := p.Router.PathPrefix("/users").Subrouter()
 
 	ug.HandleFunc("/sign-in", p.signIn).Methods(http.MethodGet, http.MethodPost).Name("users.sign-in")
 	ug.HandleFunc("/sign-up", p.signUp).Methods(http.MethodGet, http.MethodPost).Name("users.sign-up")

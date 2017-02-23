@@ -3,7 +3,6 @@ package web
 import (
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
@@ -11,7 +10,7 @@ import (
 
 // Engine engine
 type Engine interface {
-	Mount(*mux.Router)
+	Mount()
 	Home() http.HandlerFunc
 	Do()
 	Shell() []cli.Command

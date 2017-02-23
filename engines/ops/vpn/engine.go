@@ -23,6 +23,7 @@ type Engine struct {
 	Db       *gorm.DB          `inject:""`
 	Session  *auth.Session     `inject:""`
 	Render   *render.Render    `inject:""`
+	Router   *mux.Router       `inject:""`
 }
 
 // Do background jobs
@@ -44,7 +45,7 @@ func (p *Engine) Home() http.HandlerFunc {
 }
 
 // Mount web mount points
-func (p *Engine) Mount(rt *mux.Router) {
+func (p *Engine) Mount() {
 
 }
 

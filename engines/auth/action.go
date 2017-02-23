@@ -8,6 +8,7 @@ import (
 	"github.com/SermoDigital/jose/crypto"
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/kapmahc/fly/web"
 	"github.com/spf13/viper"
@@ -53,7 +54,8 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		}
 		// -----------
 		var i18n web.I18n
-		rdr, err := openRender(viper.GetString("server.theme"), &i18n)
+		var uf UrlFor
+		rdr, err := openRender(viper.GetString("server.theme"), &i18n, &uf)
 		if err != nil {
 			return err
 		}
@@ -64,6 +66,8 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			&inject.Object{Value: rep},
 			&inject.Object{Value: rdr},
 			&inject.Object{Value: &i18n},
+			&inject.Object{Value: &uf},
+			&inject.Object{Value: mux.NewRouter()},
 			&inject.Object{Value: language.NewMatcher(tags)},
 			&inject.Object{Value: cip, Name: "aes.cip"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},

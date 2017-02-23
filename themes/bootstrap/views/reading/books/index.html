@@ -11,14 +11,14 @@
         {{end}}
         <div class="card-block">
           <h4 class="card-title">
-            <a target="_blank" href="/reading/books/{{.ID}}">{{.Title}}</a>
+            <a target="_blank" href="{{uf "reading.book.show" "id" .ID}}">{{.Title}}</a>
           </h4>
           <p class="card-text">
             {{.Subject}}
             <br/>
             {{.Description}}
           </p>
-          <a target="_blank" href="/reading/books/{{.ID}}" class="btn btn-secondary">{{t $l "buttons.view"}}</a>
+          <a target="_blank" href="{{uf "reading.book.show" "id" .ID}}" class="btn btn-secondary">{{t $l "buttons.view"}}</a>
         </div>
       </div>
     </div>

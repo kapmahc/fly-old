@@ -209,7 +209,7 @@ func (p *Engine) Shell() []cli.Command {
 			Name:    "routes",
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
-			Action:  p.printRoutes,
+			Action:  Action(p.printRoutes),
 		},
 		{
 			Name:  "i18n",
@@ -228,16 +228,14 @@ func (p *Engine) Shell() []cli.Command {
 	}
 }
 
-func (p *Engine) printRoutes(*cli.Context) error {
-
-	rt := mux.NewRouter()
+func (p *Engine) printRoutes(*cli.Context, *inject.Graph) error {
 	web.Walk(func(en web.Engine) error {
-		en.Mount(rt)
+		en.Mount()
 		return nil
 	})
 	tpl := "%-24s %s\n"
 	fmt.Printf(tpl, "NAME", "PATH")
-	rt.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+	p.Router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		pat, err := route.GetPathTemplate()
 		if err != nil {
 			return err
@@ -637,10 +635,8 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		port,
 	)
 
-	rt := mux.NewRouter()
-
 	web.Walk(func(en web.Engine) error {
-		en.Mount(rt)
+		en.Mount()
 		return nil
 	})
 
@@ -656,7 +652,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		csrf.CookieName("_csrf_token_"),
 		csrf.FieldName("authenticity_token"),
 		csrf.Path("/"),
-	)(rt))
+	)(p.Router))
 
 	addr := fmt.Sprintf(":%d", port)
 	if web.IsProduction() {

@@ -11,11 +11,34 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/gorilla/mux"
 	"github.com/kapmahc/fly/web"
 	"github.com/unrolled/render"
 )
 
-func openRender(theme string, i18n *web.I18n) (*render.Render, error) {
+// UrlFor url helper
+type UrlFor struct {
+	Router *mux.Router `inject:""`
+}
+
+// Path path build
+func (p *UrlFor) Path(name string, args ...interface{}) string {
+	var pairs []string
+	for _, arg := range args {
+		pairs = append(pairs, fmt.Sprintf("%v", arg))
+	}
+	rt := p.Router.Get(name)
+	if rt == nil {
+		return "not-found"
+	}
+	url, err := rt.URL(pairs...)
+	if err != nil {
+		return err.Error()
+	}
+	return url.String()
+}
+
+func openRender(theme string, i18n *web.I18n, uf *UrlFor) (*render.Render, error) {
 	assets := make(map[string]string)
 	if err := filepath.Walk(
 		path.Join("themes", theme, "assets"),
@@ -64,6 +87,7 @@ func openRender(theme string, i18n *web.I18n) (*render.Render, error) {
 		"dtf": func(t time.Time) string {
 			return t.Format("Mon Jan _2 15:04:05 2006")
 		},
+		"uf": uf.Path,
 	}
 
 	// ---------------
