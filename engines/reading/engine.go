@@ -1,8 +1,6 @@
 package reading
 
 import (
-	"log"
-
 	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
@@ -41,7 +39,6 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		{"loc": p.UF.Path("reading.books.index")},
 	}
 	for _, b := range books {
-		log.Println(p.UF.Path("reading.book.show", "id", b.ID))
 		urls = append(
 			urls,
 			stm.URL{"loc": p.UF.Path("reading.book.show", "id", b.ID)},

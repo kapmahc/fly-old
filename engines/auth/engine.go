@@ -20,6 +20,7 @@ type Engine struct {
 	Session  *Session          `inject:""`
 	Render   *render.Render    `inject:""`
 	Router   *mux.Router       `inject:""`
+	UF       *UrlFor           `inject:""`
 }
 
 // Do background jobs

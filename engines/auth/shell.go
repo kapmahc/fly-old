@@ -2,6 +2,7 @@ package auth
 
 import (
 	"crypto/x509/pkix"
+	"encoding/xml"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -15,6 +16,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
 	"github.com/fvbock/endless"
+	"github.com/google/uuid"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
@@ -25,6 +27,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/urfave/negroni"
 	"golang.org/x/text/language"
+	"golang.org/x/tools/blog/atom"
 )
 
 const (
@@ -44,8 +47,14 @@ func (p *Engine) Shell() []cli.Command {
 			Name:  "seo",
 			Usage: "generate sitemap.xml.gz/rss.atom/robots.txt ...etc",
 			Action: Action(func(*cli.Context, *inject.Graph) error {
-				if err := p.writeSitemap(); err != nil {
+				root := path.Join("themes", viper.GetString("server.theme"), "assets")
+				if err := p.writeSitemap(root); err != nil {
 					return err
+				}
+				for _, lang := range viper.GetStringSlice("languages") {
+					if err := p.writeRssAtom(root, lang); err != nil {
+						return err
+					}
 				}
 				return nil
 			}),
@@ -677,10 +686,10 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	return http.ListenAndServe(addr, ng)
 }
 
-func (p *Engine) writeSitemap() error {
+func (p *Engine) writeSitemap(root string) error {
 	sm := stm.NewSitemap()
 	sm.SetDefaultHost(web.Home())
-	sm.SetPublicPath(path.Join("themes", viper.GetString("server.theme"), "assets"))
+	sm.SetPublicPath(root)
 	sm.SetCompress(true)
 	sm.SetSitemapsPath("/")
 	sm.Create()
@@ -703,4 +712,44 @@ func (p *Engine) writeSitemap() error {
 		sm.Finalize()
 	}
 	return nil
+}
+
+func (p *Engine) writeRssAtom(root string, lang string) error {
+
+	feed := atom.Feed{
+		Title:   p.I18n.T(lang, "site.title"),
+		ID:      uuid.New().String(),
+		Updated: atom.Time(time.Now()),
+		Author: &atom.Person{
+			Name:  p.I18n.T(lang, "site.author.name"),
+			Email: p.I18n.T(lang, "site.author.email"),
+		},
+		Entry: make([]*atom.Entry, 0),
+	}
+	home := web.Home()
+	if err := web.Walk(func(en web.Engine) error {
+		items, err := en.Atom()
+		if err != nil {
+			return err
+		}
+		for _, it := range items {
+			for i := range it.Link {
+				it.Link[i].Href = home + it.Link[i].Href
+			}
+			feed.Entry = append(feed.Entry, it)
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	fn := path.Join(root, fmt.Sprintf("rss-%s.atom", lang))
+	log.Infof("generate file %s", fn)
+	fd, err := os.OpenFile(fn, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+	enc := xml.NewEncoder(fd)
+	return enc.Encode(feed)
+
 }
