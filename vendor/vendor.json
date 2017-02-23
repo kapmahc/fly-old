@@ -145,6 +145,12 @@
 			"path": "github.com/urfave/cli",
 			"revision": "2526b57c56f30b50466c96c4133b1a4ad0f0191f",
 			"revisionTime": "2017-02-15T05:17:05Z"
+		},
+		{
+			"checksumSHA1": "ezZyPBDiKHM5y+YmlIhrWIzgbfw=",
+			"path": "github.com/urfave/negroni",
+			"revision": "3c4d1f44e5d9d1eb5acf3c661a17aaa837d1a067",
+			"revisionTime": "2017-02-18T00:29:55Z"
 		}
 	],
 	"rootPath": "github.com/kapmahc/fly"

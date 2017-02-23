@@ -8,8 +8,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"reflect"
-	"runtime"
 	"syscall"
 	"time"
 
@@ -23,6 +21,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/steinbacher/goose"
 	"github.com/urfave/cli"
+	"github.com/urfave/negroni"
 	"golang.org/x/text/language"
 )
 
@@ -235,14 +234,22 @@ func (p *Engine) printRoutes(*cli.Context) error {
 		en.Mount(rt)
 		return nil
 	})
-	tpl := "%-8s %-16s %s\n"
-	fmt.Printf(tpl, "METHOD", "NAME", "PATH")
+	tpl := "%-24s %s\n"
+	fmt.Printf(tpl, "NAME", "PATH")
 	rt.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		pat, err := route.GetPathTemplate()
+		if err != nil {
+			return err
+		}
+		hnd := route.GetHandler()
+		if hnd == nil {
+			return nil
+		}
 		fmt.Printf(
 			tpl,
-			"",
 			route.GetName(),
-			runtime.FuncForPC(reflect.ValueOf(route.GetHandler()).Pointer()).Name(),
+			pat,
+			// runtime.FuncForPC(reflect.ValueOf(route.GetHandler()).Pointer()).Name(),
 		)
 		return nil
 	})
@@ -636,17 +643,18 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		return nil
 	})
 
-	addr := fmt.Sprintf(":%d", port)
-	hnd := csrf.Protect(
+	ng := negroni.New()
+	ng.UseHandler(csrf.Protect(
 		[]byte(viper.GetString("secrets.csrf")),
 		csrf.Secure(web.IsProduction()),
 		csrf.CookieName("_csrf_token_"),
 		csrf.FieldName("authenticity_token"),
 		csrf.Path("/"),
-	)(rt)
+	)(rt))
 
+	addr := fmt.Sprintf(":%d", port)
 	if web.IsProduction() {
-		srv := endless.NewServer(addr, hnd)
+		srv := endless.NewServer(addr, ng)
 		srv.BeforeBegin = func(add string) {
 			fd, err := os.OpenFile(path.Join("tmp", "pid"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 			if err != nil {
@@ -660,5 +668,5 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		}
 		return srv.ListenAndServe()
 	}
-	return http.ListenAndServe(addr, hnd)
+	return http.ListenAndServe(addr, ng)
 }
