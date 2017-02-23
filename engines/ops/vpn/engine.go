@@ -48,5 +48,5 @@ func (p *Engine) Shell() []cli.Command {
 }
 
 func init() {
-	web.Register(&Engine{})
+	// web.Register(&Engine{})
 }
