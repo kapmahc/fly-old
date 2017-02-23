@@ -2,6 +2,7 @@ package web
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"html/template"
@@ -14,6 +15,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/go-ini/ini"
 	"github.com/jinzhu/gorm"
+	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 )
 
@@ -43,8 +45,8 @@ type I18n struct {
 	Matcher language.Matcher `inject:""`
 }
 
-// Parse parse locale from request
-func (p *I18n) Parse(w http.ResponseWriter, r *http.Request) string {
+// Middleware localeiddleware
+func (p *I18n) Middleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 	// 1. Check URL arguments.
 	lang := r.URL.Query().Get(LOCALE)
@@ -73,7 +75,13 @@ func (p *I18n) Parse(w http.ResponseWriter, r *http.Request) string {
 			Path:    "/",
 		})
 	}
-	return ts
+
+	ctx := context.WithValue(r.Context(), LOCALE, tag.String())
+	ctx = context.WithValue(ctx, DATA, H{
+		"l":         tag.String(),
+		"languages": viper.GetStringSlice("languages"),
+	})
+	next(w, r.WithContext(ctx))
 }
 
 // F format message

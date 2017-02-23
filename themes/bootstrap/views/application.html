@@ -11,9 +11,13 @@
     <script src="{{asset "main.js"}}"></script>
     {{ partial "css" }}
   </head>
-  <body>    
-    {{ partial "header" }}
-    {{ yield }}
-    {{ partial "footer" }}
+  <body>
+    {{template "shared/header" .}}
+    <div class="container">
+      <div class="row">
+        {{ yield }}
+      </div>
+    </div>
+    {{template "shared/footer" .}}    
   </body>
 </html>
