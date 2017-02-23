@@ -674,5 +674,6 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		}
 		return srv.ListenAndServe()
 	}
+
 	return http.ListenAndServe(addr, ng)
 }

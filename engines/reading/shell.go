@@ -45,8 +45,8 @@ func (p *Engine) Shell() []cli.Command {
 
 func (p *Engine) scanBook(*cli.Context, *inject.Graph) error {
 	root := p.root()
-	count := 0
-	total := 0
+	var count int64
+	var total int64
 	if err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err

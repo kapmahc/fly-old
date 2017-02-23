@@ -14,10 +14,8 @@
   <body>
     {{template "shared/header" .}}
     <div class="container">
-      <div class="row">
-        {{ yield }}
-      </div>
+      {{ yield }}      
     </div>
-    {{template "shared/footer" .}}    
+    {{template "shared/footer" .}}
   </body>
 </html>

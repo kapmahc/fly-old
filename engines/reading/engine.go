@@ -3,7 +3,6 @@ package reading
 import (
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
@@ -36,11 +35,6 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 
 // Home home
 func (p *Engine) Home(http.ResponseWriter, *http.Request) {
-
-}
-
-// Mount web mount points
-func (p *Engine) Mount(rt *mux.Router) {
 
 }
 

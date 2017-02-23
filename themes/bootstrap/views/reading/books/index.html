@@ -1,0 +1,26 @@
+<h1>{{.title}}</h1>
+<hr/>
+{{template "shared/pagination" .books}}
+<div class="row">
+  {{$l := .l}}
+  {{range .books.Items}}
+    <div class="col-md-4">
+      <div class="card">
+        {{if .Cover}}
+          <img class="card-img-top" src="{{.Cover}}" >
+        {{end}}
+        <div class="card-block">
+          <h4 class="card-title">
+            <a target="_blank" href="/reading/books/{{.ID}}">{{.Title}}</a>
+          </h4>
+          <p class="card-text">
+            {{.Subject}}
+            <br/>
+            {{.Description}}
+          </p>
+          <a target="_blank" href="/reading/books/{{.ID}}" class="btn btn-secondary">{{t $l "buttons.view"}}</a>
+        </div>
+      </div>
+    </div>
+  {{end}}
+</div>
