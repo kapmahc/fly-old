@@ -1,8 +1,6 @@
 package vpn
 
 import (
-	"net/http"
-
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
@@ -37,11 +35,6 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
-}
-
-// Home home
-func (p *Engine) Home() http.HandlerFunc {
-	return nil
 }
 
 // Mount web mount points

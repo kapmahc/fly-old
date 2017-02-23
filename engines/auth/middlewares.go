@@ -4,7 +4,9 @@ import (
 	"context"
 	"net/http"
 	"reflect"
+	"strings"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/kapmahc/fly/web"
 )
 
@@ -13,9 +15,10 @@ func (p *Engine) layoutMiddleware(w http.ResponseWriter, r *http.Request, next h
 	ctx := context.WithValue(r.Context(), web.DATA, data)
 	var engines []string
 	web.Walk(func(en web.Engine) error {
-		engines = append(engines, reflect.ValueOf(en).Elem().Type().PkgPath())
+		engines = append(engines, strings.ToLower(reflect.ValueOf(en).Elem().Type().String()))
 		return nil
 	})
 	data["engines"] = engines
+	log.Debug(data)
 	next(w, r.WithContext(ctx))
 }

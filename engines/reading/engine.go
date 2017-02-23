@@ -1,8 +1,6 @@
 package reading
 
 import (
-	"net/http"
-
 	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
@@ -34,11 +32,6 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
-}
-
-// Home home
-func (p *Engine) Home() http.HandlerFunc {
-	return p.indexBooks
 }
 
 func init() {

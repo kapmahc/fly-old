@@ -30,7 +30,7 @@ func (p *Engine) indexPosts(w http.ResponseWriter, r *http.Request) {
 		data["items"] = posts[:]
 	}
 	data["posts"] = posts
-	data["title"] = p.I18n.T(lang, "posts.home.title")
+	data["title"] = p.I18n.T(lang, "blog.list.title")
 	p.Render.HTML(w, http.StatusOK, "blog/index", data)
 }
 

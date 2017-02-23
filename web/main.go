@@ -73,6 +73,7 @@ func init() {
 		"name":  "www.change-me.com",
 		"theme": "bootstrap",
 		"root":  "site",
+		"home":  "auth.engine",
 	})
 
 	viper.SetDefault("secrets", map[string]interface{}{

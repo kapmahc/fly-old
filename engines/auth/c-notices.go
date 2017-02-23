@@ -7,5 +7,5 @@ import (
 )
 
 func (p *Engine) indexNotices(w http.ResponseWriter, r *http.Request) {
-	p.Render.HTML(w, http.StatusOK, "auth/users/sign-up", r.Context().Value(web.DATA))
+	p.Render.HTML(w, http.StatusOK, "auth/notices/index", r.Context().Value(web.DATA))
 }
