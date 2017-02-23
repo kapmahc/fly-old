@@ -45,6 +45,12 @@
 			"revisionTime": "2016-10-06T17:47:21Z"
 		},
 		{
+			"checksumSHA1": "q9bsaNA05ney3eon3nKAE+eLwO4=",
+			"path": "github.com/fvbock/endless",
+			"revision": "447134032cb6a86814f570257390a379982dfc61",
+			"revisionTime": "2017-01-09T17:00:31Z"
+		},
+		{
 			"checksumSHA1": "81OSg/NapmTaRpSS+oYsPVE0b1Y=",
 			"path": "github.com/garyburd/redigo/redis",
 			"revision": "0d253a66e6e1349f4581d6d2b300ee434ee2da9f",
