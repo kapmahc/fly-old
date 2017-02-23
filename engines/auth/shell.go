@@ -304,15 +304,18 @@ func (p *Engine) generateConfig(c *cli.Context) error {
 
 func (p *Engine) generateNginxConf(*cli.Context) error {
 	const tpl = `
+	{{if .Ssl}}
 		server {
 		  listen 80;
 		  server_name {{.Name}};
 		  rewrite ^(.*) https://$host$1 permanent;
 		}
+	{{end}}
 		upstream {{.Name}}_prod {
 		  server localhost:{{.Port}} fail_timeout=0;
 		}
 		server {
+		{{if .Ssl}}
 		  listen 443;
 		  ssl  on;
 		  ssl_certificate  /etc/ssl/certs/{{.Name}}.crt;
@@ -321,6 +324,9 @@ func (p *Engine) generateNginxConf(*cli.Context) error {
 		  ssl_protocols  SSLv2 SSLv3 TLSv1;
 		  ssl_ciphers  RC4:HIGH:!aNULL:!MD5;
 		  ssl_prefer_server_ciphers  on;
+		{{else}}
+			listen 80;
+		{{end}}
 		  client_max_body_size 4G;
 		  keepalive_timeout 10;
 		  proxy_buffers 16 64k;
@@ -348,7 +354,11 @@ func (p *Engine) generateNginxConf(*cli.Context) error {
 		    add_header Cache-Control "public";
 		  }
 		  location / {
+			{{if .Ssl}}			
 		    proxy_set_header X-Forwarded-Proto https;
+			{{else}}
+			  proxy_set_header X-Forwarded-Proto http;
+			{{end}}
 		    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 		    proxy_set_header Host $http_host;
 		    proxy_set_header X-Real-IP $remote_addr;
@@ -384,11 +394,13 @@ func (p *Engine) generateNginxConf(*cli.Context) error {
 		Port    int
 		Root    string
 		Version string
+		Ssl     bool
 	}{
 		Name:    name,
-		Port:    viper.GetInt("http.port"),
+		Port:    viper.GetInt("server.port"),
 		Root:    pwd,
 		Version: "v1",
+		Ssl:     viper.GetBool("server.ssl"),
 	})
 }
 
