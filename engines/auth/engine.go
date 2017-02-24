@@ -6,7 +6,6 @@ import (
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/web"
-	"github.com/unrolled/render"
 	"golang.org/x/tools/blog/atom"
 )
 
@@ -18,7 +17,7 @@ type Engine struct {
 	Settings *web.Settings     `inject:""`
 	Db       *gorm.DB          `inject:""`
 	Session  *Session          `inject:""`
-	Render   *render.Render    `inject:""`
+	Render   *web.Render       `inject:""`
 	Router   *mux.Router       `inject:""`
 	UF       *UrlFor           `inject:""`
 }

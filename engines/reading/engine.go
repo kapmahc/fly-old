@@ -6,19 +6,18 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
-	"github.com/unrolled/render"
 	"golang.org/x/tools/blog/atom"
 )
 
 // Engine engine
 type Engine struct {
-	Cache   *web.Cache     `inject:""`
-	I18n    *web.I18n      `inject:""`
-	Db      *gorm.DB       `inject:""`
-	Session *auth.Session  `inject:""`
-	Render  *render.Render `inject:""`
-	Router  *mux.Router    `inject:""`
-	UF      *auth.UrlFor   `inject:""`
+	Cache   *web.Cache    `inject:""`
+	I18n    *web.I18n     `inject:""`
+	Db      *gorm.DB      `inject:""`
+	Session *auth.Session `inject:""`
+	Render  *web.Render   `inject:""`
+	Router  *mux.Router   `inject:""`
+	UF      *auth.UrlFor  `inject:""`
 }
 
 // Do background jobs

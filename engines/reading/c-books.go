@@ -22,14 +22,12 @@ func (p *Engine) indexBooks(w http.ResponseWriter, r *http.Request) {
 	data := r.Context().Value(web.DATA).(web.H)
 	lang := r.Context().Value(web.LOCALE).(string)
 	books, err := p.getBooks(r)
-	if err != nil {
-		log.Error(err)
-		p.Render.Text(w, http.StatusInternalServerError, err.Error())
+	if !p.Render.Check(w, err) {
 		return
 	}
 	data["books"] = books
 	data["title"] = p.I18n.T(lang, "reading.books.index.title")
-	p.Render.HTML(w, http.StatusOK, "reading/books/index", data)
+	p.Render.HTML(w, "reading/books/index", data)
 }
 
 func (p *Engine) showBook(w http.ResponseWriter, r *http.Request) {
@@ -39,9 +37,7 @@ func (p *Engine) showBook(w http.ResponseWriter, r *http.Request) {
 	id := vars["id"]
 
 	bk, err := p.readBook(id)
-	if err != nil {
-		log.Error(err)
-		p.Render.Text(w, http.StatusInternalServerError, err.Error())
+	if !p.Render.Check(w, err) {
 		return
 	}
 	data["book"] = bk
@@ -56,16 +52,14 @@ func (p *Engine) showBook(w http.ResponseWriter, r *http.Request) {
 	)
 	data["ncx"] = template.HTML(ncx.Bytes())
 	data["title"] = strings.Join(bk.Opf.Metadata.Title, "|")
-	p.Render.HTML(w, http.StatusOK, "reading/books/show", data)
+	p.Render.HTML(w, "reading/books/show", data)
 }
 
 func (p *Engine) showBookPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	log.Debugf("VARS %+v", vars)
-	if err := p.readBookPage(w, vars["id"], vars["name"]); err != nil {
-		p.Render.Text(w, http.StatusInternalServerError, err.Error())
-	}
-
+	err := p.readBookPage(w, vars["id"], vars["name"])
+	p.Render.Check(w, err)
 }
 
 // -----------------------

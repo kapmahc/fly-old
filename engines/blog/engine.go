@@ -7,7 +7,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
-	"github.com/unrolled/render"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
 )
@@ -20,7 +19,7 @@ type Engine struct {
 	Settings *web.Settings     `inject:""`
 	Db       *gorm.DB          `inject:""`
 	Session  *auth.Session     `inject:""`
-	Render   *render.Render    `inject:""`
+	Render   *web.Render       `inject:""`
 	Router   *mux.Router       `inject:""`
 	UF       *auth.UrlFor      `inject:""`
 }
