@@ -1,14 +1,15 @@
-package auth
+package site
 
 import (
 	"net/http"
 
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 )
 
 func (p *Engine) install(w http.ResponseWriter, r *http.Request) {
 	var ct int
-	err := p.Db.Model(&User{}).Count(&ct).Error
+	err := p.Db.Model(&auth.User{}).Count(&ct).Error
 	if !p.Render.Check(w, err) {
 		return
 	}

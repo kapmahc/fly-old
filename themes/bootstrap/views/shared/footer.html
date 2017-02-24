@@ -6,7 +6,7 @@
       {{t $l "footer.other-languages"}}
       {{range .languages}}
         {{$lng := fmt "languages.%s" .}}
-        <a href="{{uf "home"}}?locale={{.}}">{{t $l $lng}}</a>
+        <a href="/?locale={{.}}">{{t $l $lng}}</a>
       {{end}}
     </p>
     <p>

@@ -35,11 +35,6 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
 }
 
-// Mount web mount points
-func (p *Engine) Mount() {
-
-}
-
 func init() {
 	web.Register(&Engine{})
 }

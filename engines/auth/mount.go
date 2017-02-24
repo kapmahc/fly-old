@@ -6,9 +6,6 @@ import (
 
 // Mount web mount points
 func (p *Engine) Mount() {
-	p.Router.HandleFunc("/", p.home).Methods(http.MethodGet).Name("home")
-	p.Router.HandleFunc("/install", p.install).Methods(http.MethodGet, http.MethodPost).Name("install")
-
 	ug := p.Router.PathPrefix("/users").Subrouter()
 
 	ug.HandleFunc("/sign-in", p.signIn).Methods(http.MethodGet, http.MethodPost).Name("users.sign-in")

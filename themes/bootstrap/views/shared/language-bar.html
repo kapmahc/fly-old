@@ -6,7 +6,7 @@
       {{$l := .l}}
       {{range .languages}}
       {{$v := fmt "languages.%s" .}}
-      <a class="dropdown-item" href="{{uf "home"}}?locale={{.}}">{{t $l $v}}</a>
+      <a class="dropdown-item" href="/?locale={{.}}">{{t $l $v}}</a>
       {{end}}
     </div>
 </li>
