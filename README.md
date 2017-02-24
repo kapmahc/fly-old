@@ -31,9 +31,10 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 ## Issues
 
 - "RPC failed; HTTP 301 curl 22 The requested URL returned error: 301"
-```bash
- git config --global http.https://gopkg.in.followRedirects true
-```
+
+  ```bash
+  git config --global http.https://gopkg.in.followRedirects true
+  ```
 
 - 'Peer authentication failed for user', open file "/etc/postgresql/9.5/main/pg_hba.conf" change line:
 
@@ -50,10 +51,16 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   openssl req -new -x509 -key www.change-me.com.key -out www.change-me.com.crt -days 3650 # Common Name:*.change-me.com
   ```
 
+- Generate sitemap.xml.gz everyday
+
+  ```bash
+  @daily cd /var/www/www.change-me.com && ./fly seo
+  ```
+
   ## Documents
 
-  - [gorm](http://jinzhu.me/gorm/)    
-  - [cli](https://github.com/urfave/cli)  
+  - [gorm](http://jinzhu.me/gorm/)
+  - [cli](https://github.com/urfave/cli)
   - [govendor](https://github.com/kardianos/govendor)
   - [Gorilla web toolkit](http://www.gorillatoolkit.org/)
   - [render](https://github.com/unrolled/render)

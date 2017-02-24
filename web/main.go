@@ -74,7 +74,7 @@ func init() {
 		"port":  8080,
 		"name":  "www.change-me.com",
 		"theme": "bootstrap",
-		"home":  "auth.engine",
+		"home":  "site.notices.index",
 		"ssl":   false,
 	})
 

@@ -4,7 +4,9 @@ import "net/http"
 
 // Mount web mount points
 func (p *Engine) Mount() {
-	p.Router.HandleFunc("/", p.home).Methods(http.MethodGet).Name("site.engine.home")
-	p.Router.HandleFunc("/install", p.install).Methods(http.MethodGet, http.MethodPost).Name("site.install")
+	rt := p.Router
+	rt.HandleFunc("/", p.home).Methods(http.MethodGet).Name("site.engine.home")
+	rt.HandleFunc("/install", p.install).Methods(http.MethodGet, http.MethodPost).Name("site.install")
+	rt.HandleFunc("/notices", p.indexNotices).Methods(http.MethodGet, http.MethodPost).Name("site.notices.index")
 
 }
