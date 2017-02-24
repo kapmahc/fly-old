@@ -12,14 +12,15 @@ import (
 
 // Engine engine
 type Engine struct {
-	Server   *machinery.Server `inject:""`
-	Cache    *web.Cache        `inject:""`
-	I18n     *web.I18n         `inject:""`
-	Settings *web.Settings     `inject:""`
-	Db       *gorm.DB          `inject:""`
-	Session  *auth.Session     `inject:""`
-	Render   *web.Render       `inject:""`
-	Router   *mux.Router       `inject:""`
+	Server    *machinery.Server `inject:""`
+	Cache     *web.Cache        `inject:""`
+	I18n      *web.I18n         `inject:""`
+	Settings  *web.Settings     `inject:""`
+	Db        *gorm.DB          `inject:""`
+	Session   *auth.Session     `inject:""`
+	Render    *web.Render       `inject:""`
+	Router    *mux.Router       `inject:""`
+	Validator *web.Validator    `inject:""`
 }
 
 // Do background jobs

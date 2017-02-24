@@ -65,3 +65,5 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   - [Gorilla web toolkit](http://www.gorillatoolkit.org/)
   - [render](https://github.com/unrolled/render)
   - [viper](https://github.com/spf13/viper)
+  - [form](https://github.com/go-playground/form)
+  - [validator](https://godoc.org/gopkg.in/go-playground/validator.v9)

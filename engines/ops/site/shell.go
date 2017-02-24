@@ -16,6 +16,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
 	"github.com/fvbock/endless"
+	sessions "github.com/goincremental/negroni-sessions"
+	"github.com/goincremental/negroni-sessions/cookiestore"
 	"github.com/google/uuid"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
@@ -667,6 +669,7 @@ func (p *Engine) runWorker(c *cli.Context, _ *inject.Graph) error {
 
 func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	port := viper.GetInt("server.port")
+	ssl := viper.GetBool("server.ssl")
 	log.Infof(
 		"application starting in %s on http://localhost:%d",
 		viper.GetString("env"),
@@ -676,20 +679,30 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	ng := negroni.New()
 	ng.Use(negroni.NewRecovery())
 	ng.Use(negronilogrus.NewMiddleware())
+
+	store := cookiestore.New([]byte(viper.GetString("secrets.session")))
+	store.Options(sessions.Options{
+		Secure:   ssl,
+		HTTPOnly: true,
+		MaxAge:   0,
+	})
+	ng.Use(sessions.Sessions("_session_", store))
+
 	ng.Use(negroni.NewStatic(http.Dir(path.Join("themes", viper.GetString("server.theme"), "assets"))))
 	ng.Use(negroni.HandlerFunc(p.I18n.Middleware))
 	ng.Use(negroni.HandlerFunc(p.layoutMiddleware))
-	ng.UseHandler(csrf.Protect(
+	ng.UseHandler(p.Router)
+
+	hnd := csrf.Protect(
 		[]byte(viper.GetString("secrets.csrf")),
-		csrf.Secure(web.IsProduction()),
+		csrf.Secure(ssl),
 		csrf.CookieName("_csrf_token_"),
 		csrf.FieldName("authenticity_token"),
 		csrf.Path("/"),
-	)(p.Router))
-
+	)(ng)
 	addr := fmt.Sprintf(":%d", port)
 	if web.IsProduction() {
-		srv := endless.NewServer(addr, ng)
+		srv := endless.NewServer(addr, hnd)
 		srv.BeforeBegin = func(add string) {
 			fd, err := os.OpenFile(path.Join("tmp", "pid"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 			if err != nil {
@@ -704,7 +717,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		return srv.ListenAndServe()
 	}
 
-	return http.ListenAndServe(addr, ng)
+	return http.ListenAndServe(addr, hnd)
 }
 
 func (p *Engine) writeSitemap(root string) error {

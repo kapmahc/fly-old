@@ -63,6 +63,42 @@
 			"revisionTime": "2017-02-22T11:10:43Z"
 		},
 		{
+			"checksumSHA1": "YMqvB7Otiz1BfDjxlmtHxsQx3ck=",
+			"path": "github.com/go-playground/form",
+			"revision": "d922d8776eab054b34c41e6f547ac2c6db8c7403",
+			"revisionTime": "2017-02-16T00:35:53Z"
+		},
+		{
+			"checksumSHA1": "MrWeI6MXZ81AL7bbf4+iD7B4N/Y=",
+			"path": "github.com/go-playground/locales",
+			"revision": "084b0226cf88d891a2bdeccac01d592af13a8f7b",
+			"revisionTime": "2017-02-22T17:31:50Z"
+		},
+		{
+			"checksumSHA1": "YWIa2z/i81ttb1Db9fm95XnIgwI=",
+			"path": "github.com/go-playground/locales/currency",
+			"revision": "084b0226cf88d891a2bdeccac01d592af13a8f7b",
+			"revisionTime": "2017-02-22T17:31:50Z"
+		},
+		{
+			"checksumSHA1": "9pKcUHBaVS+360X6h4IowhmOPjk=",
+			"path": "github.com/go-playground/universal-translator",
+			"revision": "b32fa301c9fe55953584134cb6853a13c87ec0a1",
+			"revisionTime": "2017-02-09T16:11:52Z"
+		},
+		{
+			"checksumSHA1": "NWPy8gY+9jExHxBYKhjxJ3ir7/0=",
+			"path": "github.com/goincremental/negroni-sessions",
+			"revision": "0055e7581fb0fe0f6ee5f622199672425526e1b2",
+			"revisionTime": "2016-10-17T07:35:17Z"
+		},
+		{
+			"checksumSHA1": "r2at94ZOVarmcNNfp7zwiXXyQac=",
+			"path": "github.com/goincremental/negroni-sessions/cookiestore",
+			"revision": "0055e7581fb0fe0f6ee5f622199672425526e1b2",
+			"revisionTime": "2016-10-17T07:35:17Z"
+		},
+		{
 			"checksumSHA1": "UP2wONSE346WHWwT20G1Xedd6ZI=",
 			"path": "github.com/google/uuid",
 			"revision": "064e2069ce9c359c118179501254f67d7d37ba24",
@@ -163,6 +199,12 @@
 			"path": "github.com/urfave/negroni",
 			"revision": "3c4d1f44e5d9d1eb5acf3c661a17aaa837d1a067",
 			"revisionTime": "2017-02-18T00:29:55Z"
+		},
+		{
+			"checksumSHA1": "/MZ1dqGutnSy5DbM0QZLGrXLLto=",
+			"path": "gopkg.in/go-playground/validator.v9",
+			"revision": "b250b44763b89fd6b448f2114bb7fc225c7b3008",
+			"revisionTime": "2017-02-14T07:20:42Z"
 		}
 	],
 	"rootPath": "github.com/kapmahc/fly"

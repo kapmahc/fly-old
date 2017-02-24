@@ -3,13 +3,15 @@ package site
 import (
 	"crypto/aes"
 
+	validator "gopkg.in/go-playground/validator.v9"
+
 	"golang.org/x/text/language"
 
 	"github.com/SermoDigital/jose/crypto"
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
+	"github.com/go-playground/form"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/sessions"
 	"github.com/kapmahc/fly/web"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
@@ -67,6 +69,8 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			&inject.Object{Value: rdr},
 			&inject.Object{Value: &i18n},
 			&inject.Object{Value: &uf},
+			&inject.Object{Value: form.NewDecoder()},
+			&inject.Object{Value: validator.New()},
 			&inject.Object{Value: mux.NewRouter()},
 			&inject.Object{Value: language.NewMatcher(tags)},
 			&inject.Object{Value: cip, Name: "aes.cip"},
@@ -74,7 +78,6 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			&inject.Object{Value: []byte(viper.GetString("secrets.jwt")), Name: "jwt.key"},
 			&inject.Object{Value: viper.GetString("app.name"), Name: "namespace"},
 			&inject.Object{Value: crypto.SigningMethodHS512, Name: "jwt.method"},
-			&inject.Object{Value: sessions.NewCookieStore([]byte("secrets.session"))},
 		); err != nil {
 			return err
 		}

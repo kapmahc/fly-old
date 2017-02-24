@@ -39,6 +39,7 @@ type Render struct {
 func (p *Render) Abort(w http.ResponseWriter, lang, code string, args ...interface{}) {
 	p.Render.Text(w, http.StatusInternalServerError, p.I18n.T(lang, code, args...))
 }
+
 func (p *Render) NotFound(w http.ResponseWriter) {
 	p.Render.Text(w, http.StatusNotFound, "not-found")
 }

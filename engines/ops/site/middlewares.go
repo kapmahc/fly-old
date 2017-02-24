@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/gorilla/csrf"
 	"github.com/kapmahc/fly/web"
 )
 
@@ -19,6 +19,7 @@ func (p *Engine) layoutMiddleware(w http.ResponseWriter, r *http.Request, next h
 		return nil
 	})
 	data["engines"] = engines
-	log.Debug(data)
+	data[csrf.TemplateTag] = csrf.TemplateField(r)
+	w.Header().Set("X-CSRF-Token", csrf.Token(r))
 	next(w, r.WithContext(ctx))
 }
