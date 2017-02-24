@@ -1,16 +1,44 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 )
 
-type Render struct {
-	Render *render.Render `inject:""`
+// UrlFor url helper
+type UrlFor struct {
+	Router *mux.Router `inject:""`
 }
 
+// Path path build
+func (p *UrlFor) Path(name string, args ...interface{}) string {
+	var pairs []string
+	for _, arg := range args {
+		pairs = append(pairs, fmt.Sprintf("%v", arg))
+	}
+	rt := p.Router.Get(name)
+	if rt == nil {
+		return "not-found"
+	}
+	url, err := rt.URL(pairs...)
+	if err != nil {
+		return err.Error()
+	}
+	return url.String()
+}
+
+type Render struct {
+	Render *render.Render `inject:""`
+	I18n   *I18n          `inject:""`
+}
+
+func (p *Render) Abort(w http.ResponseWriter, lang, code string, args ...interface{}) {
+	p.Render.Text(w, http.StatusInternalServerError, p.I18n.T(lang, code, args...))
+}
 func (p *Render) NotFound(w http.ResponseWriter) {
 	p.Render.Text(w, http.StatusNotFound, "not-found")
 }

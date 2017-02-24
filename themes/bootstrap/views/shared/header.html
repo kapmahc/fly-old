@@ -12,10 +12,11 @@
       {{range .engines}}
         <li class="nav-item">
           {{$h := fmt "%s.home" .}}
-          <a class="nav-link" href="{{uf $h}}">{{t $l $h}}</a>
+          {{$t := fmt "%s.title" .}}
+          <a class="nav-link" href="{{uf $h}}">{{t $l $t}}</a>
         </li>
       {{end}}
-      {{template "shared/language-bar" .}}     
+      {{template "shared/language-bar" .}}
       {{template "shared/personal-bar" .}}
     </ul>
     <form class="form-inline mt-2 mt-md-0">

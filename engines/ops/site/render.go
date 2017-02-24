@@ -1,4 +1,4 @@
-package auth
+package site
 
 import (
 	"fmt"
@@ -11,34 +11,11 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/gorilla/mux"
 	"github.com/kapmahc/fly/web"
 	"github.com/unrolled/render"
 )
 
-// UrlFor url helper
-type UrlFor struct {
-	Router *mux.Router `inject:""`
-}
-
-// Path path build
-func (p *UrlFor) Path(name string, args ...interface{}) string {
-	var pairs []string
-	for _, arg := range args {
-		pairs = append(pairs, fmt.Sprintf("%v", arg))
-	}
-	rt := p.Router.Get(name)
-	if rt == nil {
-		return "not-found"
-	}
-	url, err := rt.URL(pairs...)
-	if err != nil {
-		return err.Error()
-	}
-	return url.String()
-}
-
-func openRender(theme string, i18n *web.I18n, uf *UrlFor) (*render.Render, error) {
+func openRender(theme string, i18n *web.I18n, uf *web.UrlFor) (*render.Render, error) {
 	assets := make(map[string]string)
 	if err := filepath.Walk(
 		path.Join("themes", theme, "assets"),

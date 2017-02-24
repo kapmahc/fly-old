@@ -6,6 +6,7 @@ import (
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/web"
+	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
 )
 
@@ -19,7 +20,7 @@ type Engine struct {
 	Session  *Session          `inject:""`
 	Render   *web.Render       `inject:""`
 	Router   *mux.Router       `inject:""`
-	UF       *UrlFor           `inject:""`
+	UF       *web.UrlFor       `inject:""`
 }
 
 // Do background jobs
@@ -33,6 +34,11 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
+}
+
+// Shell shell commands
+func (p *Engine) Shell() []cli.Command {
+	return []cli.Command{}
 }
 
 func init() {

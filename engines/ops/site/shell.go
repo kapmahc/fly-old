@@ -1,4 +1,4 @@
-package auth
+package site
 
 import (
 	"crypto/x509/pkix"
@@ -354,7 +354,7 @@ func (p *Engine) generateNginxConf(*cli.Context) error {
 		    add_header Cache-Control "public";
 		  }
 		  location / {
-			{{if .Ssl}}			
+			{{if .Ssl}}
 		    proxy_set_header X-Forwarded-Proto https;
 			{{else}}
 			  proxy_set_header X-Forwarded-Proto http;

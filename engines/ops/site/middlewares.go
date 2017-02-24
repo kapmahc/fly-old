@@ -1,4 +1,4 @@
-package auth
+package site
 
 import (
 	"context"

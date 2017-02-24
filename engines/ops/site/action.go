@@ -1,4 +1,4 @@
-package auth
+package site
 
 import (
 	"crypto/aes"
@@ -54,7 +54,7 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		}
 		// -----------
 		var i18n web.I18n
-		var uf UrlFor
+		var uf web.UrlFor
 		rdr, err := openRender(viper.GetString("server.theme"), &i18n, &uf)
 		if err != nil {
 			return err
