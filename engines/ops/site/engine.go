@@ -21,6 +21,7 @@ type Engine struct {
 	Render    *web.Render       `inject:""`
 	Router    *mux.Router       `inject:""`
 	Validator *web.Validator    `inject:""`
+	Dao       *auth.Dao         `inject:""`
 }
 
 // Do background jobs

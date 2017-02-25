@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/RichardKnop/uuid"
+	"github.com/google/uuid"
 	"github.com/kapmahc/fly/web"
 )
 
@@ -71,7 +71,7 @@ func (p *User) SetGravatarLogo() {
 
 //SetUID generate uid
 func (p *User) SetUID() {
-	p.UID = uuid.New()
+	p.UID = uuid.New().String()
 }
 
 func (p User) String() string {
@@ -169,18 +169,4 @@ type Vote struct {
 // TableName table name
 func (Vote) TableName() string {
 	return "votes"
-}
-
-// Link link
-type Link struct {
-	web.Model
-	Label     string
-	Href      string
-	Loc       string
-	SortOrder int
-}
-
-// TableName table name
-func (Link) TableName() string {
-	return "links"
 }

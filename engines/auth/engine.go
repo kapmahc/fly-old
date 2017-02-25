@@ -20,6 +20,7 @@ type Engine struct {
 	Session  *Session          `inject:""`
 	Render   *web.Render       `inject:""`
 	Router   *mux.Router       `inject:""`
+	Dao      *Dao              `inject:""`
 	UF       *web.UrlFor       `inject:""`
 }
 
