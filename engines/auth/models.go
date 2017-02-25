@@ -29,7 +29,7 @@ const (
 type User struct {
 	web.Model
 
-	FullName        string     `json:"fullName"`
+	Name            string     `json:"name"`
 	Email           string     `json:"email"`
 	UID             string     `json:"uid"`
 	Password        []byte     `json:"-"`
@@ -75,7 +75,7 @@ func (p *User) SetUID() {
 }
 
 func (p User) String() string {
-	return fmt.Sprintf("%s<%s>", p.FullName, p.Email)
+	return fmt.Sprintf("%s<%s>", p.Name, p.Email)
 }
 
 // Attachment attachment

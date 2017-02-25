@@ -1,8 +1,10 @@
 package web
 
 const (
-	// ALERT alert
-	ALERT = "alert"
-	// NOTICE notice
-	NOTICE = "notice"
+	// WARNING warning
+	WARNING = "warning"
+	// ERROR error
+	ERROR = "error"
+	// INFO info
+	INFO = "info"
 )

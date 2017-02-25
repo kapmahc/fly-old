@@ -685,6 +685,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		Secure:   ssl,
 		HTTPOnly: true,
 		MaxAge:   0,
+		Path:     "/",
 	})
 	ng.Use(sessions.Sessions("_session_", store))
 

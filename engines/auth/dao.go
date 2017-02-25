@@ -57,12 +57,12 @@ func (p *Dao) Log(user uint, ip, message string) {
 }
 
 // AddEmailUser add email user
-func (p *Dao) AddEmailUser(fullName, email, password string) (*User, error) {
+func (p *Dao) AddEmailUser(name, email, password string) (*User, error) {
 
 	user := User{
 		Email:           email,
 		Password:        p.Security.Sum([]byte(password)),
-		FullName:        fullName,
+		Name:            name,
 		ProviderType:    UserTypeEmail,
 		ProviderID:      email,
 		Home:            "/users",

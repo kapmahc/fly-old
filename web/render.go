@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
@@ -34,6 +35,14 @@ func (p *UrlFor) Path(name string, args ...interface{}) string {
 type Render struct {
 	Render *render.Render `inject:""`
 	I18n   *I18n          `inject:""`
+}
+
+func (p *Render) ClientIP(r *http.Request) string {
+	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		log.Error(err)
+	}
+	return ip
 }
 
 func (p *Render) Abort(w http.ResponseWriter, lang, code string, args ...interface{}) {

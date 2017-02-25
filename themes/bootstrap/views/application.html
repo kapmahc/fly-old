@@ -14,6 +14,7 @@
   <body>
     {{template "shared/header" .}}
     <div class="container">
+      {{template "shared/flash" .}}
       {{ yield }}
     </div>
     {{template "shared/footer" .}}
