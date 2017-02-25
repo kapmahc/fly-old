@@ -23,6 +23,7 @@ type Engine struct {
 	Dao       *Dao              `inject:""`
 	UF        *web.UrlFor       `inject:""`
 	Validator *web.Validator    `inject:""`
+	Security  *web.Security     `inject:""`
 }
 
 // Do background jobs

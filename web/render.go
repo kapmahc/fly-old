@@ -37,6 +37,10 @@ type Render struct {
 	I18n   *I18n          `inject:""`
 }
 
+func (p *Render) Redirect(w http.ResponseWriter, r *http.Request, u string) {
+	http.Redirect(w, r, u, http.StatusFound)
+}
+
 func (p *Render) ClientIP(r *http.Request) string {
 	ip, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
