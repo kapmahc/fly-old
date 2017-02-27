@@ -24,10 +24,8 @@ type Engine struct {
 	UF        *web.UrlFor       `inject:""`
 	Validator *web.Validator    `inject:""`
 	Security  *web.Security     `inject:""`
+	Jwt       *Jwt              `inject:""`
 }
-
-// Do background jobs
-func (p *Engine) Do() {}
 
 // Atom rss.atom
 func (p *Engine) Atom() ([]*atom.Entry, error) {
