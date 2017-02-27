@@ -18,6 +18,9 @@ func (p *Engine) profile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (p *Engine) changePassword(w http.ResponseWriter, r *http.Request) {
+}
+
 func (p *Engine) logs(w http.ResponseWriter, r *http.Request) {
 	if !p.Session.CheckSignIn(w, r, true) {
 		return

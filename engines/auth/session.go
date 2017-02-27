@@ -36,7 +36,7 @@ func (p *Session) CheckSignIn(w http.ResponseWriter, r *http.Request, must bool)
 	}
 	if must {
 		lang := r.Context().Value(web.LOCALE).(string)
-		p.Render.Render.Text(w, http.StatusForbidden, p.I18n.T(lang, "auth.please-sign-in"))
+		p.Render.Render.Text(w, http.StatusForbidden, p.I18n.T(lang, "auth.errors.please-sign-in"))
 	}
 	return false
 }
