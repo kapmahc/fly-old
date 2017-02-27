@@ -45,7 +45,7 @@ type I18n struct {
 	Matcher language.Matcher `inject:""`
 }
 
-// Middleware localeiddleware
+// Middleware locale-middleware
 func (p *I18n) Middleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 	// 1. Check URL arguments.

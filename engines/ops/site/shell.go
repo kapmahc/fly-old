@@ -692,6 +692,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	ng.Use(negroni.NewStatic(http.Dir(path.Join("themes", viper.GetString("server.theme"), "assets"))))
 	ng.Use(negroni.HandlerFunc(p.I18n.Middleware))
 	ng.Use(negroni.HandlerFunc(p.layoutMiddleware))
+	ng.Use(negroni.HandlerFunc(p.Session.Middleware))
 	ng.UseHandler(p.Router)
 
 	hnd := csrf.Protect(

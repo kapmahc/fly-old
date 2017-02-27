@@ -5,11 +5,11 @@
   </button>
   <a class="navbar-brand" href="/">{{t $l "site.sub-title"}}</a>
   <div class="collapse navbar-collapse" id="navbarCollapse">
-    <ul class="navbar-nav mr-auto">      
+    <ul class="navbar-nav mr-auto">
       {{range .engines}}
         <li class="nav-item">
           {{$h := fmt "%s.home" .}}
-          {{$t := fmt "%s.title" .}}
+          {{$t := fmt "%s.home.title" .}}
           <a class="nav-link" href="{{uf $h}}">{{t $l $t}}</a>
         </li>
       {{end}}

@@ -12,11 +12,6 @@ import (
 	"github.com/kapmahc/fly/web"
 )
 
-const (
-	// CurrentUser current user
-	CurrentUser = "currentUser"
-)
-
 //Jwt jwt helper
 type Jwt struct {
 	Key    []byte               `inject:"jwt.key"`
