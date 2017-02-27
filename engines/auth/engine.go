@@ -12,19 +12,17 @@ import (
 
 // Engine engine
 type Engine struct {
-	Server    *machinery.Server `inject:""`
-	Cache     *web.Cache        `inject:""`
-	I18n      *web.I18n         `inject:""`
-	Settings  *web.Settings     `inject:""`
-	Db        *gorm.DB          `inject:""`
-	Session   *Session          `inject:""`
-	Render    *web.Render       `inject:""`
-	Router    *mux.Router       `inject:""`
-	Dao       *Dao              `inject:""`
-	UF        *web.URLFor       `inject:""`
-	Validator *web.Validator    `inject:""`
-	Security  *web.Security     `inject:""`
-	Jwt       *Jwt              `inject:""`
+	Server   *machinery.Server `inject:""`
+	Cache    *web.Cache        `inject:""`
+	I18n     *web.I18n         `inject:""`
+	Settings *web.Settings     `inject:""`
+	Db       *gorm.DB          `inject:""`
+	Session  *Session          `inject:""`
+	Router   *mux.Router       `inject:""`
+	Dao      *Dao              `inject:""`
+	Ctx      *web.Context      `inject:""`
+	Security *web.Security     `inject:""`
+	Jwt      *Jwt              `inject:""`
 }
 
 // Atom rss.atom

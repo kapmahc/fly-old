@@ -15,7 +15,7 @@ import (
 	"github.com/unrolled/render"
 )
 
-func openRender(theme string, i18n *web.I18n, uf *web.URLFor) (*render.Render, error) {
+func openRender(theme string, i18n *web.I18n, ctx *web.Context) (*render.Render, error) {
 	assets := make(map[string]string)
 	if err := filepath.Walk(
 		path.Join("themes", theme, "assets"),
@@ -64,7 +64,7 @@ func openRender(theme string, i18n *web.I18n, uf *web.URLFor) (*render.Render, e
 		"dtf": func(t time.Time) string {
 			return t.Format("Mon Jan _2 15:04:05 2006")
 		},
-		"uf": uf.Path,
+		"uf": ctx.URLFor,
 	}
 
 	// ---------------

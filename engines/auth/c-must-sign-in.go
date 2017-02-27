@@ -32,12 +32,12 @@ func (p *Engine) logs(w http.ResponseWriter, r *http.Request) {
 		Where("user_id = ?", user.ID).
 		Order("id DESC").
 		Find(&logs).Error
-	if !p.Render.Check(w, err) {
+	if !p.Ctx.Check(w, err) {
 		return
 	}
 	lang := r.Context().Value(web.LOCALE).(string)
 	data := r.Context().Value(web.DATA).(web.H)
 	data["logs"] = logs
 	data["title"] = p.I18n.T(lang, "auth.users.logs.title")
-	p.Render.HTML(w, "auth/users/logs", data)
+	p.Ctx.HTML(w, "auth/users/logs", data)
 }

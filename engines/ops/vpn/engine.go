@@ -19,7 +19,7 @@ type Engine struct {
 	Settings *web.Settings     `inject:""`
 	Db       *gorm.DB          `inject:""`
 	Session  *auth.Session     `inject:""`
-	Render   *web.Render       `inject:""`
+	Ctx      *web.Context      `inject:""`
 	Router   *mux.Router       `inject:""`
 }
 

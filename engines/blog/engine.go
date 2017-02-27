@@ -19,9 +19,8 @@ type Engine struct {
 	Settings *web.Settings     `inject:""`
 	Db       *gorm.DB          `inject:""`
 	Session  *auth.Session     `inject:""`
-	Render   *web.Render       `inject:""`
+	Ctx      *web.Context      `inject:""`
 	Router   *mux.Router       `inject:""`
-	UF       *web.URLFor       `inject:""`
 }
 
 // Do background jobs
@@ -36,12 +35,12 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	posts := p.getPosts()
 	urls := []stm.URL{
-		{"loc": p.UF.Path("blog.engine.home")},
+		{"loc": p.Ctx.URLFor("blog.engine.home")},
 	}
 	for _, i := range posts {
 		urls = append(
 			urls,
-			stm.URL{"loc": p.UF.Path("blog.show", "name", i.Href)},
+			stm.URL{"loc": p.Ctx.URLFor("blog.show", "name", i.Href)},
 		)
 	}
 	return urls, nil

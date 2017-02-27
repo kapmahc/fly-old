@@ -23,7 +23,7 @@ func (p *Engine) signUp(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		var fm fmSignUp
 		var count int
-		err := p.Validator.Bind(&fm, r)
+		err := p.Ctx.Bind(&fm, r)
 		if err == nil {
 			err = p.Db.
 				Model(&User{}).
@@ -37,7 +37,7 @@ func (p *Engine) signUp(w http.ResponseWriter, r *http.Request) {
 			var user *User
 			user, err = p.Dao.AddEmailUser(fm.Name, fm.Email, fm.Password)
 			if err == nil {
-				p.Dao.Log(user.ID, p.Render.ClientIP(r), p.I18n.T(lang, "auth.logs.sign-up"))
+				p.Dao.Log(user.ID, p.Ctx.ClientIP(r), p.I18n.T(lang, "auth.logs.sign-up"))
 				p.sendEmail(lang, user, actConfirm)
 			}
 		}
@@ -49,7 +49,7 @@ func (p *Engine) signUp(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	p.Render.HTML(w, "auth/users/sign-up", data)
+	p.Ctx.HTML(w, "auth/users/sign-up", data)
 }
 
 type fmSignIn struct {
@@ -67,10 +67,10 @@ func (p *Engine) signIn(w http.ResponseWriter, r *http.Request) {
 		var fm fmSignIn
 		var user *User
 
-		err := p.Validator.Bind(&fm, r)
+		err := p.Ctx.Bind(&fm, r)
 		if err == nil {
 			user, err = p.Dao.GetByEmail(fm.Email)
-			ip := p.Render.ClientIP(r)
+			ip := p.Ctx.ClientIP(r)
 			if err == nil {
 				if !p.Security.Chk([]byte(fm.Password), user.Password) {
 					p.Dao.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-failed"))
@@ -92,14 +92,14 @@ func (p *Engine) signIn(w http.ResponseWriter, r *http.Request) {
 		if err == nil {
 			ss := sessions.GetSession(r)
 			ss.Set(UID, user.UID)
-			p.Render.Redirect(w, r, "/")
+			p.Ctx.Redirect(w, r, "/")
 			return
 		}
 		data[web.ERROR] = err.Error()
 
 	}
 
-	p.Render.HTML(w, "auth/users/sign-in", data)
+	p.Ctx.HTML(w, "auth/users/sign-in", data)
 }
 
 type fmEmail struct {
@@ -120,7 +120,7 @@ func (p *Engine) confirm(w http.ResponseWriter, r *http.Request) {
 		}
 		if err == nil {
 			p.Db.Model(user).Update("confirmed_at", time.Now())
-			p.Dao.Log(user.ID, p.Render.ClientIP(r), p.I18n.T(lang, "auth.logs.confirm"))
+			p.Dao.Log(user.ID, p.Ctx.ClientIP(r), p.I18n.T(lang, "auth.logs.confirm"))
 			data[web.INFO] = p.I18n.T(lang, "auth.messages.confirm-success")
 		} else {
 			data[web.ERROR] = err.Error()
@@ -128,7 +128,7 @@ func (p *Engine) confirm(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == http.MethodPost {
 		var fm fmEmail
 		var user *User
-		err := p.Validator.Bind(&fm, r)
+		err := p.Ctx.Bind(&fm, r)
 		if err == nil {
 			user, err = p.Dao.GetByEmail(fm.Email)
 		}
@@ -144,7 +144,7 @@ func (p *Engine) confirm(w http.ResponseWriter, r *http.Request) {
 			data[web.ERROR] = err.Error()
 		}
 	}
-	p.Render.HTML(w, "auth/users/confirm", data)
+	p.Ctx.HTML(w, "auth/users/confirm", data)
 }
 
 func (p *Engine) unlock(w http.ResponseWriter, r *http.Request) {
@@ -161,7 +161,7 @@ func (p *Engine) unlock(w http.ResponseWriter, r *http.Request) {
 		}
 		if err == nil {
 			p.Db.Model(user).Update(map[string]interface{}{"locked_at": nil})
-			p.Dao.Log(user.ID, p.Render.ClientIP(r), p.I18n.T(lang, "auth.logs.unlock"))
+			p.Dao.Log(user.ID, p.Ctx.ClientIP(r), p.I18n.T(lang, "auth.logs.unlock"))
 			data[web.INFO] = p.I18n.T(lang, "auth.messages.unlock-success")
 		} else {
 			data[web.ERROR] = err.Error()
@@ -169,7 +169,7 @@ func (p *Engine) unlock(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == http.MethodPost {
 		var fm fmEmail
 		var user *User
-		err := p.Validator.Bind(&fm, r)
+		err := p.Ctx.Bind(&fm, r)
 		if err == nil {
 			user, err = p.Dao.GetByEmail(fm.Email)
 		}
@@ -186,7 +186,7 @@ func (p *Engine) unlock(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-	p.Render.HTML(w, "auth/users/unlock", data)
+	p.Ctx.HTML(w, "auth/users/unlock", data)
 }
 
 func (p *Engine) forgotPassword(w http.ResponseWriter, r *http.Request) {
@@ -196,7 +196,7 @@ func (p *Engine) forgotPassword(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		var fm fmEmail
 		var user *User
-		err := p.Validator.Bind(&fm, r)
+		err := p.Ctx.Bind(&fm, r)
 		if err == nil {
 			user, err = p.Dao.GetByEmail(fm.Email)
 		}
@@ -207,7 +207,7 @@ func (p *Engine) forgotPassword(w http.ResponseWriter, r *http.Request) {
 			data[web.ERROR] = err.Error()
 		}
 	}
-	p.Render.HTML(w, "auth/users/forgot-password", data)
+	p.Ctx.HTML(w, "auth/users/forgot-password", data)
 }
 
 type fmResetPassword struct {
@@ -225,13 +225,13 @@ func (p *Engine) resetPassword(w http.ResponseWriter, r *http.Request) {
 	} else {
 		var fm fmResetPassword
 		var user *User
-		err := p.Validator.Bind(&fm, r)
+		err := p.Ctx.Bind(&fm, r)
 		if err == nil {
 			user, err = p.parseToken(lang, fm.Token, actResetPassword)
 		}
 		if err == nil {
 			p.Db.Model(user).Update("password", p.Security.Sum([]byte(fm.Password)))
-			p.Dao.Log(user.ID, p.Render.ClientIP(r), p.I18n.T(lang, "auth.logs.reset-password"))
+			p.Dao.Log(user.ID, p.Ctx.ClientIP(r), p.I18n.T(lang, "auth.logs.reset-password"))
 			data[web.INFO] = p.I18n.T(lang, "auth.messages.reset-password-success")
 		} else {
 			data[web.ERROR] = err.Error()
@@ -239,5 +239,5 @@ func (p *Engine) resetPassword(w http.ResponseWriter, r *http.Request) {
 		data["token"] = fm.Token
 	}
 
-	p.Render.HTML(w, "auth/users/reset-password", data)
+	p.Ctx.HTML(w, "auth/users/reset-password", data)
 }

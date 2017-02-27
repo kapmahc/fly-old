@@ -26,7 +26,7 @@ func (p *injectLogger) Debugf(format string, v ...interface{}) {
 
 // Action ioc action
 func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
-	return web.Action(func(ctx *cli.Context) error {
+	return web.Action(func(c *cli.Context) error {
 		inj := inject.Graph{Logger: &injectLogger{}}
 		// -------
 		var tags []language.Tag
@@ -56,8 +56,8 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		}
 		// -----------
 		var i18n web.I18n
-		var uf web.URLFor
-		rdr, err := openRender(viper.GetString("server.theme"), &i18n, &uf)
+		var ctx web.Context
+		rdr, err := openRender(viper.GetString("server.theme"), &i18n, &ctx)
 		if err != nil {
 			return err
 		}
@@ -68,7 +68,7 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			&inject.Object{Value: rep},
 			&inject.Object{Value: rdr},
 			&inject.Object{Value: &i18n},
-			&inject.Object{Value: &uf},
+			&inject.Object{Value: &ctx},
 			&inject.Object{Value: form.NewDecoder()},
 			&inject.Object{Value: validator.New()},
 			&inject.Object{Value: mux.NewRouter()},
@@ -95,6 +95,6 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			en.Mount()
 			return nil
 		})
-		return fn(ctx, &inj)
+		return fn(c, &inj)
 	})
 }

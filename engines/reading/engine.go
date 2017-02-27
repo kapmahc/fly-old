@@ -15,9 +15,8 @@ type Engine struct {
 	I18n    *web.I18n     `inject:""`
 	Db      *gorm.DB      `inject:""`
 	Session *auth.Session `inject:""`
-	Render  *web.Render   `inject:""`
 	Router  *mux.Router   `inject:""`
-	UF      *web.URLFor   `inject:""`
+	Ctx     *web.Context  `inject:""`
 }
 
 // Do background jobs
@@ -35,12 +34,12 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		return nil, err
 	}
 	urls := []stm.URL{
-		{"loc": p.UF.Path("reading.books.index")},
+		{"loc": p.Ctx.URLFor("reading.books.index")},
 	}
 	for _, b := range books {
 		urls = append(
 			urls,
-			stm.URL{"loc": p.UF.Path("reading.book.show", "id", b.ID)},
+			stm.URL{"loc": p.Ctx.URLFor("reading.book.show", "id", b.ID)},
 		)
 	}
 	return urls, nil

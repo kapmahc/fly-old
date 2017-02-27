@@ -22,12 +22,12 @@ func (p *Engine) indexBooks(w http.ResponseWriter, r *http.Request) {
 	data := r.Context().Value(web.DATA).(web.H)
 	lang := r.Context().Value(web.LOCALE).(string)
 	books, err := p.getBooks(r)
-	if !p.Render.Check(w, err) {
+	if !p.Ctx.Check(w, err) {
 		return
 	}
 	data["books"] = books
 	data["title"] = p.I18n.T(lang, "reading.books.index.title")
-	p.Render.HTML(w, "reading/books/index", data)
+	p.Ctx.HTML(w, "reading/books/index", data)
 }
 
 func (p *Engine) showBook(w http.ResponseWriter, r *http.Request) {
@@ -37,11 +37,11 @@ func (p *Engine) showBook(w http.ResponseWriter, r *http.Request) {
 	id := vars["id"]
 
 	bk, err := p.readBook(id)
-	if !p.Render.Check(w, err) {
+	if !p.Ctx.Check(w, err) {
 		return
 	}
 	data["book"] = bk
-	href := p.UF.Path("reading.book.show", "id", id)
+	href := p.Ctx.URLFor("reading.book.show", "id", id)
 	data["href"] = href
 
 	var ncx bytes.Buffer
@@ -52,14 +52,14 @@ func (p *Engine) showBook(w http.ResponseWriter, r *http.Request) {
 	)
 	data["ncx"] = template.HTML(ncx.Bytes())
 	data["title"] = strings.Join(bk.Opf.Metadata.Title, "|")
-	p.Render.HTML(w, "reading/books/show", data)
+	p.Ctx.HTML(w, "reading/books/show", data)
 }
 
 func (p *Engine) showBookPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	log.Debugf("VARS %+v", vars)
 	err := p.readBookPage(w, vars["id"], vars["name"])
-	p.Render.Check(w, err)
+	p.Ctx.Check(w, err)
 }
 
 // -----------------------
@@ -101,7 +101,7 @@ func (p *Engine) getBooks(r *http.Request) (*web.Pagination, error) {
 		return nil, err
 	}
 	pag := web.NewPagination(
-		p.UF.Path("reading.books.index"),
+		p.Ctx.URLFor("reading.books.index"),
 		int64(page), int64(size), total,
 	)
 

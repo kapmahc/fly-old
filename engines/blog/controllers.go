@@ -31,7 +31,7 @@ func (p *Engine) indexPosts(w http.ResponseWriter, r *http.Request) {
 	}
 	data["posts"] = posts
 	data["title"] = p.I18n.T(lang, "blog.list.title")
-	p.Render.HTML(w, "blog/index", data)
+	p.Ctx.HTML(w, "blog/index", data)
 }
 
 func (p *Engine) showPost(w http.ResponseWriter, r *http.Request) {
@@ -45,12 +45,12 @@ func (p *Engine) showPost(w http.ResponseWriter, r *http.Request) {
 		if i.Href == name {
 			data["post"] = i
 			data["title"] = i.Title
-			p.Render.HTML(w, "blog/show", data)
+			p.Ctx.HTML(w, "blog/show", data)
 			return
 		}
 	}
 
-	p.Render.NotFound(w)
+	p.Ctx.NotFound(w)
 
 }
 

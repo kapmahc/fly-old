@@ -17,9 +17,9 @@ const (
 
 // Session session
 type Session struct {
-	Dao    *Dao        `inject:""`
-	Render *web.Render `inject:""`
-	I18n   *web.I18n   `inject:""`
+	Dao  *Dao         `inject:""`
+	Ctx  *web.Context `inject:""`
+	I18n *web.I18n    `inject:""`
 }
 
 // CurrentUser current-user
@@ -39,7 +39,7 @@ func (p *Session) CheckSignIn(w http.ResponseWriter, r *http.Request, must bool)
 	}
 	if must {
 		lang := r.Context().Value(web.LOCALE).(string)
-		p.Render.Render.Text(w, http.StatusForbidden, p.I18n.T(lang, "auth.errors.please-sign-in"))
+		p.Ctx.Render.Text(w, http.StatusForbidden, p.I18n.T(lang, "auth.errors.please-sign-in"))
 	}
 	return false
 }
@@ -53,7 +53,7 @@ func (p *Session) CheckAdmin(w http.ResponseWriter, r *http.Request, must bool) 
 		}
 		if must {
 			lang := r.Context().Value(web.LOCALE).(string)
-			p.Render.Render.Text(w, http.StatusForbidden, p.I18n.T(lang, "auth.errors.not-allow"))
+			p.Ctx.Render.Text(w, http.StatusForbidden, p.I18n.T(lang, "auth.errors.not-allow"))
 		}
 	}
 	return false

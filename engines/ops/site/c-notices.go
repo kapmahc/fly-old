@@ -10,5 +10,5 @@ import (
 func (p *Engine) indexNotices(w http.ResponseWriter, r *http.Request) {
 	session := sessions.GetSession(r)
 	session.Set("hello", "world")
-	p.Render.HTML(w, "site/notices/index", r.Context().Value(web.DATA))
+	p.Ctx.HTML(w, "site/notices/index", r.Context().Value(web.DATA))
 }
