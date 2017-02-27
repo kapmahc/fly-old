@@ -10,8 +10,6 @@ const (
 	TypeMARKDOWN = "markdown"
 	// TypeHTML html format
 	TypeHTML = "html"
-	// DATA data key
-	DATA = "data"
 )
 
 //Model base model

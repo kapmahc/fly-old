@@ -21,7 +21,7 @@ import (
 
 const (
 	// LOCALE locale key
-	LOCALE = "locale"
+	LOCALE = K("locale")
 )
 
 //Locale locale model
@@ -47,13 +47,14 @@ type I18n struct {
 
 // Middleware locale-middleware
 func (p *I18n) Middleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	const key = string(LOCALE)
 
 	// 1. Check URL arguments.
-	lang := r.URL.Query().Get(LOCALE)
+	lang := r.URL.Query().Get(key)
 
 	// 2. Get language information from cookies.
 	if len(lang) == 0 {
-		if ck, er := r.Cookie(LOCALE); er == nil {
+		if ck, er := r.Cookie(key); er == nil {
 			lang = ck.Value
 		}
 	}
@@ -69,7 +70,7 @@ func (p *I18n) Middleware(w http.ResponseWriter, r *http.Request, next http.Hand
 	ts := tag.String()
 	if ts != lang {
 		http.SetCookie(w, &http.Cookie{
-			Name:    LOCALE,
+			Name:    key,
 			Value:   ts,
 			Expires: time.Now().AddDate(10, 0, 0),
 			Path:    "/",

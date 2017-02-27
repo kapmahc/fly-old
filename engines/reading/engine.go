@@ -17,7 +17,7 @@ type Engine struct {
 	Session *auth.Session `inject:""`
 	Render  *web.Render   `inject:""`
 	Router  *mux.Router   `inject:""`
-	UF      *web.UrlFor   `inject:""`
+	UF      *web.URLFor   `inject:""`
 }
 
 // Do background jobs

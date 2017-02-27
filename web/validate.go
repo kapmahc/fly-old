@@ -13,6 +13,7 @@ type Validator struct {
 	Decoder  *form.Decoder       `inject:""`
 }
 
+// Bind bind form
 func (p *Validator) Bind(fm interface{}, r *http.Request) error {
 	if err := r.ParseForm(); err != nil {
 		return err

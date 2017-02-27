@@ -21,7 +21,7 @@ type Engine struct {
 	Render    *web.Render       `inject:""`
 	Router    *mux.Router       `inject:""`
 	Dao       *Dao              `inject:""`
-	UF        *web.UrlFor       `inject:""`
+	UF        *web.URLFor       `inject:""`
 	Validator *web.Validator    `inject:""`
 	Security  *web.Security     `inject:""`
 	Jwt       *Jwt              `inject:""`

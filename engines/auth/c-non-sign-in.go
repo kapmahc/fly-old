@@ -94,9 +94,8 @@ func (p *Engine) signIn(w http.ResponseWriter, r *http.Request) {
 			ss.Set(UID, user.UID)
 			p.Render.Redirect(w, r, "/")
 			return
-		} else {
-			data[web.ERROR] = err.Error()
 		}
+		data[web.ERROR] = err.Error()
 
 	}
 

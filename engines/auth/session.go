@@ -15,12 +15,14 @@ const (
 	isAdmin     = "is_admin"
 )
 
+// Session session
 type Session struct {
 	Dao    *Dao        `inject:""`
 	Render *web.Render `inject:""`
 	I18n   *web.I18n   `inject:""`
 }
 
+// CurrentUser current-user
 func (p *Session) CurrentUser(r *http.Request) *User {
 	u := r.Context().Value(web.DATA).(web.H)[currentUser]
 	if u == nil {
@@ -29,6 +31,7 @@ func (p *Session) CurrentUser(r *http.Request) *User {
 	return u.(*User)
 }
 
+// CheckSignIn is sign-in?
 func (p *Session) CheckSignIn(w http.ResponseWriter, r *http.Request, must bool) bool {
 	u := p.CurrentUser(r)
 	if u != nil {
@@ -41,6 +44,7 @@ func (p *Session) CheckSignIn(w http.ResponseWriter, r *http.Request, must bool)
 	return false
 }
 
+// CheckAdmin is admin?
 func (p *Session) CheckAdmin(w http.ResponseWriter, r *http.Request, must bool) bool {
 	if p.CheckSignIn(w, r, must) {
 		is := r.Context().Value(web.DATA).(web.H)[isAdmin]

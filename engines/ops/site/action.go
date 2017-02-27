@@ -56,7 +56,7 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		}
 		// -----------
 		var i18n web.I18n
-		var uf web.UrlFor
+		var uf web.URLFor
 		rdr, err := openRender(viper.GetString("server.theme"), &i18n, &uf)
 		if err != nil {
 			return err

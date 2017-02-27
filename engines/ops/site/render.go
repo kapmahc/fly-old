@@ -15,7 +15,7 @@ import (
 	"github.com/unrolled/render"
 )
 
-func openRender(theme string, i18n *web.I18n, uf *web.UrlFor) (*render.Render, error) {
+func openRender(theme string, i18n *web.I18n, uf *web.URLFor) (*render.Render, error) {
 	assets := make(map[string]string)
 	if err := filepath.Walk(
 		path.Join("themes", theme, "assets"),
