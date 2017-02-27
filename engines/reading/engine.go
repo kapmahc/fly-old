@@ -1,6 +1,8 @@
 package reading
 
 import (
+	"net/http"
+
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
@@ -42,6 +44,13 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		)
 	}
 	return urls, nil
+}
+
+// NavBar nav-bar
+func (p *Engine) NavBar(r *http.Request) ([]web.Dropdown, []web.Link) {
+	return []web.Dropdown{
+		{Label: "reading.books.index.title", Href: "reading.books.index"},
+	}, []web.Link{}
 }
 
 func init() {

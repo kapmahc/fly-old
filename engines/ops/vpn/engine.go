@@ -1,6 +1,8 @@
 package vpn
 
 import (
+	"net/http"
+
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
@@ -42,6 +44,11 @@ func (p *Engine) Mount() {
 // Shell shell commands
 func (p *Engine) Shell() []cli.Command {
 	return []cli.Command{}
+}
+
+// NavBar nav-bar
+func (p *Engine) NavBar(r *http.Request) ([]web.Dropdown, []web.Link) {
+	return []web.Dropdown{}, []web.Link{}
 }
 
 func init() {

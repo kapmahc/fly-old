@@ -1,6 +1,8 @@
 package site
 
 import (
+	"net/http"
+
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
@@ -33,6 +35,15 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
+}
+
+// NavBar nav-bar
+func (p *Engine) NavBar(r *http.Request) ([]web.Dropdown, []web.Link) {
+	return []web.Dropdown{
+			{Label: "auth.users.index.title", Href: "auth.users.index"},
+		}, []web.Link{
+			{Label: "auth.users.profile.title", Href: "auth.users.profile"},
+		}
 }
 
 func init() {

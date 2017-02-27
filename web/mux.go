@@ -15,7 +15,7 @@ type Mux struct {
 
 // Status print routes
 func (p *Mux) Status(w io.Writer) {
-	tpl := "%32s %s\n"
+	tpl := "%-32s %s\n"
 	fmt.Fprintf(w, tpl, "NAME", "PATH")
 	if err := p.Router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		pat, err := route.GetPathTemplate()

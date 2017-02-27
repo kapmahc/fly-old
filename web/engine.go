@@ -1,6 +1,8 @@
 package web
 
 import (
+	"net/http"
+
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
@@ -13,6 +15,7 @@ type Engine interface {
 	Shell() []cli.Command
 	Atom() ([]*atom.Entry, error)
 	Sitemap() ([]stm.URL, error)
+	NavBar(r *http.Request) ([]Dropdown, []Link)
 }
 
 // -----------------------------------------------------------------------------
