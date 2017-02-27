@@ -261,7 +261,7 @@ func (p *Engine) Shell() []cli.Command {
 
 func (p *Engine) printRoutes(*cli.Context, *inject.Graph) error {
 
-	tpl := "%-24s %s\n"
+	tpl := "%32s %s\n"
 	fmt.Printf(tpl, "NAME", "PATH")
 	p.Router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		pat, err := route.GetPathTemplate()
@@ -692,7 +692,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	ng.Use(negroni.NewStatic(http.Dir(path.Join("themes", viper.GetString("server.theme"), "assets"))))
 	ng.Use(negroni.HandlerFunc(p.I18n.Middleware))
 	ng.Use(negroni.HandlerFunc(p.layoutMiddleware))
-	ng.Use(negroni.HandlerFunc(p.Session.Middleware))
+	ng.Use(negroni.HandlerFunc(p.Session.CurrentUserMiddleware))
 	ng.UseHandler(p.Router)
 
 	hnd := csrf.Protect(

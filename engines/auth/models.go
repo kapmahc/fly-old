@@ -103,6 +103,7 @@ func (Attachment) TableName() string {
 type Log struct {
 	ID        uint      `json:"id"`
 	Message   string    `json:"message"`
+	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"createdAt"`
 	IP        string    `json:"ip"`
 

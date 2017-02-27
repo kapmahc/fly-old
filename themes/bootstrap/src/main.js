@@ -24,6 +24,12 @@ $(function() {
     $(this).html(marked(txt));
   });
   // ---------------------
+  $("a.nav-link").each(function() {    
+    if($(this).attr("href") == window.location.pathname){
+      $(this).addClass("active");
+    }
+  });
+  // ---------------------
   $('a[data-method="delete"]').click(function(e) {
       e.preventDefault();
       if (confirm($(this).data('confirm'))) {
