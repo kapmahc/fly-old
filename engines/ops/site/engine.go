@@ -2,7 +2,6 @@ package site
 
 import (
 	machinery "github.com/RichardKnop/machinery/v1"
-	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
@@ -19,8 +18,8 @@ type Engine struct {
 	Db       *gorm.DB          `inject:""`
 	Session  *auth.Session     `inject:""`
 	Ctx      *web.Context      `inject:""`
-	Router   *mux.Router       `inject:""`
 	Dao      *auth.Dao         `inject:""`
+	Mux      *web.Mux          `inject:""`
 }
 
 // Do background jobs

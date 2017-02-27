@@ -1,22 +1,18 @@
 package auth
 
-import (
-	"net/http"
-)
-
 // Mount web mount points
 func (p *Engine) Mount() {
-	ug := p.Router.PathPrefix("/users").Subrouter()
+	ug := p.Mux.Group("/users")
 
-	ug.HandleFunc("/sign-in", p.signIn).Methods(http.MethodGet, http.MethodPost).Name("auth.users.sign-in")
-	ug.HandleFunc("/sign-up", p.signUp).Methods(http.MethodGet, http.MethodPost).Name("auth.users.sign-up")
-	ug.HandleFunc("/confirm", p.confirm).Methods(http.MethodGet, http.MethodPost).Name("auth.users.confirm")
-	ug.HandleFunc("/unlock", p.unlock).Methods(http.MethodGet, http.MethodPost).Name("auth.users.unlock")
-	ug.HandleFunc("/reset-password", p.resetPassword).Methods(http.MethodGet, http.MethodPost).Name("auth.users.reset-password")
-	ug.HandleFunc("/forgot-password", p.forgotPassword).Methods(http.MethodGet, http.MethodPost).Name("auth.users.forgot-password")
+	ug.Form("auth.users.sign-in", "/sign-in", p.signIn)
+	ug.Form("auth.users.sign-up", "/sign-up", p.signUp)
+	ug.Form("auth.users.confirm", "/confirm", p.confirm)
+	ug.Form("auth.users.unlock", "/unlock", p.unlock)
+	ug.Form("auth.users.reset-password", "/reset-password", p.resetPassword)
+	ug.Form("auth.users.forgot-password", "/forgot-password", p.forgotPassword)
 
-	ug.HandleFunc("/profile", p.profile).Methods(http.MethodGet, http.MethodPost).Name("auth.users.profile")
-	ug.HandleFunc("/change-password", p.changePassword).Methods(http.MethodGet, http.MethodPost).Name("auth.users.change-password")
-	ug.HandleFunc("/logs", p.logs).Methods(http.MethodGet).Name("auth.users.logs")
-	ug.HandleFunc("/sign-out", p.signOut).Methods(http.MethodDelete).Name("auth.users.sign-out")
+	ug.Form("auth.users.profile", "/profile", p.profile)
+	ug.Form("auth.users.change-password", "/change-password", p.changePassword)
+	ug.Get("auth.users.logs", "/logs", p.logs)
+	ug.Delete("auth.users.sign-out", "/sign-out", p.signOut)
 }

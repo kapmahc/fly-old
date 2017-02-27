@@ -20,7 +20,6 @@ import (
 	"github.com/goincremental/negroni-sessions/cookiestore"
 	"github.com/google/uuid"
 	"github.com/gorilla/csrf"
-	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/fly/web"
 	negronilogrus "github.com/meatballhat/negroni-logrus"
@@ -240,7 +239,10 @@ func (p *Engine) Shell() []cli.Command {
 			Name:    "routes",
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
-			Action:  Action(p.printRoutes),
+			Action: Action(func(*cli.Context, *inject.Graph) error {
+				p.Mux.Status(os.Stdout)
+				return nil
+			}),
 		},
 		{
 			Name:  "i18n",
@@ -257,30 +259,6 @@ func (p *Engine) Shell() []cli.Command {
 			},
 		},
 	}
-}
-
-func (p *Engine) printRoutes(*cli.Context, *inject.Graph) error {
-
-	tpl := "%32s %s\n"
-	fmt.Printf(tpl, "NAME", "PATH")
-	p.Router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
-		pat, err := route.GetPathTemplate()
-		if err != nil {
-			return err
-		}
-		hnd := route.GetHandler()
-		if hnd == nil {
-			return nil
-		}
-		fmt.Printf(
-			tpl,
-			route.GetName(),
-			pat,
-			// runtime.FuncForPC(reflect.ValueOf(route.GetHandler()).Pointer()).Name(),
-		)
-		return nil
-	})
-	return nil
 }
 
 func (p *Engine) generateConfig(c *cli.Context) error {
@@ -693,7 +671,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	ng.Use(negroni.HandlerFunc(p.I18n.Middleware))
 	ng.Use(negroni.HandlerFunc(p.layoutMiddleware))
 	ng.Use(negroni.HandlerFunc(p.Session.CurrentUserMiddleware))
-	ng.UseHandler(p.Router)
+	ng.UseHandler(p.Mux.Router)
 
 	hnd := csrf.Protect(
 		[]byte(viper.GetString("secrets.csrf")),

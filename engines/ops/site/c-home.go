@@ -8,7 +8,7 @@ import (
 
 func (p *Engine) home(w http.ResponseWriter, r *http.Request) {
 
-	rt := p.Router.Get(viper.GetString("server.home"))
+	rt := p.Mux.Router.Get(viper.GetString("server.home"))
 	if rt == nil {
 		p.Ctx.NotFound(w)
 		return

@@ -1,7 +1,6 @@
 package reading
 
 import (
-	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
@@ -15,8 +14,8 @@ type Engine struct {
 	I18n    *web.I18n     `inject:""`
 	Db      *gorm.DB      `inject:""`
 	Session *auth.Session `inject:""`
-	Router  *mux.Router   `inject:""`
 	Ctx     *web.Context  `inject:""`
+	Mux     *web.Mux      `inject:""`
 }
 
 // Do background jobs
