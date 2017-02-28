@@ -71,8 +71,13 @@ func (p *Context) NotFound(w http.ResponseWriter) {
 }
 
 // HTML html
-func (p *Context) HTML(w http.ResponseWriter, name string, data interface{}) {
-	p.Render.HTML(w, http.StatusOK, name, data)
+func (p *Context) HTML(w http.ResponseWriter, name string, data interface{}, options ...render.HTMLOptions) {
+	p.Render.HTML(w, http.StatusOK, name, data, options...)
+}
+
+// JSON json
+func (p *Context) JSON(w http.ResponseWriter, data interface{}) {
+	p.Render.JSON(w, http.StatusOK, data)
 }
 
 // Check check error

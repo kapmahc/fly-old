@@ -18,12 +18,14 @@ func (p *Engine) layoutMiddleware(w http.ResponseWriter, r *http.Request, next h
 	// })
 	// data["engines"] = engines
 
-	var navbar []web.Dropdown
-	var dashboard []web.Link
+	var navbar []web.Link
+	var dashboard []*web.Dropdown
 	web.Walk(func(en web.Engine) error {
 		nb, db := en.NavBar(r)
 		navbar = append(navbar, nb...)
-		dashboard = append(dashboard, db...)
+		if db != nil {
+			dashboard = append(dashboard, db)
+		}
 		return nil
 	})
 	data["navbar"] = navbar

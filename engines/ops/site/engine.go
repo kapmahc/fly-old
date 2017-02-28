@@ -38,12 +38,8 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 }
 
 // NavBar nav-bar
-func (p *Engine) NavBar(r *http.Request) ([]web.Dropdown, []web.Link) {
-	return []web.Dropdown{
-			{Label: "auth.users.index.title", Href: "auth.users.index"},
-		}, []web.Link{
-			{Label: "auth.users.profile.title", Href: "auth.users.profile"},
-		}
+func (p *Engine) NavBar(r *http.Request) ([]web.Link, *web.Dropdown) {
+	return []web.Link{}, nil
 }
 
 func init() {

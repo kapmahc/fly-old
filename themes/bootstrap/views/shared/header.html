@@ -10,22 +10,9 @@
         <a class="nav-link" href="/">{{t $l "header.home"}}</a>
       </li>
       {{range .navbar}}
-        {{if .Items}}
-          <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" id="{{.Href}}-bar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{t $l .Label}}
-              </a>
-              <div class="dropdown-menu" aria-labelledby="{{.Href}}-bar">
-                {{range .Links}}
-                  <a class="dropdown-item" href="{{uf .Href}}">{{t $l .Label}}</a>
-                {{end}}
-              </div>
-          </li>
-        {{else}}
-          <li class="nav-item">
-            <a class="nav-link" href="{{uf .Href}}">{{t $l .Label}}</a>
-          </li>
-        {{end}}
+        <li class="nav-item">
+          <a class="nav-link" href="{{uf .Href}}">{{t $l .Label}}</a>
+        </li>
       {{end}}
 
       {{if .currentUser}}

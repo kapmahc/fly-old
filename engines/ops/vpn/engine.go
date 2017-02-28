@@ -47,8 +47,8 @@ func (p *Engine) Shell() []cli.Command {
 }
 
 // NavBar nav-bar
-func (p *Engine) NavBar(r *http.Request) ([]web.Dropdown, []web.Link) {
-	return []web.Dropdown{}, []web.Link{}
+func (p *Engine) NavBar(r *http.Request) ([]web.Link, *web.Dropdown) {
+	return []web.Link{}, nil
 }
 
 func init() {

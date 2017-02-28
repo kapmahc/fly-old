@@ -47,10 +47,10 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 }
 
 // NavBar nav-bar
-func (p *Engine) NavBar(r *http.Request) ([]web.Dropdown, []web.Link) {
-	return []web.Dropdown{
+func (p *Engine) NavBar(r *http.Request) ([]web.Link, *web.Dropdown) {
+	return []web.Link{
 		{Label: "reading.books.index.title", Href: "reading.books.index"},
-	}, []web.Link{}
+	}, nil
 }
 
 func init() {

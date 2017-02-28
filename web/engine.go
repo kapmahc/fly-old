@@ -15,7 +15,7 @@ type Engine interface {
 	Shell() []cli.Command
 	Atom() ([]*atom.Entry, error)
 	Sitemap() ([]stm.URL, error)
-	NavBar(r *http.Request) ([]Dropdown, []Link)
+	NavBar(r *http.Request) ([]Link, *Dropdown)
 }
 
 // -----------------------------------------------------------------------------

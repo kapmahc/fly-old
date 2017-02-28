@@ -1,0 +1,21 @@
+{{$l := .l}}
+<ul class="nav nav-tabs">
+  {{range .dashboard}}
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        {{t $l .Label}}
+      </a>
+      <div class="dropdown-menu">
+        {{range .Items}}
+          {{if .}}
+            <a class="dropdown-item" href="{{uf .Href}}">{{t $l .Label}}</a>
+          {{else}}
+            <div class="dropdown-divider"></div>
+          {{end}}
+        {{end}}
+      </div>
+    </li>
+  {{end}}  
+</ul>
+<br/>
+<h3>{{.title}}</h3>

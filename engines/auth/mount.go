@@ -11,7 +11,7 @@ func (p *Engine) Mount() {
 	ug.Form("auth.users.reset-password", "/reset-password", p.resetPassword)
 	ug.Form("auth.users.forgot-password", "/forgot-password", p.forgotPassword)
 
-	ug.Form("auth.users.profile", "/profile", p.profile)
+	ug.Form("auth.users.info", "/info", p.info)
 	ug.Form("auth.users.change-password", "/change-password", p.changePassword)
 	ug.Get("auth.users.logs", "/logs", p.logs)
 	ug.Delete("auth.users.sign-out", "/sign-out", p.signOut)

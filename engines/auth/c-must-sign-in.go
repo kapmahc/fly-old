@@ -17,10 +17,10 @@ func (p *Engine) signOut(w http.ResponseWriter, r *http.Request) {
 	user := p.Session.CurrentUser(r)
 	lng := r.Context().Value(web.LOCALE).(string)
 	p.Dao.Log(user.ID, p.Ctx.ClientIP(r), p.I18n.T(lng, "auth.logs.sign-out"))
-	p.Ctx.Render.JSON(w, http.StatusOK, web.H{"ok": true})
+	p.Ctx.JSON(w, web.H{"ok": true})
 }
 
-func (p *Engine) profile(w http.ResponseWriter, r *http.Request) {
+func (p *Engine) info(w http.ResponseWriter, r *http.Request) {
 	if !p.Session.CheckSignIn(w, r, true) {
 		return
 	}

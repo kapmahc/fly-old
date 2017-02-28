@@ -42,8 +42,18 @@ func (p *Engine) Shell() []cli.Command {
 }
 
 // NavBar nav-bar
-func (p *Engine) NavBar(r *http.Request) ([]web.Dropdown, []web.Link) {
-	return []web.Dropdown{}, []web.Link{}
+func (p *Engine) NavBar(r *http.Request) ([]web.Link, *web.Dropdown) {
+	return []web.Link{
+			{Label: "auth.users.index.title", Href: "auth.users.index"},
+		}, &web.Dropdown{
+			Label: "auth.profile",
+			Items: []*web.Link{
+				&web.Link{Label: "auth.users.logs.title", Href: "auth.users.logs"},
+				nil,
+				&web.Link{Label: "auth.users.info.title", Href: "auth.users.info"},
+				&web.Link{Label: "auth.users.change-password.title", Href: "auth.users.change-password"},
+			},
+		}
 }
 
 func init() {

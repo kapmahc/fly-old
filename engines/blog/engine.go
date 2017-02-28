@@ -53,10 +53,10 @@ func (p *Engine) Shell() []cli.Command {
 }
 
 // NavBar nav-bar
-func (p *Engine) NavBar(r *http.Request) ([]web.Dropdown, []web.Link) {
-	return []web.Dropdown{
+func (p *Engine) NavBar(r *http.Request) ([]web.Link, *web.Dropdown) {
+	return []web.Link{
 		{Label: "blog.index.title", Href: "blog.index"},
-	}, []web.Link{}
+	}, nil
 }
 
 func init() {
