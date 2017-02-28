@@ -30,6 +30,8 @@ func (p *Engine) layoutMiddleware(w http.ResponseWriter, r *http.Request, next h
 	data["dashboard"] = dashboard
 
 	data[csrf.TemplateTag] = csrf.TemplateField(r)
-	w.Header().Set("X-CSRF-Token", csrf.Token(r))
+	tkn := csrf.Token(r)
+	data["csrf"] = tkn
+	w.Header().Set("X-CSRF-Token", tkn)
 	next(w, r.WithContext(ctx))
 }

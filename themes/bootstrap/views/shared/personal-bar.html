@@ -12,7 +12,7 @@
     {{if .currentUser}}
       <a class="dropdown-item" href="{{uf "site.dashboard"}}">{{t .l "personal-bar.dashboard"}}</a>
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" data-method="delete" data-confirm="{{t .l "are-you-sure"}}" href="{{uf "auth.users.sign-out"}}">{{t .l "personal-bar.sign-out"}}</a>
+      <a class="dropdown-item" data-method="delete" data-next="/" data-confirm="{{t .l "are-you-sure"}}" href="{{uf "auth.users.sign-out"}}">{{t .l "personal-bar.sign-out"}}</a>
     {{else}}
     <a class="dropdown-item" href="{{uf "auth.users.sign-in"}}">
       {{t .l "auth.users.sign-in.title"}}
