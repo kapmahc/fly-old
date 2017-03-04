@@ -16,6 +16,7 @@
 #include "Poco/Util/OptionSet.h"
 #include "Poco/Util/ServerApplication.h"
 #include <iostream>
+#include <mstch/mstch.hpp>
 
 using Poco::Net::ServerSocket;
 using Poco::Net::HTTPRequestHandler;
