@@ -1,0 +1,7 @@
+-- + Up
+CREATE TABLE t1 (
+  ID SERIAL PRIMARY KEY
+);
+
+-- + Down
+DROP TABLE t1;
