@@ -6,6 +6,11 @@ project (fly)
 set (CMAKE_CXX_STANDARD 14)
 set (fly_VERSION_MAJOR 1)
 set (fly_VERSION_MINOR 0)
+# ------------------------
+execute_process(COMMAND date -R OUTPUT_VARIABLE BUILD_TIME OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND git rev-parse --short HEAD OUTPUT_VARIABLE GIT_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+add_definitions("-DGIT_VERSION=\"${GIT_VERSION}\"")
+add_definitions("-DBUILD_TIME=\"${BUILD_TIME}\"")
 #-------------------
 # ExternalProject_Add(
 # mstch
