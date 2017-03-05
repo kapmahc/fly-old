@@ -21,4 +21,6 @@ make
 
 ## Documents
 
+- [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
 - [POCO](https://pocoproject.org/docs/)
+- [mustache](http://mustache.github.io/)
