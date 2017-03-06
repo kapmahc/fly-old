@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="col-md-6 block">
+    <h3>{{t .l "site.admin.status.os"}}</h3>
+    <hr/>
+    <ul class="list-group">
+      {{range $k, $v := .os}}
+        <li class="list-group-item">{{$k}}: {{$v}}</li>
+      {{end}}
+    </ul>
+  </div>
+  <div class="col-md-6 block">
+    <h3>{{t .l "site.admin.status.database"}}</h3>
+    <hr/>
+    <ul class="list-group">
+      {{range $k, $v := .database}}
+        <li class="list-group-item">{{$k}}: {{$v}}</li>
+      {{end}}
+    </ul>
+  </div>
+  <div class="col-md-6 block">
+    <h3>{{t .l "site.admin.status.jobs"}}</h3>
+    <hr/>
+    <ul class="list-group">
+      {{range $k, $v := .jobs}}
+        <li class="list-group-item">{{$k}}: {{$v}}</li>
+      {{end}}
+    </ul>
+  </div>
+  <div class="col-md-6 block">
+    <h3>{{t .l "site.admin.status.cache"}}</h3>
+    <hr/>
+    <pre><code>{{.cache}}</code></pre>
+  </div>
+</div>

@@ -7,4 +7,6 @@ func (p *Engine) Mount() {
 
 	p.Mux.Get("site.notices.index", "/notices", p.indexNotices)
 
+	asg := p.Mux.Group("/admin/site")
+	asg.Get("site.admin.status", "/status", p.adminSiteStatus)
 }

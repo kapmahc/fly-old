@@ -1,10 +1,10 @@
 package site
 
 import (
-	"fmt"
 	"net/http"
 
 	machinery "github.com/RichardKnop/machinery/v1"
+	"github.com/garyburd/redigo/redis"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
@@ -23,6 +23,7 @@ type Engine struct {
 	Ctx      *web.Context      `inject:""`
 	Dao      *auth.Dao         `inject:""`
 	Mux      *web.Mux          `inject:""`
+	Redis    *redis.Pool       `inject:""`
 }
 
 // Do background jobs
@@ -44,10 +45,22 @@ func (p *Engine) NavBar(r *http.Request) ([]web.Link, *web.Dropdown) {
 	if p.Session.CheckAdmin(nil, r, false) {
 		dash = &web.Dropdown{
 			Label: "site.dashboard.title",
-			Items: []*web.Link{},
+			Items: []*web.Link{
+				&web.Link{Label: "site.admin.status.title", Href: "site.admin.status"},
+				nil,
+				&web.Link{Label: "site.admin.info.title", Href: "site.admin.info"},
+				&web.Link{Label: "site.admin.author.title", Href: "site.admin.author"},
+				&web.Link{Label: "site.admin.seo.title", Href: "site.admin.seo"},
+				&web.Link{Label: "site.admin.smtp.title", Href: "site.admin.smtp"},
+				nil,
+				&web.Link{Label: "site.locales.index.title", Href: "site.admin.locales.index"},
+				&web.Link{Label: "site.admin.users.title", Href: "site.admin.users"},
+				nil,
+				&web.Link{Label: "site.notices.index.title", Href: "site.admin.notices.index"},
+				&web.Link{Label: "site.leave-words.index.title", Href: "site.admin.leave-words.index"},
+			},
 		}
 	}
-	fmt.Printf("%+v\n", dash)
 	return []web.Link{}, dash
 }
 

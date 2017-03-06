@@ -1,12 +1,16 @@
 {{$l := .l}}
-{{range .dashboard}}
-<h3>{{t $l .Label}}</h3>
-<hr/>
-<div class="btn-group" role="group" aria-label="dashboard">
-  {{range .Items}}
-    {{if .}}
-      <a href="{{uf .Href}}" class="btn btn-secondary">{{t $l .Label}}</a>
-    {{end}}
+<div class="row">
+  {{range .dashboard}}
+    <div class="block col-md-12">
+      <h3>{{t $l .Label}}</h3>
+      <hr/>
+      <div class="btn-group" role="group" aria-label="dashboard">
+        {{range .Items}}
+          {{if .}}
+            <a href="{{uf .Href}}" class="btn btn-secondary">{{t $l .Label}}</a>
+          {{end}}
+        {{end}}
+      </div>
+    </div>
   {{end}}
 </div>
-{{end}}
