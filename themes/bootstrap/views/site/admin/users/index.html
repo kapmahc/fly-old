@@ -1,0 +1,20 @@
+{{template "shared/dashboard" .}}
+{{$l := .l}}
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>{{t .l "attributes.user" }}</th>
+      <th>{{t .l "auth.attributes.user.lastSignIn" }}</th>
+      <th>{{t .l "auth.attributes.user.currentSignIn" }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .items}}
+    <tr>
+      <th scope="row">{{.Name}}&lt;{{.Email}}&gt;[{{.SignInCount}}]</th>
+      <td>{{.LastSignInAt}} {{.LastSignInIP}}</td>
+      <td>{{.CurrentSignInAt}} {{.CurrentSignInIP}}</td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>

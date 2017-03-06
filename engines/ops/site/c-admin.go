@@ -8,6 +8,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/garyburd/redigo/redis"
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 	"github.com/spf13/viper"
 )
@@ -321,4 +322,23 @@ func (p *Engine) adminLocalesEdit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	p.Ctx.HTML(w, "site/admin/locales/edit", data)
+}
+
+func (p *Engine) adminUsersIndex(w http.ResponseWriter, r *http.Request) {
+	if !p.Session.CheckAdmin(w, r, true) {
+		return
+	}
+	lang := r.Context().Value(web.LOCALE).(string)
+	data := r.Context().Value(web.DATA).(web.H)
+
+	var items []auth.User
+	if err := p.Db.
+		Order("last_sign_in_at DESC").Find(&items).Error; err != nil {
+		log.Error(err)
+	}
+
+	data["items"] = items
+
+	data["title"] = p.I18n.T(lang, "site.admin.users.index.title")
+	p.Ctx.HTML(w, "site/admin/users/index", data)
 }

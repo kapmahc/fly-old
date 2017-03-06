@@ -90,6 +90,20 @@ func (p *Engine) signIn(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err == nil {
+			p.Dao.Log(user.ID, p.Ctx.ClientIP(r), p.I18n.T(lang, "auth.logs.sign-in-success"))
+			user.SignInCount++
+			user.LastSignInAt = user.CurrentSignInAt
+			user.LastSignInIP = user.CurrentSignInIP
+			now := time.Now()
+			user.CurrentSignInAt = &now
+			user.CurrentSignInIP = p.Ctx.ClientIP(r)
+			p.Db.Model(user).Updates(map[string]interface{}{
+				"last_sign_in_at":    user.LastSignInAt,
+				"last_sign_in_ip":    user.LastSignInIP,
+				"current_sign_in_at": user.CurrentSignInAt,
+				"current_sign_in_ip": user.CurrentSignInIP,
+				"sign_in_count":      user.SignInCount,
+			})
 			ss := sessions.GetSession(r)
 			ss.Set(UID, user.UID)
 			p.Ctx.Redirect(w, r, "/")
