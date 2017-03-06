@@ -8,7 +8,6 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/garyburd/redigo/redis"
-	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 	"github.com/spf13/viper"
 )
@@ -81,6 +80,9 @@ func (p *Engine) _jobsStatus() web.H {
 	}
 }
 func (p *Engine) adminSiteStatus(w http.ResponseWriter, r *http.Request) {
+	if !p.Session.CheckAdmin(w, r, true) {
+		return
+	}
 	lang := r.Context().Value(web.LOCALE).(string)
 	data := r.Context().Value(web.DATA).(web.H)
 
@@ -89,20 +91,76 @@ func (p *Engine) adminSiteStatus(w http.ResponseWriter, r *http.Request) {
 	data["cache"] = p._cacheStatus()
 	data["database"] = p._dbStatus()
 	data["jobs"] = p._jobsStatus()
-	p.Ctx.HTML(w, "site/admin/status", data)
+	p.Ctx.HTML(w, "site/admin/site/status", data)
 }
 
-func (p *Engine) adminUsers(w http.ResponseWriter, r *http.Request) {
+type fmSiteInfo struct {
+	Title       string `form:"title"`
+	SubTitle    string `form:"subTitle"`
+	Keywords    string `form:"keywords"`
+	Description string `form:"description"`
+	Copyright   string `form:"copyright"`
+}
+
+func (p *Engine) adminSiteInfo(w http.ResponseWriter, r *http.Request) {
+	if !p.Session.CheckAdmin(w, r, true) {
+		return
+	}
 	lang := r.Context().Value(web.LOCALE).(string)
 	data := r.Context().Value(web.DATA).(web.H)
-	var users []auth.User
-	if err := p.Db.
-		Select([]string{"name", "logo", "home"}).
-		Order("last_sign_in_at DESC").
-		Find(&users).Error; err != nil {
-		log.Error(err)
+	switch r.Method {
+	case http.MethodPost:
+		var fm fmSiteInfo
+		err := p.Ctx.Bind(&fm, r)
+		if !p.Ctx.Check(w, err) {
+			return
+		}
+		for k, v := range map[string]string{
+			"title":       fm.Title,
+			"sub-title":   fm.SubTitle,
+			"keywords":    fm.Keywords,
+			"description": fm.Description,
+			"copyright":   fm.Copyright,
+		} {
+			if err := p.I18n.Set(lang, "site."+k, v); err != nil {
+				log.Error(err)
+			}
+		}
+
 	}
-	data["users"] = users
-	data["title"] = p.I18n.T(lang, "auth.users.index.title")
-	p.Ctx.HTML(w, "site/admin/users", data)
+
+	data["title"] = p.I18n.T(lang, "site.admin.info.title")
+	p.Ctx.HTML(w, "site/admin/site/info", data)
+}
+
+type fmSiteAuthor struct {
+	Name  string `form:"name"`
+	Email string `form:"email"`
+}
+
+func (p *Engine) adminSiteAuthor(w http.ResponseWriter, r *http.Request) {
+	if !p.Session.CheckAdmin(w, r, true) {
+		return
+	}
+	lang := r.Context().Value(web.LOCALE).(string)
+	data := r.Context().Value(web.DATA).(web.H)
+	switch r.Method {
+	case http.MethodPost:
+		var fm fmSiteAuthor
+		err := p.Ctx.Bind(&fm, r)
+		if !p.Ctx.Check(w, err) {
+			return
+		}
+		for k, v := range map[string]string{
+			"name":  fm.Name,
+			"email": fm.Email,
+		} {
+			if err := p.I18n.Set(lang, "site.author."+k, v); err != nil {
+				log.Error(err)
+			}
+		}
+	}
+
+	data["title"] = p.I18n.T(lang, "site.admin.author.title")
+	p.Ctx.HTML(w, "site/admin/site/author", data)
 }

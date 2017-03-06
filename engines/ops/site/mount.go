@@ -9,4 +9,6 @@ func (p *Engine) Mount() {
 
 	asg := p.Mux.Group("/admin/site")
 	asg.Get("site.admin.status", "/status", p.adminSiteStatus)
+	asg.Form("site.admin.info", "/info", p.adminSiteInfo)
+	asg.Form("site.admin.author", "/author", p.adminSiteAuthor)
 }
