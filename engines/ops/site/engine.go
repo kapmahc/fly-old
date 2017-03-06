@@ -53,7 +53,7 @@ func (p *Engine) NavBar(r *http.Request) ([]web.Link, *web.Dropdown) {
 				&web.Link{Label: "site.admin.seo.title", Href: "site.admin.seo"},
 				&web.Link{Label: "site.admin.smtp.title", Href: "site.admin.smtp"},
 				nil,
-				&web.Link{Label: "site.locales.index.title", Href: "site.admin.locales.index"},
+				&web.Link{Label: "site.admin.locales.index.title", Href: "site.admin.locales.index"},
 				&web.Link{Label: "site.admin.users.title", Href: "site.admin.users"},
 				nil,
 				&web.Link{Label: "site.notices.index.title", Href: "site.admin.notices.index"},

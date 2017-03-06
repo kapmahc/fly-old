@@ -7,6 +7,9 @@ func (p *Engine) Mount() {
 
 	p.Mux.Get("site.notices.index", "/notices", p.indexNotices)
 
+	p.Mux.Get("site.admin.locales.index", "/admin/locales", p.adminLocalesIndex)
+	p.Mux.Form("site.admin.locales.edit", "/admin/locales/edit", p.adminLocalesEdit)
+
 	asg := p.Mux.Group("/admin/site")
 	asg.Get("site.admin.status", "/status", p.adminSiteStatus)
 	asg.Form("site.admin.info", "/info", p.adminSiteInfo)

@@ -1,0 +1,10 @@
+{{template "shared/dashboard" .}}
+<div class="row">
+  <div class="offset-md-1 col-md-10">
+    <div class="list-group">
+      {{range .items}}
+        <a class="list-group-item list-group-item-action" href="{{uf "site.admin.locales.edit"}}?code={{.Code}}" target="_blank">{{.Code}} = {{.Message}}</a>        
+      {{end}}
+    </div>
+  </div>
+</div>

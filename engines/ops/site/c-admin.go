@@ -266,3 +266,59 @@ func (p *Engine) adminSiteSMTP(w http.ResponseWriter, r *http.Request) {
 	data["title"] = p.I18n.T(lang, "site.admin.smtp.title")
 	p.Ctx.HTML(w, "site/admin/site/smtp", data)
 }
+
+func (p *Engine) adminLocalesIndex(w http.ResponseWriter, r *http.Request) {
+	if !p.Session.CheckAdmin(w, r, true) {
+		return
+	}
+	lang := r.Context().Value(web.LOCALE).(string)
+	data := r.Context().Value(web.DATA).(web.H)
+
+	var items []web.Locale
+	if err := p.Db.Select([]string{"code", "message"}).
+		Order("code ASC").Find(&items).Error; err != nil {
+		log.Error(err)
+	}
+
+	data["items"] = items
+
+	data["title"] = p.I18n.T(lang, "site.admin.locales.index.title")
+	p.Ctx.HTML(w, "site/admin/locales/index", data)
+}
+
+type fmLocale struct {
+	Code    string `form:"code" validate:"required,max=255"`
+	Message string `form:"message" validate:"required"`
+}
+
+func (p *Engine) adminLocalesEdit(w http.ResponseWriter, r *http.Request) {
+	if !p.Session.CheckAdmin(w, r, true) {
+		return
+	}
+	lang := r.Context().Value(web.LOCALE).(string)
+	data := r.Context().Value(web.DATA).(web.H)
+
+	data["title"] = p.I18n.T(lang, "buttons.edit")
+	switch r.Method {
+	case http.MethodPost:
+		var fm fmLocale
+		err := p.Ctx.Bind(&fm, r)
+		if err == nil {
+			err = p.I18n.Set(lang, fm.Code, fm.Message)
+		}
+		if err == nil {
+			data[web.INFO] = p.I18n.T(lang, "success")
+		} else {
+			data[web.ERROR] = err.Error()
+		}
+		data["code"] = fm.Code
+	case http.MethodGet:
+		code := r.URL.Query().Get("code")
+		if code == "" {
+			data["title"] = p.I18n.T(lang, "buttons.new")
+		}
+		data["code"] = code
+	}
+
+	p.Ctx.HTML(w, "site/admin/locales/edit", data)
+}
