@@ -15,4 +15,7 @@ func (p *Engine) Mount() {
 	ug.Form("auth.users.change-password", "/change-password", p.changePassword)
 	ug.Get("auth.users.logs", "/logs", p.logs)
 	ug.Delete("auth.users.sign-out", "/sign-out", p.signOut)
+
+	ug.Get("auth.users.index", "/", p.indexUsers)
+	ug.Get("auth.users.show", "/{uid}", p.showUser)
 }
