@@ -1,1 +1,22 @@
-notices1
+{{$gl := .}}
+<h3>
+  {{.title}}
+  {{if .is_admin}}
+  <a href="{{uf "site.notices.new"}}" target="_blank">{{t .l "buttons.new"}}</a>
+  {{end}}
+</h3>
+<hr/>
+{{range .items}}
+<blockquote class="blockquote">
+  <p class="mb-0 markdown">{{.Body}}</p>
+  <footer class="blockquote-footer">
+    {{dtf .UpdatedAt}}
+    {{if $gl.is_admin}}
+    <cite title="manage">
+      <a target="_blank" href="{{uf "site.notices.edit" "id" .ID}}">{{t $gl.l "buttons.edit"}}</a>
+      <a target="_blank" data-method="delete" data-next="{{uf "site.notices.index"}}" data-confirm="{{t $gl.l "are-you-sure"}}" href="{{uf "site.notices.destroy" "id" .ID}}">{{t $gl.l "buttons.remove"}}</a>
+    </cite>
+    {{end}}
+  </footer>
+</blockquote>
+{{end}}

@@ -1,0 +1,12 @@
+<h3>{{.title}}</h3>
+<hr/>
+<form action="{{uf "site.notices.edit" "id" .item.ID}}" method="post">
+  <input type="hidden" name="type" id="type" value="markdown">
+  <div class="form-group">
+    <label for="body">{{t .l "attributes.body"}}</label>
+    <textarea class="form-control" name="body" id="body" rows="3" aria-describedby="bodyHelp">{{.item.Body}}</textarea>
+    <small id="bodyHelp" class="form-text text-muted">{{t .l "helps.markdown"}}</small>
+  </div>
+
+  {{template "shared/form-buttons" .}}
+</form>

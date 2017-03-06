@@ -17,4 +17,7 @@ func (p *Engine) Mount() {
 	asg.Form("site.admin.author", "/author", p.adminSiteAuthor)
 	asg.Form("site.admin.seo", "/seo", p.adminSiteSeo)
 	asg.Form("site.admin.smtp", "/smtp", p.adminSiteSMTP)
+
+	p.Mux.Crud("site.notices", "/notices", p.indexNotices, p.newNotice, nil, p.editNotice, p.destroyNotice)
+	p.Mux.Crud("site.leave-words", "/leave-words", p.indexLeavewords, p.newLeaveword, nil, nil, p.destroyLeaveword)
 }

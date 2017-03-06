@@ -1,0 +1,14 @@
+{{$gl := .}}
+<h3>{{.title}}</h3>
+<hr/>
+{{range .items}}
+<blockquote class="blockquote">
+  <p class="mb-0 markdown">{{.Body}}</p>
+  <footer class="blockquote-footer">
+    {{dtf .CreatedAt}}
+    <cite title="manage">
+      <a target="_blank" data-method="delete" data-next="{{uf "site.leave-words.index"}}" data-confirm="{{t $gl.l "are-you-sure"}}" href="{{uf "site.leave-words.destroy" "id" .ID}}">{{t $gl.l "buttons.remove"}}</a>
+    </cite>
+  </footer>
+</blockquote>
+{{end}}

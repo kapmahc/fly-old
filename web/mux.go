@@ -39,6 +39,26 @@ func (p *Mux) Status(w io.Writer) {
 	}
 }
 
+// Crud crud
+func (p *Mux) Crud(name, pat string, index, new, show, edit, destroy http.HandlerFunc) {
+	if index != nil {
+		p.Get(name+".index", pat+"/", index)
+	}
+	if new != nil {
+		p.Form(name+".new", pat+"/new", new)
+	}
+	if edit != nil {
+		p.Form(name+".edit", pat+"/edit/{id:[0-9]+}", edit)
+	}
+	if show != nil {
+		p.Get(name+".show", pat+"/{id:[0-9]+}", show)
+	}
+	if destroy != nil {
+		p.Delete(name+".destroy", pat+"/{id:[0-9]+}", destroy)
+	}
+
+}
+
 // Group group
 func (p *Mux) Group(pat string) *Mux {
 	return &Mux{Router: p.Router.PathPrefix(pat).Subrouter()}
