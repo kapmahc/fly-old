@@ -21,6 +21,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/csrf"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 	negronilogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/spf13/viper"
@@ -42,12 +43,12 @@ func (p *Engine) Shell() []cli.Command {
 			Name:    "server",
 			Aliases: []string{"s"},
 			Usage:   "start the app server",
-			Action:  Action(p.runServer),
+			Action:  auth.Action(p.runServer),
 		},
 		{
 			Name:  "seo",
 			Usage: "generate sitemap.xml.gz/rss.atom/robots.txt ...etc",
-			Action: Action(func(*cli.Context, *inject.Graph) error {
+			Action: auth.Action(func(*cli.Context, *inject.Graph) error {
 				root := path.Join("themes", viper.GetString("server.theme"), "assets")
 				if err := p.writeSitemap(root); err != nil {
 					return err
@@ -80,7 +81,7 @@ func (p *Engine) Shell() []cli.Command {
 					Usage: "worker's name",
 				},
 			},
-			Action: Action(p.runWorker),
+			Action: auth.Action(p.runWorker),
 		},
 		{
 			Name:    "redis",
@@ -97,13 +98,13 @@ func (p *Engine) Shell() []cli.Command {
 					Name:    "list",
 					Usage:   "list all cache keys",
 					Aliases: []string{"l"},
-					Action:  Action(p.listCacheItems),
+					Action:  auth.Action(p.listCacheItems),
 				},
 				{
 					Name:    "clear",
 					Usage:   "clear cache items",
 					Aliases: []string{"c"},
-					Action: Action(func(*cli.Context, *inject.Graph) error {
+					Action: auth.Action(func(*cli.Context, *inject.Graph) error {
 						return p.Cache.Flush()
 					}),
 				},
@@ -239,7 +240,7 @@ func (p *Engine) Shell() []cli.Command {
 			Name:    "routes",
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
-			Action: Action(func(*cli.Context, *inject.Graph) error {
+			Action: auth.Action(func(*cli.Context, *inject.Graph) error {
 				p.Mux.Status(os.Stdout)
 				return nil
 			}),
@@ -252,7 +253,7 @@ func (p *Engine) Shell() []cli.Command {
 					Name:    "sync",
 					Aliases: []string{"s"},
 					Usage:   "sync locales from files",
-					Action: Action(func(*cli.Context, *inject.Graph) error {
+					Action: auth.Action(func(*cli.Context, *inject.Graph) error {
 						return p.I18n.Sync("locales")
 					}),
 				},
@@ -669,8 +670,8 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 
 	ng.Use(negroni.NewStatic(http.Dir(path.Join("themes", viper.GetString("server.theme"), "assets"))))
 	ng.Use(negroni.HandlerFunc(p.I18n.Middleware))
-	ng.Use(negroni.HandlerFunc(p.layoutMiddleware))
 	ng.Use(negroni.HandlerFunc(p.Session.CurrentUserMiddleware))
+	ng.Use(negroni.HandlerFunc(p.layoutMiddleware))
 	ng.UseHandler(p.Mux.Router)
 
 	hnd := csrf.Protect(

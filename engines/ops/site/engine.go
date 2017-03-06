@@ -1,6 +1,7 @@
 package site
 
 import (
+	"fmt"
 	"net/http"
 
 	machinery "github.com/RichardKnop/machinery/v1"
@@ -39,7 +40,15 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 
 // NavBar nav-bar
 func (p *Engine) NavBar(r *http.Request) ([]web.Link, *web.Dropdown) {
-	return []web.Link{}, nil
+	var dash *web.Dropdown
+	if p.Session.CheckAdmin(nil, r, false) {
+		dash = &web.Dropdown{
+			Label: "site.dashboard.title",
+			Items: []*web.Link{},
+		}
+	}
+	fmt.Printf("%+v\n", dash)
+	return []web.Link{}, dash
 }
 
 func init() {

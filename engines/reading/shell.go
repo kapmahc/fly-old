@@ -10,7 +10,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
 	"github.com/kapmahc/epub"
-	"github.com/kapmahc/fly/engines/ops/site"
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/urfave/cli"
 )
 
@@ -36,7 +36,7 @@ func (p *Engine) Shell() []cli.Command {
 					Name:    "scan",
 					Usage:   fmt.Sprintf("scan books in %s", p.root()),
 					Aliases: []string{"s"},
-					Action:  site.Action(p.scanBook),
+					Action:  auth.Action(p.scanBook),
 				},
 			},
 		},

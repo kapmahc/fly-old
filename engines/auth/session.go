@@ -49,6 +49,7 @@ func (p *Session) CheckAdmin(w http.ResponseWriter, r *http.Request, must bool) 
 	if p.CheckSignIn(w, r, must) {
 		is := r.Context().Value(web.DATA).(web.H)[isAdmin]
 		if is != nil && is.(bool) {
+
 			return true
 		}
 		if must {
