@@ -11,4 +11,6 @@ func (p *Engine) Mount() {
 	asg.Get("site.admin.status", "/status", p.adminSiteStatus)
 	asg.Form("site.admin.info", "/info", p.adminSiteInfo)
 	asg.Form("site.admin.author", "/author", p.adminSiteAuthor)
+	asg.Form("site.admin.seo", "/seo", p.adminSiteSeo)
+	asg.Form("site.admin.smtp", "/smtp", p.adminSiteSMTP)
 }

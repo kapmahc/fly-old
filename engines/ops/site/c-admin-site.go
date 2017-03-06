@@ -112,19 +112,24 @@ func (p *Engine) adminSiteInfo(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		var fm fmSiteInfo
 		err := p.Ctx.Bind(&fm, r)
-		if !p.Ctx.Check(w, err) {
-			return
-		}
-		for k, v := range map[string]string{
-			"title":       fm.Title,
-			"sub-title":   fm.SubTitle,
-			"keywords":    fm.Keywords,
-			"description": fm.Description,
-			"copyright":   fm.Copyright,
-		} {
-			if err := p.I18n.Set(lang, "site."+k, v); err != nil {
-				log.Error(err)
+		if err == nil {
+			for k, v := range map[string]string{
+				"title":       fm.Title,
+				"sub-title":   fm.SubTitle,
+				"keywords":    fm.Keywords,
+				"description": fm.Description,
+				"copyright":   fm.Copyright,
+			} {
+				if err = p.I18n.Set(lang, "site."+k, v); err != nil {
+					break
+				}
 			}
+		}
+
+		if err == nil {
+			data[web.INFO] = p.I18n.T(lang, "success")
+		} else {
+			data[web.ERROR] = err.Error()
 		}
 
 	}
@@ -148,19 +153,116 @@ func (p *Engine) adminSiteAuthor(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		var fm fmSiteAuthor
 		err := p.Ctx.Bind(&fm, r)
-		if !p.Ctx.Check(w, err) {
-			return
-		}
-		for k, v := range map[string]string{
-			"name":  fm.Name,
-			"email": fm.Email,
-		} {
-			if err := p.I18n.Set(lang, "site.author."+k, v); err != nil {
-				log.Error(err)
+		if err == nil {
+			for k, v := range map[string]string{
+				"name":  fm.Name,
+				"email": fm.Email,
+			} {
+				if err = p.I18n.Set(lang, "site.author."+k, v); err != nil {
+					break
+				}
 			}
+		}
+
+		if err == nil {
+			data[web.INFO] = p.I18n.T(lang, "success")
+		} else {
+			data[web.ERROR] = err.Error()
 		}
 	}
 
 	data["title"] = p.I18n.T(lang, "site.admin.author.title")
 	p.Ctx.HTML(w, "site/admin/site/author", data)
+}
+
+type fmSiteSeo struct {
+	GoogleVerifyCode string `form:"googleVerifyCode"`
+	BaiduVerifyCode  string `form:"baiduVerifyCode"`
+}
+
+func (p *Engine) adminSiteSeo(w http.ResponseWriter, r *http.Request) {
+	if !p.Session.CheckAdmin(w, r, true) {
+		return
+	}
+	lang := r.Context().Value(web.LOCALE).(string)
+	data := r.Context().Value(web.DATA).(web.H)
+
+	switch r.Method {
+	case http.MethodPost:
+		var fm fmSiteSeo
+		err := p.Ctx.Bind(&fm, r)
+		if err == nil {
+			for k, v := range map[string]string{
+				"google.verify.code": fm.GoogleVerifyCode,
+				"baidu.verify.code":  fm.BaiduVerifyCode,
+			} {
+				if err = p.Settings.Set("site."+k, v, true); err != nil {
+					break
+				}
+			}
+		}
+
+		if err == nil {
+			data[web.INFO] = p.I18n.T(lang, "success")
+		} else {
+			data[web.ERROR] = err.Error()
+		}
+	}
+
+	var gc string
+	var bc string
+	p.Settings.Get("site.google.verify.code", &gc)
+	p.Settings.Get("site.baidu.verify.code", &bc)
+	data["googleVerifyCode"] = gc
+	data["baiduVerifyCode"] = bc
+
+	data["title"] = p.I18n.T(lang, "site.admin.seo.title")
+	p.Ctx.HTML(w, "site/admin/site/seo", data)
+}
+
+type fmSiteSMTP struct {
+	Host                 string `form:"host"`
+	Port                 int    `form:"port"`
+	Ssl                  bool   `form:"ssl"`
+	Username             string `form:"username"`
+	Password             string `form:"password"`
+	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=Password"`
+}
+
+func (p *Engine) adminSiteSMTP(w http.ResponseWriter, r *http.Request) {
+	if !p.Session.CheckAdmin(w, r, true) {
+		return
+	}
+	lang := r.Context().Value(web.LOCALE).(string)
+	data := r.Context().Value(web.DATA).(web.H)
+
+	switch r.Method {
+	case http.MethodPost:
+		var fm fmSiteSMTP
+		err := p.Ctx.Bind(&fm, r)
+		if err == nil {
+
+			val := map[string]interface{}{
+				"host":     fm.Host,
+				"port":     fm.Port,
+				"username": fm.Username,
+				"password": fm.Password,
+				"ssl":      fm.Ssl,
+			}
+			err = p.Settings.Set("site.smtp", val, true)
+		}
+		if err == nil {
+			data[web.INFO] = p.I18n.T(lang, "success")
+		} else {
+			data[web.ERROR] = err.Error()
+		}
+	}
+
+	var smtp map[string]interface{}
+	p.Settings.Get("site.smtp", &smtp)
+	data["smtp"] = smtp
+	data["ports"] = []int{25, 465, 587}
+
+	data["title"] = p.I18n.T(lang, "site.admin.smtp.title")
+	p.Ctx.HTML(w, "site/admin/site/smtp", data)
 }

@@ -794,7 +794,7 @@ Sitemap: {{.Home}}/sitemap.xml.gz
 
 func (p *Engine) writeGoogleVerify(root string) error {
 	var code string
-	if err := p.Settings.Get("site.google.verify", &code); err != nil {
+	if err := p.Settings.Get("site.google.verify.code", &code); err != nil {
 		return err
 	}
 	fn := path.Join(root, fmt.Sprintf("google%s.html", code))
@@ -811,7 +811,7 @@ func (p *Engine) writeGoogleVerify(root string) error {
 
 func (p *Engine) writeBaiduVerify(root string) error {
 	var code string
-	if err := p.Settings.Get("site.baidu.verify", &code); err != nil {
+	if err := p.Settings.Get("site.baidu.verify.code", &code); err != nil {
 		return err
 	}
 	fn := path.Join(root, fmt.Sprintf("baidu_verify_%s.html", code))
