@@ -11,3 +11,26 @@
 
   {{template "shared/form-buttons" .}}
 </form>
+
+<div class="list-group block">
+  <a href="/robots.txt" target="_blank" class="list-group-item list-group-item-action">
+    robots.txt
+  </a>
+  <a href="/sitemap.xml.gz" target="_blank" class="list-group-item list-group-item-action">
+    sitemap.xml.gz
+  </a>
+  <a href="/robots.txt" target="_blank" class="list-group-item list-group-item-action">
+    robots.txt
+  </a>
+  <a href="/google{{.googleVerifyCode}}.html" target="_blank" class="list-group-item list-group-item-action">
+    google{{.googleVerifyCode}}.html
+  </a>
+  <a href="/baidu_verify_{{.baiduVerifyCode}}.html" target="_blank" class="list-group-item list-group-item-action">
+    baidu_verify_{{.baiduVerifyCode}}.html
+  </a>
+  {{range .languages}}
+  <a href="/rss-{{.}}.atom" target="_blank" class="list-group-item list-group-item-action">
+    rss-{{.}}.atom
+  </a>
+  {{end}}
+</div>
