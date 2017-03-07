@@ -55,7 +55,7 @@ func (p *Engine) NavBar(r *http.Request) ([]web.Link, *web.Dropdown) {
 	return []web.Link{
 			{Label: "auth.users.index.title", Href: "auth.users.index"},
 		}, &web.Dropdown{
-			Label: "auth.profile",
+			Label: "auth.dashboard.title",
 			Items: []*web.Link{
 				&web.Link{Label: "auth.users.logs.title", Href: "auth.users.logs"},
 				nil,
