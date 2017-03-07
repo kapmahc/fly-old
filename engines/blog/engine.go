@@ -36,7 +36,7 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	posts := p.getPosts()
 	urls := []stm.URL{
-		{"loc": p.Ctx.URLFor("blog.engine.home")},
+		{"loc": p.Ctx.URLFor("blog.index")},
 	}
 	for _, i := range posts {
 		urls = append(

@@ -32,7 +32,22 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
-	return []stm.URL{}, nil
+	urls := []stm.URL{
+		{"loc": p.Ctx.URLFor("auth.users.index")},
+		{"loc": p.Ctx.URLFor("auth.users.sign-in")},
+		{"loc": p.Ctx.URLFor("auth.users.sign-up")},
+		{"loc": p.Ctx.URLFor("auth.users.confirm")},
+		{"loc": p.Ctx.URLFor("auth.users.forgot-password")},
+		{"loc": p.Ctx.URLFor("auth.users.unlock")},
+	}
+	var users []User
+	if err := p.Db.Select([]string{"uid"}).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	for _, u := range users {
+		urls = append(urls, stm.URL{"loc": p.Ctx.URLFor("auth.users.show", "uid", u.UID)})
+	}
+	return urls, nil
 }
 
 // NavBar nav-bar

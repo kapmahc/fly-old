@@ -36,7 +36,11 @@ func (p *Engine) Atom() ([]*atom.Entry, error) {
 
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
-	return []stm.URL{}, nil
+	urls := []stm.URL{
+		{"loc": p.Ctx.URLFor("site.leave-words.new")},
+		{"loc": p.Ctx.URLFor("site.notices.index")},
+	}
+	return urls, nil
 }
 
 // NavBar nav-bar
