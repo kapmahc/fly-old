@@ -11,12 +11,11 @@ import (
 	"strings"
 	"time"
 
-	gin "gopkg.in/gin-gonic/gin.v1"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/go-ini/ini"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/text/language"
+	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 const (

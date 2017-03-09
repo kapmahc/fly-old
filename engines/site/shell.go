@@ -12,9 +12,6 @@ import (
 	"syscall"
 	"time"
 
-	cors "gopkg.in/gin-contrib/cors.v1"
-	gin "gopkg.in/gin-gonic/gin.v1"
-
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
 	"github.com/facebookgo/inject"
@@ -28,6 +25,8 @@ import (
 	"github.com/urfave/cli"
 	"golang.org/x/text/language"
 	"golang.org/x/tools/blog/atom"
+	cors "gopkg.in/gin-contrib/cors.v1"
+	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 const (
@@ -238,10 +237,21 @@ func (p *Engine) Shell() []cli.Command {
 			Name:    "routes",
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
-			Action: auth.Action(func(*cli.Context, *inject.Graph) error {
-				// TODO
+			Action: func(*cli.Context) error {
+				gin.SetMode(gin.ReleaseMode)
+				rt := gin.New()
+				web.Walk(func(en web.Engine) error {
+					en.Mount(rt)
+					return nil
+				})
+				tpl := "%-7s %s\n"
+				fmt.Printf(tpl, "METHOD", "PATH")
+				for _, ri := range rt.Routes() {
+					fmt.Printf(tpl, ri.Method, ri.Path)
+					// fmt.Println(runtime.FuncForPC(reflect.ValueOf(r.Handler).Pointer()).Name())
+				}
 				return nil
-			}),
+			},
 		},
 		{
 			Name:  "i18n",
@@ -592,7 +602,16 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	} else {
 		cfg.AllowAllOrigins = true
 	}
-	rt.Use(cors.New(cfg))
+	rt.Use(
+		cors.New(cfg),
+		p.I18n.Middleware,
+		p.Jwt.CurrentUserMiddleware,
+	)
+	web.Walk(func(en web.Engine) error {
+		en.Mount(rt)
+		return nil
+	})
+
 	addr := fmt.Sprintf(":%d", port)
 	if web.IsProduction() {
 		srv := endless.NewServer(addr, rt)

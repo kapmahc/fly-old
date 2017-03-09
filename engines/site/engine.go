@@ -4,6 +4,7 @@ import (
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 	"golang.org/x/tools/blog/atom"
 	gin "gopkg.in/gin-gonic/gin.v1"
@@ -16,6 +17,7 @@ type Engine struct {
 	I18n     *web.I18n         `inject:""`
 	Settings *web.Settings     `inject:""`
 	Db       *gorm.DB          `inject:""`
+	Jwt      *auth.Jwt         `inject:""`
 }
 
 // Mount web mount-points

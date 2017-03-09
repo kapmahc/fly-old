@@ -1,21 +1,22 @@
 package auth
 
 import (
+	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/web"
 	"golang.org/x/tools/blog/atom"
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Engine engine
 type Engine struct {
-	Dao *Dao     `inject:""`
-	Db  *gorm.DB `inject:""`
+	Dao      *Dao              `inject:""`
+	Db       *gorm.DB          `inject:""`
+	Security *web.Security     `inject:""`
+	I18n     *web.I18n         `inject:""`
+	Jwt      *Jwt              `inject:""`
+	Server   *machinery.Server `inject:""`
 }
-
-// Mount web mount-points
-func (p *Engine) Mount(*gin.Engine) {}
 
 // Atom rss.atom
 func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
