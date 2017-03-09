@@ -1,0 +1,53 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"path": "appengine/cloudsql",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "QD6LqgLz2JMxXqns8TaxtK9AuHs=",
+			"path": "github.com/go-sql-driver/mysql",
+			"revision": "2e00b5cd70399450106cec6431c2e2ce3cae5034",
+			"revisionTime": "2016-12-24T12:10:19Z"
+		},
+		{
+			"checksumSHA1": "eECxSkwh0WmhLwaxHfkvcLOWS08=",
+			"path": "github.com/jinzhu/gorm/dialects/mysql",
+			"revision": "5409931a1bb87e484d68d649af9367c207713ea2",
+			"revisionTime": "2017-02-22T00:28:20Z"
+		},
+		{
+			"checksumSHA1": "QmQW8snORAputB7/1jFXpsOZa8A=",
+			"path": "github.com/jinzhu/gorm/dialects/postgres",
+			"revision": "5409931a1bb87e484d68d649af9367c207713ea2",
+			"revisionTime": "2017-02-22T00:28:20Z"
+		},
+		{
+			"checksumSHA1": "JQG/9gSl4PjB+gde5cRTKimE4qE=",
+			"path": "github.com/lib/pq",
+			"revision": "e4af84aab01e159ca479940dbde304519e8e8811",
+			"revisionTime": "2017-03-09T16:49:12Z"
+		},
+		{
+			"checksumSHA1": "jaCQF1par6Jl8g+V2Cgp0n/0wSc=",
+			"path": "github.com/lib/pq/hstore",
+			"revision": "e4af84aab01e159ca479940dbde304519e8e8811",
+			"revisionTime": "2017-03-09T16:49:12Z"
+		},
+		{
+			"checksumSHA1": "Gk3jTNQ5uGDUE0WMJFWcYz9PMps=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "e4af84aab01e159ca479940dbde304519e8e8811",
+			"revisionTime": "2017-03-09T16:49:12Z"
+		},
+		{
+			"checksumSHA1": "K/CP3EBR0TUpw8DPpjRExGEYNkY=",
+			"path": "github.com/urfave/cli",
+			"revision": "9e5b04886c4bfee2ceba1465b8121057355c4e53",
+			"revisionTime": "2017-03-04T22:33:36Z"
+		}
+	],
+	"rootPath": "github.com/kapmahc/fly"
+}

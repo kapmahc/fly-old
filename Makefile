@@ -1,11 +1,11 @@
 dst=dist
-theme=bootstrap
+theme=bt4
 
 all: backend frontend
 
 
 backend:
-	go build -ldflags "-s -w -X github.com/kapmahc/fly/web.Version=`git rev-parse --short HEAD` -X github.com/kapmahc/fly/web.BuildTime=`date +%FT%T%z`" -o ${dst}/fly main.go
+	go build -ldflags "-s -w -X github.com/kapmahc/fly/web.Version=`git rev-parse --short HEAD` -X github.com/kapmahc/fly/web.BuildTime=`date +%FT%T%z`" -o ${dst}/fly demo/main.go
 	-cp -rv demo/locales demo/db $(dst)/
 
 frontend:
