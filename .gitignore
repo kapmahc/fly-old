@@ -1,0 +1,10 @@
+# Go
+/vendor/*/
+
+# Build
+/dist
+
+
+# Editor
+.*.swp
+.*.un~
