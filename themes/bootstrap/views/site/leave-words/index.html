@@ -1,6 +1,5 @@
 {{$gl := .}}
-<h3>{{.title}}</h3>
-<hr/>
+{{template "shared/dashboard" .}}
 {{range .items}}
 <blockquote class="blockquote">
   <p class="mb-0 markdown">{{.Body}}</p>

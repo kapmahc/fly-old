@@ -18,6 +18,13 @@ func Shell(cmd string, args ...string) error {
 
 //RandomStr randome string
 func RandomStr(n int) string {
+	// b := make([]byte, n)
+	// if _, err := rand.Read(b); err != nil {
+	// 	panic(err)
+	// }
+	//
+	// return fmt.Sprintf("%X", b)
+
 	letters := []rune("abcdefghijklmnopqrstuvwxyz0123456789")
 	buf := make([]rune, n)
 	for i := range buf {
