@@ -7,6 +7,16 @@
 			"revision": ""
 		},
 		{
+			"path": "get",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "F6GCLoORCK5o/lmSTA+in1JrHCQ=",
+			"path": "github.com/BurntSushi/toml",
+			"revision": "e643e9ef00b049d75de26e61109c5ea01885cd21",
+			"revisionTime": "2017-03-07T03:38:02Z"
+		},
+		{
 			"checksumSHA1": "VrY3/MuaXwWDLtBLcp10MTFnVOI=",
 			"path": "github.com/RichardKnop/machinery/v1",
 			"revision": "f1563577ba2e9eca34985c8bd8c4983a42a696e3",
@@ -277,6 +287,12 @@
 			"revisionTime": "2016-08-16T05:19:40Z"
 		},
 		{
+			"checksumSHA1": "q9bsaNA05ney3eon3nKAE+eLwO4=",
+			"path": "github.com/fvbock/endless",
+			"revision": "447134032cb6a86814f570257390a379982dfc61",
+			"revisionTime": "2017-01-09T17:00:31Z"
+		},
+		{
 			"checksumSHA1": "2UmMbNHc8FBr98mJFN1k8ISOIHk=",
 			"path": "github.com/garyburd/redigo/internal",
 			"revision": "0d253a66e6e1349f4581d6d2b300ee434ee2da9f",
@@ -439,6 +455,12 @@
 			"revisionTime": "2016-08-03T19:07:31Z"
 		},
 		{
+			"checksumSHA1": "p+Bj1OSkp9/zxr6oZGzBAvYsdm0=",
+			"path": "github.com/kylelemons/go-gypsy/yaml",
+			"revision": "08cad365cd28a7fba23bb1e57aa43c5e18ad8bb8",
+			"revisionTime": "2016-09-05T02:00:20Z"
+		},
+		{
 			"checksumSHA1": "JQG/9gSl4PjB+gde5cRTKimE4qE=",
 			"path": "github.com/lib/pq",
 			"revision": "e4af84aab01e159ca479940dbde304519e8e8811",
@@ -529,6 +551,12 @@
 			"revisionTime": "2017-02-17T16:38:17Z"
 		},
 		{
+			"checksumSHA1": "YvQ7WnFMOBjofstj6eVn7uuEkn0=",
+			"path": "github.com/steinbacher/goose",
+			"revision": "dc457c3195032dd1c3848e21dc95ed02c92f8cfa",
+			"revisionTime": "2016-07-25T13:16:29Z"
+		},
+		{
 			"checksumSHA1": "2tjJ0eQrZHGXncRkHSYwsfTDQh8=",
 			"path": "github.com/streadway/amqp",
 			"revision": "ce1c69d94c3efdb1f287015f851b17db8fa205b1",
@@ -539,6 +567,10 @@
 			"path": "github.com/urfave/cli",
 			"revision": "9e5b04886c4bfee2ceba1465b8121057355c4e53",
 			"revisionTime": "2017-03-04T22:33:36Z"
+		},
+		{
+			"path": "go",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
@@ -599,6 +631,12 @@
 			"path": "golang.org/x/text/unicode/norm",
 			"revision": "f28f36722d5ef2f9655ad3de1f248e3e52ad5ebd",
 			"revisionTime": "2017-02-28T17:26:26Z"
+		},
+		{
+			"checksumSHA1": "2NA4aSa/A7FnIlI9SrZkqZc5A38=",
+			"path": "gopkg.in/gin-contrib/cors.v1",
+			"revision": "fb918bcd825b9e20f0c3c365981baf9454029b6c",
+			"revisionTime": "2016-11-09T06:27:26Z"
 		},
 		{
 			"checksumSHA1": "hT+7DPyl8tQ96kUXW3Sr5o0Pcj0=",
