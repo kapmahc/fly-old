@@ -23,6 +23,7 @@ type Engine struct {
 	Session  *auth.Session     `inject:""`
 	Ctx      *web.Context      `inject:""`
 	Mux      *web.Mux          `inject:""`
+	Dao      *auth.Dao         `inject:""`
 }
 
 // Do background jobs

@@ -40,11 +40,10 @@ func (p *Engine) newTag(w http.ResponseWriter, r *http.Request) {
 			err = p.Db.Create(&Tag{Name: fm.Name}).Error
 		}
 		if err == nil {
-			data[web.INFO] = p.I18n.T(lang, "success")
-		} else {
-			data[web.ERROR] = err.Error()
+			p.Ctx.Redirect(w, r, p.Ctx.URLFor("forum.dashboard.tags"))
+			return
 		}
-
+		data[web.ERROR] = err.Error()
 	}
 
 	data["title"] = p.I18n.T(lang, "buttons.new")
@@ -86,11 +85,10 @@ func (p *Engine) editTag(w http.ResponseWriter, r *http.Request) {
 			err = p.Db.Model(&tag).Update("name", fm.Name).Error
 		}
 		if err == nil {
-			data[web.INFO] = p.I18n.T(lang, "success")
-		} else {
-			data[web.ERROR] = err.Error()
+			p.Ctx.Redirect(w, r, p.Ctx.URLFor("forum.dashboard.tags"))
+			return
 		}
-
+		data[web.ERROR] = err.Error()
 	}
 
 	data["title"] = p.I18n.T(lang, "buttons.edit")
@@ -103,8 +101,16 @@ func (p *Engine) destroyTag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := mux.Vars(r)["id"]
-
-	err := p.Db.Where("id = ?", id).Delete(&Tag{}).Error
+	var tag Tag
+	err := p.Db.Where("id = ?", id).First(&tag).Error
+	if !p.Ctx.Check(w, err) {
+		return
+	}
+	err = p.Db.Model(&tag).Association("Articles").Clear().Error
+	if !p.Ctx.Check(w, err) {
+		return
+	}
+	err = p.Db.Delete(&tag).Error
 	if !p.Ctx.Check(w, err) {
 		return
 	}
