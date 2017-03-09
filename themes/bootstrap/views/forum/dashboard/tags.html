@@ -15,6 +15,7 @@
     <tr>
       <th scope="row">{{.Name}}</th>
       <td>
+        <a class="btn btn-sm btn-info" href="{{uf "forum.tags.show" "id" .ID}}" target="_blank">{{t $l "buttons.view"}}</a>
         <a class="btn btn-sm btn-warning" href="{{uf "forum.tags.edit" "id" .ID}}">{{t $l "buttons.edit"}}</a>
         <a class="btn btn-sm btn-danger" data-method="delete" data-next="{{uf "forum.dashboard.tags"}}" data-confirm="{{t $l "are-you-sure"}}" href="{{uf "forum.tags.destroy" "id" .ID}}">{{t $l "buttons.remove"}}</a>
       </td>

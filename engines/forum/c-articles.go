@@ -41,8 +41,8 @@ func (p *Engine) indexArticles(w http.ResponseWriter, r *http.Request) {
 }
 
 type fmArticle struct {
-	Title   string   `form:"type" validate:"required,max=255"`
-	Summary string   `form:"type" validate:"required,max=500"`
+	Title   string   `form:"title" validate:"required,max=255"`
+	Summary string   `form:"summary" validate:"required,max=500"`
 	Type    string   `form:"type" validate:"required,max=8"`
 	Body    string   `form:"body" validate:"required,max=2000"`
 	Tags    []string `form:"tags"`
@@ -76,10 +76,14 @@ func (p *Engine) newArticle(w http.ResponseWriter, r *http.Request) {
 				Body:    fm.Body,
 				Type:    fm.Type,
 				UserID:  user.ID,
-				Tags:    tags,
 			}
 			if err = p.Db.Create(&a).Error; err != nil {
 				log.Error(err)
+			}
+			if err == nil {
+				if err = p.Db.Model(a).Association("Tags").Append(tags).Error; err != nil {
+					log.Error(err)
+				}
 			}
 		}
 		if err == nil {
@@ -89,7 +93,7 @@ func (p *Engine) newArticle(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	data["title"] = p.I18n.T(lang, "forum.articles.new")
+	data["title"] = p.I18n.T(lang, "forum.articles.new.title")
 	var tags []Tag
 	if err := p.Db.Select([]string{"id", "name"}).Find(&tags).Error; err != nil {
 		log.Error(err)
@@ -171,7 +175,11 @@ func (p *Engine) destroyArticle(w http.ResponseWriter, r *http.Request) {
 	if a == nil {
 		return
 	}
-	err := p.Db.Delete(a).Error
+	err := p.Db.Model(a).Association("Tags").Clear().Error
+	if !p.Ctx.Check(w, err) {
+		return
+	}
+	err = p.Db.Delete(a).Error
 	if !p.Ctx.Check(w, err) {
 		return
 	}

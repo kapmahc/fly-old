@@ -51,15 +51,18 @@ func (p *Engine) newTag(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Engine) showTag(w http.ResponseWriter, r *http.Request) {
-	lang := r.Context().Value(web.LOCALE).(string)
 	data := r.Context().Value(web.DATA).(web.H)
 	var tag Tag
 	err := p.Db.Where("id = ?", mux.Vars(r)["id"]).First(&tag).Error
 	if !p.Ctx.Check(w, err) {
 		return
 	}
+	err = p.Db.Model(&tag).Association("Articles").Find(&tag.Articles).Error
+	if !p.Ctx.Check(w, err) {
+		return
+	}
 	data["tag"] = tag
-	data["title"] = p.I18n.T(lang, "buttons.new")
+	data["title"] = tag.Name
 	p.Ctx.HTML(w, "forum/tags/show", data)
 }
 

@@ -52,7 +52,7 @@ func (p *Engine) dashboardArticles(w http.ResponseWriter, r *http.Request) {
 	}
 	data["articles"] = articles
 	data["title"] = p.I18n.T(lang, "forum.dashboard.articles.title")
-	p.Ctx.HTML(w, "forum.dashboard.articles", data)
+	p.Ctx.HTML(w, "forum/dashboard/articles", data)
 }
 
 func (p *Engine) dashboardTags(w http.ResponseWriter, r *http.Request) {

@@ -1,0 +1,17 @@
+<h3>{{.title}}</h3>
+<hr/>
+
+{{range .articles}}
+<blockquote class="blockquote">
+  <p class="mb-0">{{.Summary}}</p>
+  <footer class="blockquote-footer">
+    {{dtf .UpdatedAt}}
+    {{if $gl.is_admin}}
+    <cite title="manage">
+      <a target="_blank" href="{{uf "site.notices.edit" "id" .ID}}">{{t $gl.l "buttons.edit"}}</a>
+      <a data-method="delete" data-next="{{uf "site.notices.index"}}" data-confirm="{{t $gl.l "are-you-sure"}}" href="{{uf "site.notices.destroy" "id" .ID}}">{{t $gl.l "buttons.remove"}}</a>
+    </cite>
+    {{end}}
+  </footer>
+</blockquote>
+{{end}}

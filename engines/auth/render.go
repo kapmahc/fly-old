@@ -65,6 +65,14 @@ func openRender(theme string, i18n *web.I18n, ctx *web.Context) (*render.Render,
 			return t.Format("Mon Jan _2 15:04:05 2006")
 		},
 		"uf": ctx.URLFor,
+		"in": func(o interface{}, args []interface{}) bool {
+			for _, v := range args {
+				if o == v {
+					return true
+				}
+			}
+			return false
+		},
 	}
 
 	// ---------------
