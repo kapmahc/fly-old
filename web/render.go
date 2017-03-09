@@ -7,22 +7,22 @@ import (
 )
 
 // TEXT text render
-func TEXT(c *gin.Context, s string, e error) {
-	if e == nil {
+func TEXT(c *gin.Context, s string, err error) {
+	if err == nil {
 		c.String(http.StatusOK, s)
 	} else {
-		c.String(http.StatusInternalServerError, e.Error())
+		c.String(http.StatusInternalServerError, err.Error())
 	}
 }
 
 // JSON json render
-func JSON(c *gin.Context, o interface{}, e error) {
-	if e == nil {
+func JSON(c *gin.Context, o interface{}, err error) {
+	if err == nil {
 		if o == nil {
 			o = gin.H{}
 		}
 		c.JSON(http.StatusOK, o)
 	} else {
-		c.String(http.StatusInternalServerError, e.Error())
+		c.String(http.StatusInternalServerError, err.Error())
 	}
 }

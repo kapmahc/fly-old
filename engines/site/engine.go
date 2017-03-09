@@ -2,12 +2,12 @@ package site
 
 import (
 	machinery "github.com/RichardKnop/machinery/v1"
+	"github.com/garyburd/redigo/redis"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 	"golang.org/x/tools/blog/atom"
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Engine engine
@@ -18,10 +18,8 @@ type Engine struct {
 	Settings *web.Settings     `inject:""`
 	Db       *gorm.DB          `inject:""`
 	Jwt      *auth.Jwt         `inject:""`
+	Redis    *redis.Pool       `inject:""`
 }
-
-// Mount web mount-points
-func (p *Engine) Mount(*gin.Engine) {}
 
 // Atom rss.atom
 func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
