@@ -4,6 +4,9 @@ import gin "gopkg.in/gin-gonic/gin.v1"
 
 // Mount web mount-points
 func (p *Engine) Mount(rt *gin.Engine) {
+	rt.GET("/locales/:lang", p.getLocales)
+	rt.GET("/site/info", p.getSiteInfo)
+
 	rt.GET("/notices", p.indexNotices)
 	rt.POST("/notices", p.createNotice)
 	rt.POST("/notices/:id", p.updateNotice)

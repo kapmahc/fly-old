@@ -16,12 +16,12 @@ func TEXT(c *gin.Context, s string, err error) {
 }
 
 // JSON json render
-func JSON(c *gin.Context, o interface{}, err error) {
+func JSON(c *gin.Context, data interface{}, err error) {
 	if err == nil {
-		if o == nil {
-			o = gin.H{}
+		if data == nil {
+			data = gin.H{}
 		}
-		c.JSON(http.StatusOK, o)
+		c.JSON(http.StatusOK, data)
 	} else {
 		c.String(http.StatusInternalServerError, err.Error())
 	}

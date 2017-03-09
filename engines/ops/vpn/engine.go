@@ -15,6 +15,11 @@ type Engine struct {
 // Mount web mount-points
 func (p *Engine) Mount(*gin.Engine) {}
 
+// RegisterWorker register worker
+func (p *Engine) RegisterWorker() {
+
+}
+
 // Shell shell commands
 func (p *Engine) Shell() []cli.Command {
 	return []cli.Command{}

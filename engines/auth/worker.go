@@ -19,6 +19,11 @@ const (
 	sendEmailJob = "auth.send-email"
 )
 
+// RegisterWorker register worker
+func (p *Engine) RegisterWorker() {
+	p.Server.RegisterTask(sendEmailJob, p.doSendEmail)
+}
+
 func (p *Engine) sendEmail(lng string, user *User, act string) {
 	cm := jws.Claims{}
 	cm.Set("act", act)

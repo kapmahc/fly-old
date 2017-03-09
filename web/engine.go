@@ -11,6 +11,7 @@ import (
 type Engine interface {
 	Mount(*gin.Engine)
 	Shell() []cli.Command
+	RegisterWorker()
 	Atom(lang string) ([]*atom.Entry, error)
 	Sitemap() ([]stm.URL, error)
 }
