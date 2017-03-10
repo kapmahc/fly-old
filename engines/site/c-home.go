@@ -8,8 +8,12 @@ import (
 )
 
 func (p *Engine) getLocales(c *gin.Context) {
-	lang, err := language.Parse(c.Param("lang"))
-	data := p.I18n.Items(lang.String())
+	tag, err := language.Parse(c.Param("lang"))
+	if err == nil {
+		tag, _, _ = p.Matcher.Match(tag)
+	}
+
+	data := p.I18n.Items(tag.String())
 	web.JSON(c, data, err)
 }
 

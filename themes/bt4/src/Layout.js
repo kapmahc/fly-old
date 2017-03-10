@@ -1,15 +1,19 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 
 import Header from './components/Header'
 import Footer from './components/Footer'
 
 import {refresh} from './actions'
+import {get} from './ajax'
 
 class Widget extends Component {
-  componentDidMount() {
+  componentDidMount() {    
     const { refresh } = this.props
-    refresh({title:'ttt', subTitle:'sss'});
+    get('/site/info', rst => {
+      document.title = rst.title;
+      refresh(rst);
+    });
   }
   render() {
     const {children} = this.props;

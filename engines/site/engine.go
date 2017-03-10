@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
+	"golang.org/x/text/language"
 	"golang.org/x/tools/blog/atom"
 )
 
@@ -19,6 +20,7 @@ type Engine struct {
 	Db       *gorm.DB          `inject:""`
 	Jwt      *auth.Jwt         `inject:""`
 	Redis    *redis.Pool       `inject:""`
+	Matcher  language.Matcher  `inject:""`
 }
 
 // RegisterWorker register worker

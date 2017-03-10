@@ -598,10 +598,9 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	cfg.AllowMethods = []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodPatch}
 	if web.IsProduction() {
 		gin.SetMode(gin.ReleaseMode)
-		cfg.AllowOrigins = []string{viper.GetString("server.frontend")}
-	} else {
-		cfg.AllowAllOrigins = true
 	}
+	cfg.AllowCredentials = true
+	cfg.AllowOrigins = []string{viper.GetString("server.frontend")}
 	rt.Use(
 		cors.New(cfg),
 		p.I18n.Middleware,

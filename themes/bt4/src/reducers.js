@@ -15,9 +15,9 @@ import {USERS_SIGN_IN, USERS_SIGN_OUT, REFRESH_SITE_INFO} from './actions'
   }
 }
 
- const siteInfo = (state={}, action) => {
+ const siteInfo = (state={languages:[]}, action) => {
   switch(action.type){
-    case REFRESH_SITE_INFO:      
+    case REFRESH_SITE_INFO:
       return Object.assign({}, action.info)
     default:
       return state;
