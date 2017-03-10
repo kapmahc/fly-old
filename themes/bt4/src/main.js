@@ -1,42 +1,36 @@
-import i18next from 'i18next';
-import XHR from 'i18next-xhr-backend';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
+import { Router, Route, browserHistory } from 'react-router'
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 
-import App from './App';
+import Layout from './Layout';
+import reducers from './reducers'
+import engines from './engines'
 
-const locale = 'locale';
+// Add the reducer to your store on the `routing` key
+const store = createStore(
+  combineReducers({
+    ...reducers,
+    routing: routerReducer
+  })
+)
 
-function main(){
-  i18next
-    .use(XHR)
-    .use(LanguageDetector)
-    .init({
-      backend: {
-        loadPath: `${process.env.REACT_APP_BACKEND}/locales/{{lng}}`,
-        crossDomain: true,
-      },
-      detection: {
-        // order and from where user language should be detected
-        order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-        // keys or params to lookup language from
-        lookupQuerystring: locale,
-        lookupCookie: locale,
-        lookupLocalStorage: locale,
-        // cache user language on
-        caches: ['localStorage', 'cookie'],
-        // optional expire and domain for set cookie
-        cookieMinutes: 1<<32-1,
-        // optional htmlTag with lang attribute, the default is:
-        htmlTag: document.documentElement
-      },
-    }, (err, t) => {
-      ReactDOM.render(
-        <App />,
-        document.getElementById('root')
-      );
-  });
+// Create an enhanced history that syncs navigation events with the store
+const history = syncHistoryWithStore(browserHistory, store)
+
+function main() {  
+  ReactDOM.render(
+    <Provider store={store}>
+      <Router history={history}>
+        <Route path="/" component={Layout}>
+          {engines.routes}
+        </Route>
+      </Router>
+    </Provider>,
+    document.getElementById('root')
+  );
 }
 
 export default main
