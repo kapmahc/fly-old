@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route } from 'react-router'
 
-import {SignIn,SignUp,Confirm,Unlock,ForgotPassword,ResetPassword, Layout as NonSignInL} from './NonSignIn'
-import {Info, Logs, ChangePassword, Layout as MustSignInL} from './MustSignIn'
+import {SignIn,SignUp,Confirm,Unlock,ForgotPassword,ResetPassword, Layout as NonSignInL} from './non-sign-in'
+import {Info, Logs, ChangePassword, Layout as MustSignInL} from './must-sign-in'
 
 export default {
   routes: [

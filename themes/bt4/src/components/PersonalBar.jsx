@@ -1,14 +1,31 @@
-import React from 'react';
+import React,{PropTypes} from 'react';
+import { connect } from 'react-redux'
 import { NavDropdown, MenuItem } from 'react-bootstrap';
+import {LinkContainer} from 'react-router-bootstrap'
+import i18next from 'i18next';
 
-const Widget = () => (
-  <NavDropdown eventKey={3} title="personal" id="header-personal-bar">
-    <MenuItem eventKey={3.1}>Action</MenuItem>
-    <MenuItem eventKey={3.2}>Another action</MenuItem>
-    <MenuItem eventKey={3.3}>Something else here</MenuItem>
+const Widget = ({user}) => (
+  user.uid ?
+  <NavDropdown title={i18next.t("personal-bar.welcome", {name:user.name})} id="header-personal-bar">
+    <MenuItem>Action</MenuItem>
+    <MenuItem>Another action</MenuItem>
+    <MenuItem>Something else here</MenuItem>
     <MenuItem divider />
-    <MenuItem eventKey={3.3}>Separated link</MenuItem>
+    <MenuItem>Separated link</MenuItem>
+  </NavDropdown> :
+  <NavDropdown title={i18next.t("personal-bar.sign-in-or-up")} id="header-personal-bar">
+    {['sign-in', 'sign-up', 'confirm', 'unlock', 'forgot-password'].map((k,i)=>(
+      <LinkContainer key={i} to={`/users/${k}`}>
+        <MenuItem>{i18next.t(`auth.users.${k}.title`)}</MenuItem>
+      </LinkContainer>
+    ))}
   </NavDropdown>
 )
 
-export default Widget
+Widget.propTypes = {
+  user: PropTypes.object.isRequired
+}
+
+export default connect(
+  state => ({user: state.currentUser})
+)(Widget)

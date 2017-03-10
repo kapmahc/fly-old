@@ -5,11 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/go-ini/ini"
@@ -64,15 +62,15 @@ func (p *I18n) Middleware(c *gin.Context) {
 	}
 
 	tag, _, _ := p.Matcher.Match(language.Make(lang))
-	ts := tag.String()
-	if ts != lang {
-		http.SetCookie(c.Writer, &http.Cookie{
-			Name:    LOCALE,
-			Value:   ts,
-			Expires: time.Now().AddDate(10, 0, 0),
-			Path:    "/",
-		})
-	}
+
+	// if ts != lang {
+	// 	http.SetCookie(c.Writer, &http.Cookie{
+	// 		Name:    LOCALE,
+	// 		Value:   ts,
+	// 		Expires: time.Now().AddDate(10, 0, 0),
+	// 		Path:    "/",
+	// 	})
+	// }
 
 	c.Set(LOCALE, tag.String())
 	c.Next()

@@ -592,14 +592,15 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		port,
 	)
 
-	rt := gin.Default()
-
-	cfg := cors.DefaultConfig()
-	cfg.AllowMethods = []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodPatch}
 	if web.IsProduction() {
 		gin.SetMode(gin.ReleaseMode)
 	}
+	rt := gin.Default()
+
+	cfg := cors.DefaultConfig()
+	cfg.AllowMethods = append(cfg.AllowMethods, http.MethodDelete, http.MethodPatch)
 	cfg.AllowCredentials = true
+	cfg.AllowHeaders = append(cfg.AllowHeaders, "Authorization")
 	cfg.AllowOrigins = []string{viper.GetString("server.frontend")}
 	rt.Use(
 		cors.New(cfg),

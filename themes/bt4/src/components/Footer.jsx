@@ -10,7 +10,7 @@ const Widget = ({info}) => (
       <p className="pull-right">
         {i18next.t('footer.other-languages')}
         {info.languages.map((lng,i)=>(
-          <Link className="block" to={{ pathname: '/', query: { locale: lng } }} target="_blank">
+          <Link key={i} className="block" to={{ pathname: '/', query: { locale: lng } }} target="_blank">
             {i18next.t(`languages.${lng}`)}
         </Link>
         ))}

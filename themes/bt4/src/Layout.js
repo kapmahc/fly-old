@@ -8,12 +8,14 @@ import {refresh} from './actions'
 import {get} from './ajax'
 
 class Widget extends Component {
-  componentDidMount() {    
+  componentDidMount() {
     const { refresh } = this.props
-    get('/site/info', rst => {
-      document.title = rst.title;
-      refresh(rst);
-    });
+    get('/site/info').then(
+      rst => {
+        document.title = rst.title;
+        refresh(rst);
+      }
+    );
   }
   render() {
     const {children} = this.props;

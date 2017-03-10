@@ -4,8 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import './main.css';
 import main from './main'
-
-const locale = 'locale';
+import {LOCALE} from './constants'
 
 
 i18next
@@ -20,9 +19,9 @@ i18next
       // order and from where user language should be detected
       order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
       // keys or params to lookup language from
-      lookupQuerystring: locale,
-      lookupCookie: locale,
-      lookupLocalStorage: locale,
+      lookupQuerystring: LOCALE,
+      lookupCookie: LOCALE,
+      lookupLocalStorage: LOCALE,
       // cache user language on
       caches: ['localStorage', 'cookie'],
       // optional expire and domain for set cookie
