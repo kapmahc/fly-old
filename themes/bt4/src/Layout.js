@@ -4,12 +4,17 @@ import { connect } from 'react-redux'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
-import {refresh} from './actions'
+import {refresh, signIn} from './actions'
 import {get} from './ajax'
+import {TOKEN} from './constants'
 
 class Widget extends Component {
   componentDidMount() {
-    const { refresh } = this.props
+    const { refresh, signIn } = this.props
+    var token = sessionStorage.getItem(TOKEN)
+    if (token){
+      signIn(token)
+    }
     get('/site/info').then(
       rst => {
         document.title = rst.title;
@@ -33,10 +38,11 @@ class Widget extends Component {
 
 Widget.propTypes = {
   children: PropTypes.node.isRequired,
-  refresh: PropTypes.func.isRequired
+  refresh: PropTypes.func.isRequired,
+  signIn: PropTypes.func.isRequired
 }
 
 export default connect(
   state => ({}),
-  {refresh},
+  {refresh, signIn},
 )(Widget);

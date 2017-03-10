@@ -98,6 +98,7 @@ func (p *Engine) postUsersSignIn(c *gin.Context) {
 	if err == nil {
 		cm := jws.Claims{}
 		cm.Set(UID, user.UID)
+		cm.Set("name", user.Name)
 		cm.Set(IsAdmin, p.Dao.Is(user.ID, RoleAdmin))
 		tkn, err = p.Jwt.Sum(cm, time.Hour*24*7)
 	}

@@ -1,13 +1,85 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux'
 import {Link, browserHistory} from 'react-router'
 import { FormGroup, ControlLabel, FormControl,  HelpBlock, Button } from 'react-bootstrap';
 import i18next from 'i18next';
 
 import {post} from '../../ajax'
+import {signIn} from '../../actions'
+import {TOKEN} from '../../constants'
 
-export const SignIn = () => (
-  <div>sign in</div>
-)
+
+class SignInW extends Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      email:'',
+      password:'',
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleChange(e) {
+    var data = {};
+    data[e.target.id] = e.target.value;
+    this.setState(data);
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+    const {signIn} = this.props
+
+    var data = new FormData()
+    data.append('email', this.state.email)
+    data.append('password', this.state.password)
+    post('/users/sign-in', data)
+      .then(function(rst){
+        sessionStorage.setItem(TOKEN, rst.token)
+        signIn(rst.token)
+        browserHistory.push('/users/logs')
+      })
+      .catch((err) => {
+        alert(err)
+      })
+  }
+  render() {
+    return (<div>
+      <h3>{i18next.t('auth.users.sign-in.title')}</h3>
+      <hr/>
+      <form onSubmit={this.handleSubmit}>
+        <FormGroup controlId="email">
+          <ControlLabel>{i18next.t('attributes.email')}</ControlLabel>
+          <FormControl
+            type="email"
+            value={this.state.email}
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+        <FormGroup controlId="password">
+          <ControlLabel>{i18next.t('attributes.password')}</ControlLabel>
+          <FormControl
+            type="password"
+            value={this.state.password}
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+        <Button type="submit" bsStyle="primary">
+          {i18next.t('buttons.submit')}
+        </Button>
+      </form>
+    </div>)
+  }
+}
+
+
+SignInW.propTypes = {
+  signIn: PropTypes.func.isRequired
+}
+
+export const SignIn = connect(
+  state => ({}),
+  {signIn},
+)(SignInW);
+
 
 export class SignUp extends Component{
   constructor(props){
@@ -175,7 +247,7 @@ export class ResetPassword extends Component{
   }
   handleSubmit(e) {
     e.preventDefault();
-    var data = new FormData()    
+    var data = new FormData()
     data.append('password', this.state.password)
     data.append('passwordConfirmation', this.state.passwordConfirmation)
     post(`/users/reset-password/${this.props.params.token}`, data)
