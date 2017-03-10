@@ -4,8 +4,9 @@ export const api = (path) => {
   return `${process.env.REACT_APP_BACKEND}${path}`
 }
 
-const parse = (res) => {  
-  return res.status === 200 || res.status === 0 ?
+const parse = (res) => {
+  // res.status === 200 || res.status === 0
+  return res.ok ?
     res.json() :
     res.text().then(err => {throw err;})
 }

@@ -580,7 +580,10 @@ func (p *Engine) runWorker(c *cli.Context, _ *inject.Graph) error {
 		cli.ShowSubcommandHelp(c)
 		return nil
 	}
-
+	web.Walk(func(en web.Engine) error {
+		en.RegisterWorker()
+		return nil
+	})
 	return p.Server.NewWorker(name).Launch()
 }
 

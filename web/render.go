@@ -3,17 +3,25 @@ package web
 import (
 	"net/http"
 
-	log "github.com/Sirupsen/logrus"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-// TEXT text render
-func TEXT(c *gin.Context, s string, err error) {
+// // TEXT text render
+// func TEXT(c *gin.Context, s string, err error) {
+// 	if err == nil {
+// 		c.String(http.StatusOK, s)
+// 	} else {
+// 		log.Error(err)
+// 		c.String(http.StatusInternalServerError, err.Error())
+// 	}
+// }
+
+// Redirect redirect
+func Redirect(c *gin.Context, u string, err error) {
 	if err == nil {
-		c.String(http.StatusOK, s)
+		c.Redirect(http.StatusFound, u)
 	} else {
-		log.Error(err)
-		c.String(http.StatusInternalServerError, err.Error())
+		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 }
 
@@ -25,7 +33,7 @@ func JSON(c *gin.Context, data interface{}, err error) {
 		}
 		c.JSON(http.StatusOK, data)
 	} else {
-		log.Error(err)
-		c.String(http.StatusInternalServerError, err.Error())
+		// c.JSON(http.StatusInternalServerError, gin.H{"reason": err.Error()})
+		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 }

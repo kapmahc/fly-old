@@ -1,10 +1,12 @@
 package auth
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/SermoDigital/jose/jws"
 	"github.com/kapmahc/fly/web"
+	"github.com/spf13/viper"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -38,7 +40,7 @@ func (p *Engine) postUsersSignUp(c *gin.Context) {
 			p.sendEmail(lang, user, actConfirm)
 		}
 	}
-	web.TEXT(c, p.I18n.T(lang, "auth.messages.email-for-confirm"), err)
+	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.email-for-confirm")}, err)
 }
 
 type fmSignIn struct {
@@ -99,7 +101,7 @@ func (p *Engine) postUsersSignIn(c *gin.Context) {
 		cm.Set(IsAdmin, p.Dao.Is(user.ID, RoleAdmin))
 		tkn, err = p.Jwt.Sum(cm, time.Hour*24*7)
 	}
-	web.TEXT(c, string(tkn), err)
+	web.JSON(c, gin.H{"token": string(tkn)}, err)
 }
 
 type fmEmail struct {
@@ -120,7 +122,7 @@ func (p *Engine) getUsersConfirm(c *gin.Context) {
 		p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.confirm"))
 	}
 
-	web.TEXT(c, p.I18n.T(lang, "auth.messages.confirm-success"), err)
+	web.Redirect(c, p.signInURL(), err)
 }
 
 func (p *Engine) postUsersConfirm(c *gin.Context) {
@@ -139,7 +141,7 @@ func (p *Engine) postUsersConfirm(c *gin.Context) {
 	if err == nil {
 		p.sendEmail(lang, user, actConfirm)
 	}
-	web.TEXT(c, p.I18n.T(lang, "auth.messages.email-for-confirm"), err)
+	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.email-for-confirm")}, err)
 }
 
 func (p *Engine) getUsersUnlock(c *gin.Context) {
@@ -155,7 +157,7 @@ func (p *Engine) getUsersUnlock(c *gin.Context) {
 		p.Db.Model(user).Update(map[string]interface{}{"locked_at": nil})
 		p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.unlock"))
 	}
-	web.TEXT(c, p.I18n.T(lang, "auth.messages.unlock-success"), err)
+	web.Redirect(c, p.signInURL(), err)
 }
 
 func (p *Engine) postUsersUnlock(c *gin.Context) {
@@ -176,7 +178,7 @@ func (p *Engine) postUsersUnlock(c *gin.Context) {
 		p.sendEmail(lang, user, actUnlock)
 
 	}
-	web.TEXT(c, p.I18n.T(lang, "auth.messages.email-for-unlock"), err)
+	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.email-for-unlock")}, err)
 }
 
 func (p *Engine) postUsersForgotPassword(c *gin.Context) {
@@ -191,7 +193,7 @@ func (p *Engine) postUsersForgotPassword(c *gin.Context) {
 	if err == nil {
 		p.sendEmail(lang, user, actResetPassword)
 	}
-	web.TEXT(c, p.I18n.T(lang, "auth.messages.email-for-reset-password"), err)
+	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.email-for-reset-password")}, err)
 }
 
 type fmResetPassword struct {
@@ -213,6 +215,9 @@ func (p *Engine) postUsersResetPassword(c *gin.Context) {
 		p.Db.Model(user).Update("password", p.Security.Sum([]byte(fm.Password)))
 		p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.reset-password"))
 	}
+	web.Redirect(c, p.signInURL(), err)
+}
 
-	web.TEXT(c, p.I18n.T(lang, "auth.messages.reset-password-success"), err)
+func (p *Engine) signInURL() string {
+	return fmt.Sprintf("%s/users/sign-in", viper.Get("server.frontend"))
 }

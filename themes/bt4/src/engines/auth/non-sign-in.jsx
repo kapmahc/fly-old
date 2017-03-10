@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router'
+import {Link, browserHistory} from 'react-router'
 import { FormGroup, ControlLabel, FormControl,  HelpBlock, Button } from 'react-bootstrap';
 import i18next from 'i18next';
 
@@ -35,7 +35,8 @@ export class SignUp extends Component{
     data.append('passwordConfirmation', this.state.passwordConfirmation)
     post('/users/sign-up', data)
       .then(function(rst){
-        alert(i18next.t('success'))
+        alert(rst.message)
+        browserHistory.push('/users/sign-in')
       })
       .catch((err) => {
         alert(err)
