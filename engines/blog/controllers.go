@@ -6,9 +6,8 @@ import (
 	"path/filepath"
 	"sort"
 
-	gin "gopkg.in/gin-gonic/gin.v1"
-
 	"github.com/kapmahc/fly/web"
+	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 const (

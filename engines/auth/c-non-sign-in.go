@@ -3,10 +3,9 @@ package auth
 import (
 	"time"
 
-	gin "gopkg.in/gin-gonic/gin.v1"
-
 	"github.com/SermoDigital/jose/jws"
 	"github.com/kapmahc/fly/web"
+	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 type fmSignUp struct {

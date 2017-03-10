@@ -1,9 +1,8 @@
 package auth
 
 import (
-	gin "gopkg.in/gin-gonic/gin.v1"
-
 	"github.com/kapmahc/fly/web"
+	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 func (p *Engine) indexUsers(c *gin.Context) {

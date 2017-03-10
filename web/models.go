@@ -2,9 +2,6 @@ package web
 
 import "time"
 
-// H hash
-type H map[string]interface{}
-
 const (
 	// TypeMARKDOWN markdown format
 	TypeMARKDOWN = "markdown"

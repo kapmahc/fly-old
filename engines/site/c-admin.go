@@ -5,7 +5,6 @@ import (
 	"runtime"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/garyburd/redigo/redis"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
@@ -13,10 +12,10 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) _osStatus() web.H {
+func (p *Engine) _osStatus() gin.H {
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
-	return web.H{
+	return gin.H{
 		"go version": runtime.Version(),
 		"go root":    runtime.GOROOT(),
 		"go runtime": runtime.NumGoroutine(),
@@ -27,19 +26,14 @@ func (p *Engine) _osStatus() web.H {
 		"version":    fmt.Sprintf("%s(%s)", runtime.GOOS, runtime.GOARCH),
 	}
 }
-func (p *Engine) _cacheStatus() string {
+func (p *Engine) _cacheStatus() (string, error) {
 	c := p.Redis.Get()
 	defer c.Close()
-	s, err := redis.String(c.Do("INFO"))
-	if err != nil {
-		log.Error(err)
-	}
-	return s
+	return redis.String(c.Do("INFO"))
 }
 
-func (p *Engine) _dbStatus() web.H {
-
-	val := web.H{}
+func (p *Engine) _dbStatus() (gin.H, error) {
+	val := gin.H{}
 	switch viper.GetString("database.driver") {
 	case postgresqlDriver:
 		// http://blog.javachen.com/2014/04/07/some-metrics-in-postgresql.html
@@ -59,7 +53,7 @@ func (p *Engine) _dbStatus() web.H {
 				val[fmt.Sprintf("pid-%d", pid)] = fmt.Sprintf("%s (%v)", ts.Format("15:04:05.999999"), qry)
 			}
 		} else {
-			log.Error(err)
+			return nil, err
 		}
 		val["url"] = fmt.Sprintf(
 			"%s://%s@%s:%d/%s",
@@ -71,23 +65,25 @@ func (p *Engine) _dbStatus() web.H {
 		)
 
 	}
-	return val
-
+	return val, nil
 }
 
-func (p *Engine) _jobsStatus() web.H {
-	return web.H{
+func (p *Engine) _jobsStatus() gin.H {
+	return gin.H{
 		"tasks": p.Server.GetRegisteredTaskNames(),
 	}
 }
 func (p *Engine) getAdminSiteStatus(c *gin.Context) {
-
-	web.JSON(c, gin.H{
-		"os":       p._osStatus(),
-		"cache":    p._cacheStatus(),
-		"database": p._dbStatus(),
-		"jobs":     p._jobsStatus(),
-	}, nil)
+	data := gin.H{
+		"os":   p._osStatus(),
+		"jobs": p._jobsStatus(),
+	}
+	var err error
+	data["cache"], err = p._cacheStatus()
+	if err == nil {
+		data["database"], err = p._dbStatus()
+	}
+	web.JSON(c, data, err)
 }
 
 type fmSiteInfo struct {

@@ -1,17 +1,14 @@
 package site
 
 import (
-	log "github.com/Sirupsen/logrus"
 	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 func (p *Engine) indexLeaveWords(c *gin.Context) {
 	var items []LeaveWord
-	if err := p.Db.Order("created_at DESC").Find(&items).Error; err != nil {
-		log.Error(err)
-	}
-	web.JSON(c, items, nil)
+	err := p.Db.Order("created_at DESC").Find(&items).Error
+	web.JSON(c, items, err)
 }
 
 type fmLeaveWord struct {
