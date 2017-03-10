@@ -1,12 +1,14 @@
 import React, {PropTypes} from 'react';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import i18next from 'i18next';
+import {LinkContainer} from 'react-router-bootstrap'
 
 import PersonalBar from './PersonalBar'
 import LanguageBar from './LanguageBar'
 
-const Widget = ({info}) => (
+const Widget = ({info, user}) => (
   <Navbar fixedTop fluid inverse collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
@@ -18,13 +20,13 @@ const Widget = ({info}) => (
       <Nav>
         <NavItem eventKey={1} href="#">Link</NavItem>
         <NavItem eventKey={2} href="#">Link</NavItem>
-        <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
-          <MenuItem eventKey={3.1}>Action</MenuItem>
-          <MenuItem eventKey={3.2}>Another action</MenuItem>
-          <MenuItem eventKey={3.3}>Something else here</MenuItem>
-          <MenuItem divider />
-          <MenuItem eventKey={3.3}>Separated link</MenuItem>
-        </NavDropdown>
+        {
+          user.uid ?
+          (<LinkContainer to="/dashboard">
+            <NavItem>{i18next.t("header.dashboard")}</NavItem>
+          </LinkContainer>) :
+          "&nbsp;"
+        }
       </Nav>
       <Nav pullRight>
         <LanguageBar/>
@@ -35,9 +37,10 @@ const Widget = ({info}) => (
 )
 
 Widget.propTypes = {
-  info: PropTypes.object.isRequired
+  info: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 }
 
 export default connect(
-   state => ({info: state.siteInfo})
+   state => ({info: state.siteInfo, user: state.currentUser})
 )(Widget);

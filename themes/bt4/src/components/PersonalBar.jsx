@@ -1,31 +1,52 @@
-import React,{PropTypes} from 'react';
+import React,{Component, PropTypes} from 'react';
 import { connect } from 'react-redux'
 import { NavDropdown, MenuItem } from 'react-bootstrap';
 import {LinkContainer} from 'react-router-bootstrap'
 import i18next from 'i18next';
 
-const Widget = ({user}) => (
-  user.uid ?
-  <NavDropdown title={i18next.t("personal-bar.welcome", {name:user.name})} id="header-personal-bar">
-    <MenuItem>Action</MenuItem>
-    <MenuItem>Another action</MenuItem>
-    <MenuItem>Something else here</MenuItem>
-    <MenuItem divider />
-    <MenuItem>Separated link</MenuItem>
-  </NavDropdown> :
-  <NavDropdown title={i18next.t("personal-bar.sign-in-or-up")} id="header-personal-bar">
-    {['sign-in', 'sign-up', 'confirm', 'unlock', 'forgot-password'].map((k,i)=>(
-      <LinkContainer key={i} to={`/users/${k}`}>
-        <MenuItem>{i18next.t(`auth.users.${k}.title`)}</MenuItem>
-      </LinkContainer>
-    ))}
-  </NavDropdown>
-)
+import {signOut} from '../actions'
+
+class Widget extends Component{
+  constructor(props){
+    super(props)
+    this.state = {}
+    this.handleSignOut = this.handleSignOut.bind(this);
+  }
+  handleSignOut(e) {
+    if(confirm(i18next.t('are-you-sure'))){
+      sessionStorage.clear();
+      const {signOut} = this.props
+      signOut()
+    }
+  }
+  render(){
+    const {user} = this.props
+    return (
+      user.uid ?
+      <NavDropdown title={i18next.t("personal-bar.welcome", {name:user.name})} id="header-personal-bar">
+        <LinkContainer to="/dashboard">
+          <MenuItem>{i18next.t("personal-bar.dashboard")}</MenuItem>
+        </LinkContainer>
+        <MenuItem divider />
+        <MenuItem onClick={this.handleSignOut}>{i18next.t("personal-bar.sign-out")}</MenuItem>
+      </NavDropdown> :
+      <NavDropdown title={i18next.t("personal-bar.sign-in-or-up")} id="header-personal-bar">
+        {['sign-in', 'sign-up', 'confirm', 'unlock', 'forgot-password'].map((k,i)=>(
+          <LinkContainer key={i} to={`/users/${k}`}>
+            <MenuItem>{i18next.t(`auth.users.${k}.title`)}</MenuItem>
+          </LinkContainer>
+        ))}
+      </NavDropdown>
+    )
+  }
+}
 
 Widget.propTypes = {
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  signOut: PropTypes.func.isRequired
 }
 
 export default connect(
-  state => ({user: state.currentUser})
+  state => ({user: state.currentUser}),
+  {signOut},
 )(Widget)
