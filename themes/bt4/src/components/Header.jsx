@@ -7,6 +7,8 @@ import {LinkContainer} from 'react-router-bootstrap'
 
 import PersonalBar from './PersonalBar'
 import LanguageBar from './LanguageBar'
+import {DASHBOARD} from '../constants'
+import engines from '../engines'
 
 const Widget = ({info, user}) => (
   <Navbar fixedTop fluid inverse collapseOnSelect>
@@ -18,11 +20,17 @@ const Widget = ({info, user}) => (
     </Navbar.Header>
     <Navbar.Collapse>
       <Nav>
-        <NavItem eventKey={1} href="#">Link</NavItem>
-        <NavItem eventKey={2} href="#">Link</NavItem>
+        <LinkContainer to='/home'>
+          <NavItem>{i18next.t('header.home')}</NavItem>
+        </LinkContainer>
+        {
+          engines.navLinks.map((l,i)=>(<LinkContainer key={i} to={l.href}>
+            <NavItem>{i18next.t(l.label)}</NavItem>
+          </LinkContainer>))
+        }
         {
           user.uid ?
-          (<LinkContainer to="/dashboard">
+          (<LinkContainer to={DASHBOARD}>
             <NavItem>{i18next.t("header.dashboard")}</NavItem>
           </LinkContainer>) :
           "&nbsp;"

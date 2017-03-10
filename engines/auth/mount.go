@@ -4,6 +4,8 @@ import gin "gopkg.in/gin-gonic/gin.v1"
 
 // Mount web mount-points
 func (p *Engine) Mount(rt *gin.Engine) {
+	rt.GET("/users", p.indexUsers)
+
 	ung := rt.Group("/users")
 	ung.POST("/sign-in", p.postUsersSignIn)
 	ung.POST("/sign-up", p.postUsersSignUp)
@@ -13,8 +15,6 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	ung.POST("/unlock", p.postUsersUnlock)
 	ung.POST("/forgot-password", p.postUsersForgotPassword)
 	ung.POST("/reset-password/:token", p.postUsersResetPassword)
-
-	ung.GET("/", p.indexUsers)
 
 	umg := rt.Group("/users", p.Jwt.MustSignInMiddleware)
 	umg.POST("/info", p.postUsersInfo)

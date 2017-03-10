@@ -1,13 +1,36 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux'
 import {Link, browserHistory} from 'react-router'
-import { FormGroup, ControlLabel, FormControl,  HelpBlock, Button } from 'react-bootstrap';
+import { FormGroup,Thumbnail, ControlLabel, FormControl,  HelpBlock, Button } from 'react-bootstrap';
 import i18next from 'i18next';
 
-import {post} from '../../ajax'
+import {post, get} from '../../ajax'
 import {signIn} from '../../actions'
-import {TOKEN} from '../../constants'
+import {TOKEN, DASHBOARD} from '../../constants'
 
+export class Index extends Component{
+  constructor(props){
+    super(props)
+    this.state = {users:[]}
+    get('/users').then(
+      function(rst){
+        this.setState({users:rst})
+      }.bind(this)
+    );
+  }
+  render(){
+    return (<div className="row">
+    <h3>{i18next.t('auth.users.index.title')}</h3>
+    <hr/>
+    {this.state.users.map((u,i)=>(<div key={i} className="col-md-3">
+      <Thumbnail src={u.logo} alt="242x200">
+        <h3>{u.name}</h3>
+        <p></p>
+      </Thumbnail>
+    </div>))}
+    </div>)
+  }
+}
 
 class SignInW extends Component{
   constructor(props){
@@ -35,7 +58,7 @@ class SignInW extends Component{
       .then(function(rst){
         sessionStorage.setItem(TOKEN, rst.token)
         signIn(rst.token)
-        browserHistory.push('/users/logs')
+        browserHistory.push(DASHBOARD)
       })
       .catch((err) => {
         alert(err)

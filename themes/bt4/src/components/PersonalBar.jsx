@@ -5,6 +5,7 @@ import {LinkContainer} from 'react-router-bootstrap'
 import i18next from 'i18next';
 
 import {signOut} from '../actions'
+import {DASHBOARD} from '../constants'
 
 class Widget extends Component{
   constructor(props){
@@ -24,7 +25,7 @@ class Widget extends Component{
     return (
       user.uid ?
       <NavDropdown title={i18next.t("personal-bar.welcome", {name:user.name})} id="header-personal-bar">
-        <LinkContainer to="/dashboard">
+        <LinkContainer to={DASHBOARD}>
           <MenuItem>{i18next.t("personal-bar.dashboard")}</MenuItem>
         </LinkContainer>
         <MenuItem divider />
