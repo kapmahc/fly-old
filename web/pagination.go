@@ -1,64 +1,50 @@
 package web
 
+import (
+	"net/http"
+	"strconv"
+)
+
 // NewPagination new pagination
-func NewPagination(href string, page, size, total int64) *Pagination {
+func NewPagination(r *http.Request, total int64) *Pagination {
+	page, _ := strconv.ParseInt(r.URL.Query().Get("page"), 10, 64)
+	size, _ := strconv.ParseInt(r.URL.Query().Get("size"), 10, 64)
+
 	if size <= 0 || size >= 60 {
 		size = 60
-	}
-
-	tp := total / size
-	if total%size > 0 {
-		tp = total/size + 1
 	}
 	if page <= 0 {
 		page = 1
 	}
-	if page > tp {
-		page = tp
-	}
-
-	var pages []int64
-	for i := int64(1); i <= tp; i++ {
-		if tp > 10 {
-			if i < page-6 || i > page+6 {
-				continue
-			}
+	if page*size > total {
+		page = total / size
+		if total%page != 0 {
+			page++
 		}
-		pages = append(pages, i)
 	}
 
 	return &Pagination{
-		Href:       href,
-		PageNo:     page,
-		PageSize:   size,
-		Pages:      pages,
-		TotalCount: total,
-		TotalPage:  tp,
-		PrevPage:   page - 1,
-		NextPage:   page + 1,
-		Items:      make([]interface{}, 0),
+		Page:  page,
+		Size:  size,
+		Total: total,
+		Items: make([]interface{}, 0),
 	}
 }
 
 // Pagination pagination
 type Pagination struct {
-	Href       string
-	PageNo     int64
-	PageSize   int64
-	TotalPage  int64
-	TotalCount int64
-	PrevPage   int64
-	NextPage   int64
-	Items      []interface{}
-	Pages      []int64
+	Page  int64         `json:"page"`
+	Size  int64         `json:"size"`
+	Total int64         `json:"total"`
+	Items []interface{} `json:"items"`
 }
 
 // Limit limit
 func (p *Pagination) Limit() int64 {
-	return p.PageSize
+	return p.Size
 }
 
 // Offset offset
 func (p *Pagination) Offset() int64 {
-	return (p.PageNo - 1) * p.PageSize
+	return (p.Page - 1) * p.Size
 }

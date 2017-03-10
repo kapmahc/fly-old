@@ -467,6 +467,12 @@
 			"revisionTime": "2016-08-03T19:07:31Z"
 		},
 		{
+			"checksumSHA1": "wVzCEggAxsudOukfhyAHnznroWk=",
+			"path": "github.com/kapmahc/epub",
+			"revision": "7759d080da6dd736e42fc896da65cc6f7e79c2b3",
+			"revisionTime": "2016-10-27T03:53:36Z"
+		},
+		{
 			"checksumSHA1": "p+Bj1OSkp9/zxr6oZGzBAvYsdm0=",
 			"path": "github.com/kylelemons/go-gypsy/yaml",
 			"revision": "08cad365cd28a7fba23bb1e57aa43c5e18ad8bb8",

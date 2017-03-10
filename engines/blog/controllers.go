@@ -17,13 +17,13 @@ const (
 )
 
 func (p *Engine) indexPosts(c *gin.Context) {
-	data, err := p.getPosts()
+	data, err := p.getPosts(c.MustGet(web.LOCALE).(string))
 	web.JSON(c, data, err)
 }
 
 func (p *Engine) showPost(c *gin.Context) {
 	href := c.Param("href")[1:]
-	posts, err := p.getPosts()
+	posts, err := p.getPosts(c.MustGet(web.LOCALE).(string))
 	if err == nil {
 		for _, i := range posts {
 			if i.Href == href {
@@ -37,9 +37,9 @@ func (p *Engine) showPost(c *gin.Context) {
 
 // -------------
 
-func (p *Engine) getPosts() ([]Post, error) {
+func (p *Engine) getPosts(lang string) ([]Post, error) {
 	var items []Post
-	root := p.root()
+	root := p.root(lang)
 	if err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -80,6 +80,6 @@ func (p *Engine) getPosts() ([]Post, error) {
 	return items, nil
 }
 
-func (p *Engine) root() string {
-	return filepath.Join("tmp", "posts")
+func (p *Engine) root(lang string) string {
+	return filepath.Join("tmp", "posts", lang)
 }
