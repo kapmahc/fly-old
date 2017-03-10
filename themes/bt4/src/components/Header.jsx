@@ -3,7 +3,7 @@ import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import i18next from 'i18next';
-import {LinkContainer} from 'react-router-bootstrap'
+import {IndexLinkContainer, LinkContainer} from 'react-router-bootstrap'
 
 import PersonalBar from './PersonalBar'
 import LanguageBar from './LanguageBar'
@@ -20,9 +20,9 @@ const Widget = ({info, user}) => (
     </Navbar.Header>
     <Navbar.Collapse>
       <Nav>
-        <LinkContainer to='/home'>
+        <IndexLinkContainer to='/'>
           <NavItem>{i18next.t('header.home')}</NavItem>
-        </LinkContainer>
+        </IndexLinkContainer>
         {
           engines.navLinks.map((l,i)=>(<LinkContainer key={i} to={l.href}>
             <NavItem>{i18next.t(l.label)}</NavItem>

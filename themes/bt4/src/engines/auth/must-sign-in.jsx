@@ -11,11 +11,3 @@ export const Logs = () => (
 export const ChangePassword = () => (
   <div>change password</div>
 )
-
-export const Layout = ({children}) => (
-  <div>
-    must sign in
-    <br/>
-    {children}
-  </div>
-)
