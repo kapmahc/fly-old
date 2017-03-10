@@ -1,14 +1,16 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { connect } from 'react-redux'
+import { Link } from 'react-router'
 
 import PersonalBar from './PersonalBar'
 import LanguageBar from './LanguageBar'
 
-const Widget = () => (
+const Widget = ({info}) => (
   <Navbar fixedTop fluid inverse collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
-        <a href="#">React-Bootstrap</a>
+        <Link to="/">{info.subTitle}</Link>
       </Navbar.Brand>
       <Navbar.Toggle />
     </Navbar.Header>
@@ -32,4 +34,10 @@ const Widget = () => (
   </Navbar>
 )
 
-export default Widget
+Widget.propTypes = {
+  info: PropTypes.object.isRequired
+}
+
+export default connect(
+   state => ({info: state.siteInfo})
+)(Widget);

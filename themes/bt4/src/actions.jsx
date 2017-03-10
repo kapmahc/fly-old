@@ -15,7 +15,7 @@ export const signOut = () => {
   }
 }
 
-export const refresh = (info) => {
+export const refresh = (info) => {  
   return {
     type: REFRESH_SITE_INFO,
     info
