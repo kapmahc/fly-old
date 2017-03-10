@@ -2,11 +2,11 @@ package web
 
 import (
 	"fmt"
-	"log"
 
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/RichardKnop/machinery/v1/config"
 	"github.com/RichardKnop/machinery/v1/logger"
+	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
