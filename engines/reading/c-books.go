@@ -25,7 +25,7 @@ func (p *Engine) showBook(c *gin.Context) {
 	id := c.Param("id")
 	bk, err := p.readBook(id)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -40,7 +40,7 @@ func (p *Engine) showPage(c *gin.Context) {
 	log.Printf("%+v\n", c.Params)
 	err := p.readBookPage(c.Writer, c.Param("id"), c.Param("href")[1:])
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.String(http.StatusInternalServerError, err.Error())
 	}
 }
 

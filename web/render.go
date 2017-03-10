@@ -21,7 +21,7 @@ func Redirect(c *gin.Context, u string, err error) {
 	if err == nil {
 		c.Redirect(http.StatusFound, u)
 	} else {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.String(http.StatusInternalServerError, err.Error())
 	}
 }
 
@@ -33,7 +33,6 @@ func JSON(c *gin.Context, data interface{}, err error) {
 		}
 		c.JSON(http.StatusOK, data)
 	} else {
-		// c.JSON(http.StatusInternalServerError, gin.H{"reason": err.Error()})
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.String(http.StatusInternalServerError, err.Error())
 	}
 }

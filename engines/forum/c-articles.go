@@ -126,7 +126,7 @@ func (p *Engine) canEditArticle(c *gin.Context) {
 		}
 		c.AbortWithStatus(http.StatusForbidden)
 	} else {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.String(http.StatusInternalServerError, err.Error())
 	}
 
 }

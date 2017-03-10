@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {Link, browserHistory} from 'react-router'
 import { FormGroup, ControlLabel, FormControl,  HelpBlock, Button } from 'react-bootstrap';
 import i18next from 'i18next';
@@ -89,16 +89,72 @@ export class SignUp extends Component{
   }
 }
 
+
+export class EmailForm extends Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      email:'',
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleChange(e) {
+    var data = {};
+    data[e.target.id] = e.target.value;
+    this.setState(data);
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+    const {action} = this.props
+    var data = new FormData()
+    data.append('email', this.state.email)
+    post(`/users/${action}`, data)
+      .then(function(rst){
+        alert(rst.message)
+        browserHistory.push('/users/sign-in')
+      })
+      .catch((err) => {
+        alert(err)
+      })
+  }
+  render() {
+    const {action} = this.props
+    return (<div>
+      <h3>{i18next.t(`auth.users.${action}.title`)}</h3>
+      <hr/>
+      <form onSubmit={this.handleSubmit}>
+        <FormGroup controlId="email">
+          <ControlLabel>{i18next.t('attributes.email')}</ControlLabel>
+          <FormControl
+            type="email"
+            value={this.state.email}
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+        <Button type="submit" bsStyle="primary">
+          {i18next.t('buttons.submit')}
+        </Button>
+      </form>
+    </div>)
+  }
+}
+
+
+EmailForm.propTypes = {
+  action: PropTypes.string.isRequired
+}
+
 export const Confirm = () => (
-  <div>confirm</div>
+  <EmailForm action="confirm" />
 )
 
 export const Unlock = () => (
-  <div>unlock</div>
+  <EmailForm action="unlock" />
 )
 
 export const ForgotPassword = () => (
-  <div>forgot password</div>
+  <EmailForm action="forgot-password" />
 )
 
 export const ResetPassword = () => (
