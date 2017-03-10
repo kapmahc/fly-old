@@ -1,9 +1,12 @@
 import React from 'react';
 import engines from './engines'
+import {Nav} from 'react-bootstrap';
 
 const Widget = ({children}) => (
   <div>
-    {engines.dashboard}
+    <Nav bsStyle="tabs">
+      {engines.dashboard}
+    </Nav>
     <br/>
     {children}
   </div>
