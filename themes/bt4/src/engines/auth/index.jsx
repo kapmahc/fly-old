@@ -12,7 +12,7 @@ export default {
       <Route path="confirm" component={Confirm}/>
       <Route path="unlock" component={Unlock}/>
       <Route path="forgot-password" component={ForgotPassword}/>
-      <Route path="reset-password" component={ResetPassword}/>
+      <Route path="reset-password/:token" component={ResetPassword}/>
     </Route>),
     (<Route key="auth-must-sign-in" path="/users" component={MustSignInL}>
       <Route path="info" component={Info}/>

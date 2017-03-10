@@ -197,7 +197,6 @@ func (p *Engine) postUsersForgotPassword(c *gin.Context) {
 }
 
 type fmResetPassword struct {
-	Token                string `form:"token" binding:"required"`
 	Password             string `form:"password" binding:"min=6,max=32"`
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=Password"`
 }
@@ -209,13 +208,13 @@ func (p *Engine) postUsersResetPassword(c *gin.Context) {
 	var user *User
 	err := c.Bind(&fm)
 	if err == nil {
-		user, err = p.parseToken(lang, fm.Token, actResetPassword)
+		user, err = p.parseToken(lang, c.Param("token"), actResetPassword)
 	}
 	if err == nil {
 		p.Db.Model(user).Update("password", p.Security.Sum([]byte(fm.Password)))
 		p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.reset-password"))
 	}
-	web.Redirect(c, p.signInURL(), err)
+	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.reset-password-success")}, err)
 }
 
 func (p *Engine) signInURL() string {

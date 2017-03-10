@@ -157,9 +157,66 @@ export const ForgotPassword = () => (
   <EmailForm action="forgot-password" />
 )
 
-export const ResetPassword = () => (
-  <div>reset password</div>
-)
+
+export class ResetPassword extends Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      password:'',
+      passwordConfirmation:'',
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleChange(e) {
+    var data = {};
+    data[e.target.id] = e.target.value;
+    this.setState(data);
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+    var data = new FormData()    
+    data.append('password', this.state.password)
+    data.append('passwordConfirmation', this.state.passwordConfirmation)
+    post(`/users/reset-password/${this.props.params.token}`, data)
+      .then(function(rst){
+        alert(rst.message)
+        browserHistory.push('/users/sign-in')
+      })
+      .catch((err) => {
+        alert(err)
+      })
+  }
+  render() {
+    return (<div>
+      <h3>{i18next.t('auth.users.reset-password.title')}</h3>
+      <hr/>
+      <form onSubmit={this.handleSubmit}>
+        <FormGroup controlId="password">
+          <ControlLabel>{i18next.t('attributes.password')}</ControlLabel>
+          <FormControl
+            type="password"
+            value={this.state.password}
+            onChange={this.handleChange}
+          />
+          <HelpBlock>{i18next.t('helps.password')}</HelpBlock>
+        </FormGroup>
+        <FormGroup controlId="passwordConfirmation">
+          <ControlLabel>{i18next.t('attributes.passwordConfirmation')}</ControlLabel>
+          <FormControl
+            type="password"
+            value={this.state.passwordConfirmation}
+            onChange={this.handleChange}
+          />
+          <HelpBlock>{i18next.t('helps.passwordConfirmation')}</HelpBlock>
+        </FormGroup>
+        <Button type="submit" bsStyle="primary">
+          {i18next.t('buttons.submit')}
+        </Button>
+      </form>
+    </div>)
+  }
+}
 
 
 export const Layout = ({children}) => (
