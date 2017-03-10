@@ -1,0 +1,15 @@
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~highlight.js/styles/default.css";
+body {
+    padding-top: 4rem;
+    padding-bottom: 3rem;
+}
+
+div.block {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+a.block {
+    padding-left: 1rem;
+}
