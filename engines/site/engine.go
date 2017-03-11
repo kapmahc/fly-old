@@ -35,7 +35,11 @@ func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
 
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
-	return []stm.URL{}, nil
+	urls := []stm.URL{
+		{"loc": "/leave-words/new"},
+		{"loc": "/notices"},
+	}
+	return urls, nil
 }
 
 func init() {

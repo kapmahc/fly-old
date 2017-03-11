@@ -3,12 +3,14 @@ package blog
 import (
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/fly/web"
+	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
 )
 
 // Engine engine
 type Engine struct {
+	I18n *web.I18n `inject:""`
 }
 
 // RegisterWorker register worker
@@ -28,7 +30,23 @@ func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
 
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
-	return []stm.URL{}, nil
+	urls := []stm.URL{
+		{"loc": "/blogs"},
+	}
+	for _, lang := range viper.GetStringSlice("languages") {
+		posts, err := p.getPosts(lang)
+		if err != nil {
+			return nil, err
+		}
+		for _, i := range posts {
+			urls = append(
+				urls,
+				stm.URL{"loc": "/blog/" + i.Href},
+			)
+		}
+
+	}
+	return urls, nil
 }
 
 func init() {

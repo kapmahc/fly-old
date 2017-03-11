@@ -46,7 +46,8 @@ func (p *Engine) Shell() []cli.Command {
 			Name:  "seo",
 			Usage: "generate sitemap.xml.gz/rss.atom/robots.txt ...etc",
 			Action: auth.Action(func(*cli.Context, *inject.Graph) error {
-				root := path.Join("themes", viper.GetString("server.theme"), "assets")
+				root := "public"
+				os.MkdirAll(root, 0755)
 				if err := p.writeSitemap(root); err != nil {
 					return err
 				}

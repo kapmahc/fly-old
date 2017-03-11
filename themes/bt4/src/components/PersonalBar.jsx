@@ -1,5 +1,6 @@
 import React,{Component, PropTypes} from 'react';
 import { connect } from 'react-redux'
+import {browserHistory} from 'react-router'
 import { NavDropdown, MenuItem } from 'react-bootstrap';
 import {LinkContainer} from 'react-router-bootstrap'
 import i18next from 'i18next';
@@ -15,6 +16,7 @@ class Widget extends Component{
   }
   handleSignOut(e) {
     if(confirm(i18next.t('are-you-sure'))){
+      browserHistory.push('/')
       sessionStorage.clear();
       const {signOut} = this.props
       signOut()

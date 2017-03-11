@@ -1,6 +1,8 @@
 package forum
 
 import (
+	"fmt"
+
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
@@ -33,7 +35,28 @@ func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
 
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
-	return []stm.URL{}, nil
+	urls := []stm.URL{
+		{"loc": "/forum/articles"},
+		{"loc": "/forum/tags"},
+		{"loc": "/forum/comments"},
+	}
+
+	var articles []Article
+	if err := p.Db.Select([]string{"id"}).Find(&articles).Error; err != nil {
+		return nil, err
+	}
+	for _, a := range articles {
+		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/articles/%d", a.ID)})
+	}
+
+	var tags []Tag
+	if err := p.Db.Select([]string{"id"}).Find(&tags).Error; err != nil {
+		return nil, err
+	}
+	for _, t := range tags {
+		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/tags/%d", t.ID)})
+	}
+	return urls, nil
 }
 
 func init() {
