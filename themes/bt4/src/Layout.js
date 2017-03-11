@@ -29,8 +29,8 @@ class Widget extends Component {
         <Header />
         <div className="container">
           {children}
+          <Footer/>
         </div>
-        <Footer/>
       </div>
     );
   }

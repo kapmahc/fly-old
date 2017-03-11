@@ -4,7 +4,7 @@ import {Link} from 'react-router'
 import i18next from 'i18next';
 
 const Widget = ({info}) => (
-  <div className="container">
+  <div className="row">
     <hr/>
     <footer>
       <p className="pull-right">

@@ -1,15 +1,35 @@
-import React from 'react';
-import engines from './engines'
+import React, { Component, PropTypes } from 'react';
 import {Nav} from 'react-bootstrap';
+import { connect } from 'react-redux'
 
-const Widget = ({children}) => (
-  <div>
-    <Nav bsStyle="tabs">
-      {engines.dashboard}
-    </Nav>
-    <br/>
-    {children}
-  </div>
-)
+import engines from './engines'
+import {Forbidden} from './components/alerts'
 
-export default Widget
+class Widget extends Component {
+  render() {
+    const {children, user} = this.props
+    return user.uid ? (
+      <div className="row">
+        <Nav bsStyle="tabs">
+          {engines.dashboard}
+        </Nav>
+        <br/>
+        {children}
+      </div>
+    ) :
+    <div className="row">
+      <br/>
+      <Forbidden />
+    </div>
+  }
+}
+
+Widget.propTypes = {
+  children: PropTypes.node.isRequired,
+  user: PropTypes.object.isRequired
+}
+
+
+export default connect(
+  state => ({user: state.currentUser})
+)(Widget);
