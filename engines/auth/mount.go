@@ -18,6 +18,7 @@ func (p *Engine) Mount(rt *gin.Engine) {
 
 	umg := rt.Group("/users", p.Jwt.MustSignInMiddleware)
 	umg.POST("/info", p.postUsersInfo)
+	umg.GET("/info", p.getUsersInfo)
 	umg.POST("/change-password", p.postUsersChangePassword)
 	umg.GET("/logs", p.getUsersLogs)
 	umg.DELETE("/sign-out", p.deleteUsersSignOut)

@@ -18,6 +18,11 @@ type fmInfo struct {
 	Logo string `form:"logo" binding:"max=255"`
 }
 
+func (p *Engine) getUsersInfo(c *gin.Context) {
+	user := c.MustGet(CurrentUser).(*User)
+	web.JSON(c, user, nil)
+}
+
 func (p *Engine) postUsersInfo(c *gin.Context) {
 	user := c.MustGet(CurrentUser).(*User)
 
@@ -64,7 +69,7 @@ func (p *Engine) getUsersLogs(c *gin.Context) {
 	err := p.Db.
 		Select([]string{"ip", "message", "created_at"}).
 		Where("user_id = ?", user.ID).
-		Order("id DESC").
+		Order("id DESC").Limit(120).
 		Find(&logs).Error
 	web.JSON(c, logs, err)
 }

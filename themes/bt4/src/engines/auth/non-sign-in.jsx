@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux'
 import {Link, browserHistory} from 'react-router'
-import { FormGroup,Thumbnail, ControlLabel, FormControl,  HelpBlock, Button } from 'react-bootstrap';
+import { Thumbnail, FormGroup,ControlLabel, FormControl,  HelpBlock, Button } from 'react-bootstrap';
 import i18next from 'i18next';
 
 import {post, get} from '../../ajax'
