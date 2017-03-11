@@ -1,6 +1,6 @@
 import React, {Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {ListGroup, ListGroupItem, Checkbox, HelpBlock, FormGroup,ControlLabel, FormControl, Button} from 'react-bootstrap';
+import {ListGroup, Table, ListGroupItem, Checkbox, HelpBlock, FormGroup,ControlLabel, FormControl, Button} from 'react-bootstrap';
 import i18next from 'i18next';
 
 import {get, post} from '../../ajax'
@@ -396,6 +396,124 @@ export class Status extends Component{
         <hr/>
         <pre><code>{this.state.cache}</code></pre>
       </div>
+    </div>)
+  }
+}
+
+
+export class Locales extends Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      code:'',
+      message: '',
+      items:[]
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+  componentDidMount() {
+    get('/admin/locales').then(
+      function(rst){
+        this.setState({items:rst})
+      }.bind(this)
+    );
+  }
+  handleChange(e) {
+    var data = {};
+    var t = e.target;
+    data[t.id] = t.value;
+    this.setState(data);
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+    var data = new FormData()
+    data.append('code', this.state.code)
+    data.append('message', this.state.message)
+    post('/admin/locales', data)
+      .then(function(rst){
+        alert(i18next.t('success'))
+        this.setState({code:'', message:''})
+      }.bind(this))
+      .catch((err) => {
+        alert(err)
+      })
+  }
+  handleClick(l) {
+    this.setState({code:l.code, message:l.message})
+  }
+  render() {
+    return (<div className="col-md-offset-1 col-md-10">
+      <h3>{i18next.t('site.admin.locales.index.title')}</h3>
+      <hr/>
+      <form onSubmit={this.handleSubmit}>
+        <FormGroup controlId="code">
+          <ControlLabel>{i18next.t('site.attributes.locale.code')}</ControlLabel>
+          <FormControl
+            type="text"
+            value={this.state.code}
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+        <FormGroup controlId="message">
+          <ControlLabel>{i18next.t('site.attributes.locale.message')}</ControlLabel>
+          <FormControl
+            type="text"
+            value={this.state.message}
+            onChange={this.handleChange}
+          />
+        </FormGroup>
+        <Button type="submit" bsStyle="primary">
+          {i18next.t('buttons.submit')}
+        </Button>
+      </form>
+      <br/>
+      <ListGroup>
+        {this.state.items.map((l,i)=>(<ListGroupItem key={i} onClick={()=>this.handleClick(l)}>
+          {l.code} = {l.message}
+        </ListGroupItem>))}
+      </ListGroup>
+    </div>)
+  }
+}
+
+
+
+export class Users extends Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      users:[]
+    }
+  }
+  componentDidMount() {
+    get('/admin/users').then(
+      function(rst){
+        this.setState({users:rst})
+      }.bind(this)
+    );
+  }
+  render() {
+    return (<div className="col-md-offset-1 col-md-10">
+      <h3>{i18next.t('site.admin.users.index.title')}</h3>
+      <hr/>
+      <Table striped bordered condensed hover>
+        <thead>
+          <tr>
+            <th>{i18next.t('attributes.user')}</th>
+            <th>{i18next.t('auth.attributes.user.lastSignIn')}</th>
+            <th>{i18next.t('auth.attributes.user.currentSignIn')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.users.map((u,i)=>(<tr key={i}>
+            <td>{u.name}&lt;{u.email}&gt;[{u.signInCount}]</td>
+            <td>{u.lastSignInIP} {u.lastSignInAt}</td>
+            <td>{u.currentSignInIP} {u.currentSignInAt}</td>
+          </tr>))}
+        </tbody>
+      </Table>
     </div>)
   }
 }

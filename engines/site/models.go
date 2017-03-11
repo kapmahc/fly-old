@@ -9,8 +9,8 @@ import (
 // Notice notice
 type Notice struct {
 	web.Model
-	Body string
-	Type string
+	Body string `json:"body"`
+	Type string `json:"type"`
 }
 
 // TableName table name
@@ -21,9 +21,9 @@ func (Notice) TableName() string {
 // LeaveWord leave-word
 type LeaveWord struct {
 	ID        uint      `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time `json:"updatedAt"`
-	Body      string
-	Type      string
+	CreatedAt time.Time `json:"createdAt"`
+	Body      string    `json:"body"`
+	Type      string    `json:"type"`
 }
 
 // TableName table name

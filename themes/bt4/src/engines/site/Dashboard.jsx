@@ -11,16 +11,16 @@ const Widget = ({user}) =>{
       <MenuItem>{i18next.t(`site.admin.${k}.title`)}</MenuItem>
     </LinkContainer>))}
     <MenuItem divider />
-    <LinkContainer to="site/admin/locales">
+    <LinkContainer to="/admin/locales">
       <MenuItem>{i18next.t('site.admin.locales.index.title')}</MenuItem>
     </LinkContainer>
-    <LinkContainer to="site/admin/users">
+    <LinkContainer to="/admin/users">
       <MenuItem>{i18next.t('site.admin.users.index.title')}</MenuItem>
     </LinkContainer>
-    <LinkContainer to="site/admin/notices">
+    <LinkContainer to="/admin/notices">
       <MenuItem>{i18next.t('site.notices.index.title')}</MenuItem>
     </LinkContainer>
-    <LinkContainer to="site/admin/leave-words">
+    <LinkContainer to="/admin/leave-words">
       <MenuItem>{i18next.t('site.leave-words.index.title')}</MenuItem>
     </LinkContainer>
   </NavDropdown>) : (<li></li>)

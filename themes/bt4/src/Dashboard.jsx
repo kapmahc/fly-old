@@ -13,7 +13,6 @@ class Widget extends Component {
         <Nav bsStyle="tabs">
           {engines.dashboard}
         </Nav>
-        <br/>
         {children}
       </div>
     ) :

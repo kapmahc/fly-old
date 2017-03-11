@@ -327,6 +327,7 @@ export const Layout = ({children}) => (
           </Link>
         </li>
       ))}
+      <li><Link to="/leave-words/new">{i18next.t("site.leave-words.new.title")}</Link></li>
     </ul>
     </div>
   </div>
