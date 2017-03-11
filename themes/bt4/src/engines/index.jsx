@@ -1,9 +1,11 @@
 import auth from './auth'
 import site from './site'
+import blog from './blog'
 
 const engines = {
   auth,
-  site
+  site,
+  blog
 }
 
 export default {

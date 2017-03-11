@@ -12,6 +12,8 @@ export class Index extends Component{
   constructor(props){
     super(props)
     this.state = {users:[]}
+  }
+  componentDidMount() {
     get('/users').then(
       function(rst){
         this.setState({users:rst})
