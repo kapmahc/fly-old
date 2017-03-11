@@ -13,7 +13,7 @@ func (p *Engine) indexTags(c *gin.Context) {
 }
 
 type fmTag struct {
-	Name string `form:"name" validate:"required,max=255"`
+	Name string `form:"name" binding:"required,max=255"`
 }
 
 func (p *Engine) createTag(c *gin.Context) {

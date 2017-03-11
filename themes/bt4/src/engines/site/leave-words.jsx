@@ -21,16 +21,18 @@ export class Admin extends Component{
     );
   }
   handleRemove(id) {
-    _delete(`/leave-words/${id}`)
-      .then(function(rst){
-        alert(i18next.t('success'))
-        this.setState({
-          items: this.state.items.filter((lw, _) => lw.id !== id)
-        });
-      }.bind(this))
-      .catch((err) => {
-        alert(err)
-      })
+    if(confirm(i18next.t('are-you-sure'))){
+      _delete(`/leave-words/${id}`)
+        .then(function(rst){
+          alert(i18next.t('success'))
+          this.setState({
+            items: this.state.items.filter((lw, _) => lw.id !== id)
+          });
+        }.bind(this))
+        .catch((err) => {
+          alert(err)
+        })
+      }
   }
   render() {
     return (<div className="row">
@@ -99,7 +101,7 @@ export class New extends Component{
         <FormGroup controlId="body">
           <ControlLabel>{i18next.t('attributes.body')}</ControlLabel>
           <FormControl
-            value={this.state.description}
+            value={this.state.body}
             onChange={this.handleChange}
             rows={8}
             componentClass="textarea" />

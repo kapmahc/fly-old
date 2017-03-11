@@ -8,17 +8,18 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	rt.GET("/site/info", p.getSiteInfo)
 
 	rt.GET("/notices", p.indexNotices)
-	rt.POST("/notices", p.createNotice)
-	rt.POST("/notices/:id", p.updateNotice)
-	rt.DELETE("/notices/:id", p.destroyNotice)
+	rt.POST("/notices", p.Jwt.MustAdminMiddleware, p.createNotice)
+	rt.POST("/notices/:id", p.Jwt.MustAdminMiddleware, p.updateNotice)
+	rt.DELETE("/notices/:id", p.Jwt.MustAdminMiddleware, p.destroyNotice)
 
-	rt.GET("/leave-words", p.indexLeaveWords)
+	rt.GET("/leave-words", p.Jwt.MustAdminMiddleware, p.indexLeaveWords)
 	rt.POST("/leave-words", p.createLeaveWord)
-	rt.DELETE("/leave-words/:id", p.destroyLeaveWord)
+	rt.DELETE("/leave-words/:id", p.Jwt.MustAdminMiddleware, p.destroyLeaveWord)
 
 	ag := rt.Group("/admin", p.Jwt.MustAdminMiddleware)
 	ag.GET("/locales", p.getAdminLocales)
 	ag.POST("/locales", p.postAdminLocales)
+	ag.DELETE("/locales/:id", p.deleteAdminLocales)
 	ag.GET("/users", p.getAdminUsers)
 
 	asg := ag.Group("/site")

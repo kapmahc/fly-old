@@ -219,11 +219,19 @@ func (p *Engine) getAdminLocales(c *gin.Context) {
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var items []web.Locale
-	err := p.Db.Select([]string{"code", "message"}).
+	err := p.Db.Select([]string{"id", "code", "message"}).
 		Where("lang = ?", lang).
 		Order("code ASC").Find(&items).Error
 
 	web.JSON(c, items, err)
+}
+
+func (p *Engine) deleteAdminLocales(c *gin.Context) {
+	err := p.Db.
+		Where("id = ?", c.Param("id")).
+		Delete(&web.Locale{}).Error
+
+	web.JSON(c, nil, err)
 }
 
 type fmLocale struct {
@@ -240,8 +248,11 @@ func (p *Engine) postAdminLocales(c *gin.Context) {
 	if err == nil {
 		err = p.I18n.Set(lang, fm.Code, fm.Message)
 	}
-
-	web.JSON(c, nil, err)
+	var l web.Locale
+	if err == nil {
+		err = p.Db.Where("lang = ? AND code = ?", lang, fm.Code).First(&l).Error
+	}
+	web.JSON(c, l, err)
 }
 
 func (p *Engine) getAdminUsers(c *gin.Context) {

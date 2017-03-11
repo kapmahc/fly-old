@@ -28,10 +28,10 @@ func (p *Engine) indexArticles(c *gin.Context) {
 }
 
 type fmArticle struct {
-	Title   string   `form:"title" validate:"required,max=255"`
-	Summary string   `form:"summary" validate:"required,max=500"`
-	Type    string   `form:"type" validate:"required,max=8"`
-	Body    string   `form:"body" validate:"required,max=2000"`
+	Title   string   `form:"title" binding:"required,max=255"`
+	Summary string   `form:"summary" binding:"required,max=500"`
+	Type    string   `form:"type" binding:"required,max=8"`
+	Body    string   `form:"body" binding:"required,max=2000"`
 	Tags    []string `form:"tags"`
 }
 

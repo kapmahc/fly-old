@@ -12,8 +12,8 @@ func (p *Engine) indexLeaveWords(c *gin.Context) {
 }
 
 type fmLeaveWord struct {
-	Body string `form:"body" validate:"required,max=800"`
-	Type string `form:"type" validate:"required,max=8"`
+	Body string `form:"body" binding:"required,max=800"`
+	Type string `form:"type" binding:"required,max=8"`
 }
 
 func (p *Engine) createLeaveWord(c *gin.Context) {

@@ -28,9 +28,9 @@ func (p *Engine) indexComments(c *gin.Context) {
 }
 
 type fmComment struct {
-	Body      string `form:"body" validate:"required,max=800"`
-	Type      string `form:"type" validate:"required,max=8"`
-	ArticleID uint   `form:"article_id" validate:"required"`
+	Body      string `form:"body" binding:"required,max=800"`
+	Type      string `form:"type" binding:"required,max=8"`
+	ArticleID uint   `form:"article_id" binding:"required"`
 }
 
 func (p *Engine) createComment(c *gin.Context) {

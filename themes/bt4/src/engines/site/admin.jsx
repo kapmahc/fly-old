@@ -1,9 +1,11 @@
 import React, {Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {ListGroup, Table, ListGroupItem, Checkbox, HelpBlock, FormGroup,ControlLabel, FormControl, Button} from 'react-bootstrap';
+import {ListGroup, Table, ListGroupItem,
+  Checkbox, HelpBlock, FormGroup,ControlLabel, FormControl,
+  ButtonGroup, ButtonToolbar, Button} from 'react-bootstrap';
 import i18next from 'i18next';
 
-import {get, post} from '../../ajax'
+import {get, post, _delete} from '../../ajax'
 
 
 class InfoW extends Component{
@@ -411,7 +413,9 @@ export class Locales extends Component{
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleNew = this.handleNew.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
   componentDidMount() {
     get('/admin/locales').then(
@@ -434,14 +438,33 @@ export class Locales extends Component{
     post('/admin/locales', data)
       .then(function(rst){
         alert(i18next.t('success'))
-        this.setState({code:'', message:''})
+        var items = this.state.items.filter((l, _) => l.code !== rst.code)
+        items.unshift(rst)
+        this.setState({code:'', message:'', items:items})
       }.bind(this))
       .catch((err) => {
         alert(err)
       })
   }
-  handleClick(l) {
+  handleNew() {
+    this.setState({code:'', message:''})
+  }
+  handleEdit(l) {
     this.setState({code:l.code, message:l.message})
+  }
+  handleRemove(id) {
+    if(confirm(i18next.t('are-you-sure'))){
+      _delete(`/admin/locales/${id}`)
+        .then(function(rst){
+          alert(i18next.t('success'))
+          this.setState({
+            items: this.state.items.filter((l, _) => l.id !== id)
+          });
+        }.bind(this))
+        .catch((err) => {
+          alert(err)
+        })
+    }
   }
   render() {
     return (<div className="col-md-offset-1 col-md-10">
@@ -469,11 +492,34 @@ export class Locales extends Component{
         </Button>
       </form>
       <br/>
-      <ListGroup>
-        {this.state.items.map((l,i)=>(<ListGroupItem key={i} onClick={()=>this.handleClick(l)}>
-          {l.code} = {l.message}
-        </ListGroupItem>))}
-      </ListGroup>
+      <Table striped bordered condensed hover>
+        <thead>
+          <tr>
+            <th>{i18next.t('site.attributes.locale.code')}</th>
+            <th>{i18next.t('site.attributes.locale.message')}</th>
+            <th width="12%">
+              {i18next.t('buttons.manage')}
+              <Button bsStyle="success" bsSize="sm" onClick={this.handleNew}>{i18next.t('buttons.new')}</Button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.items.map((l,i)=>(<tr key={i}>
+            <td>{l.code}</td>
+            <td>
+              <pre><code>
+                {l.message}
+              </code></pre>
+            </td>
+            <td>
+              <ButtonToolbar><ButtonGroup bsSize="sm">
+                <Button bsStyle="warning" onClick={()=>this.handleEdit(l)}>{i18next.t('buttons.edit')}</Button>
+                <Button bsStyle="danger" onClick={()=>this.handleRemove(l.id)}>{i18next.t('buttons.remove')}</Button>
+              </ButtonGroup></ButtonToolbar>
+            </td>
+          </tr>))}
+        </tbody>
+      </Table>
     </div>)
   }
 }
