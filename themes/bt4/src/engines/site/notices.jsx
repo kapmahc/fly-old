@@ -4,7 +4,8 @@ import {Table, HelpBlock, FormGroup,ControlLabel, FormControl,
 import i18next from 'i18next';
 
 import {get, post, _delete} from '../../ajax'
-
+import {timeago} from '../../utils'
+import Markdown from '../../components/Markdown'
 
 export class Index extends Component{
   constructor(props){
@@ -20,14 +21,13 @@ export class Index extends Component{
       }.bind(this)
     );
   }
-
   render() {
     return (<div className="row">
       <h3>{i18next.t('site.notices.index.title')}</h3>
       <hr/>
           {this.state.items.map((n,i)=>(<blockquote key={i}>
-            <pre><code>{n.body}</code></pre>
-            <footer><cite>{n.updatedAt}</cite></footer>
+            <Markdown body={n.body}/>
+            <footer><cite>{timeago(n.updatedAt)}</cite></footer>
           </blockquote>))}
     </div>)
   }
