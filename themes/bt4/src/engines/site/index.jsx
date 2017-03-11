@@ -8,7 +8,9 @@ import Root from '../../Dashboard'
 import {
   Info as SiteInfo,
   Author as SiteAuthor,
-  Seo as SiteSeo
+  Seo as SiteSeo,
+  Smtp as SiteSmtp,
+  Status as SiteStatus
 } from './admin'
 
 export default {
@@ -25,6 +27,8 @@ export default {
       <Route path="site/info" component={SiteInfo}/>
       <Route path="site/author" component={SiteAuthor}/>
       <Route path="site/seo" component={SiteSeo}/>
+      <Route path="site/smtp" component={SiteSmtp}/>
+      <Route path="site/status" component={SiteStatus}/>
     </Route>)
   ]
 }

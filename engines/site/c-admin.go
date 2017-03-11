@@ -19,7 +19,7 @@ func (p *Engine) _osStatus() gin.H {
 		"go version": runtime.Version(),
 		"go root":    runtime.GOROOT(),
 		"go runtime": runtime.NumGoroutine(),
-		"go last gc": time.Unix(int64(mem.LastGC), 0),
+		"go last gc": time.Unix(int64(mem.LastGC), 0).String(),
 		"cpu":        runtime.NumCPU(),
 		"memory":     fmt.Sprintf("%dM/%dM", mem.Alloc/1024/1024, mem.Sys/1024/1024),
 		"now":        time.Now(),
@@ -83,6 +83,7 @@ func (p *Engine) getAdminSiteStatus(c *gin.Context) {
 	if err == nil {
 		data["database"], err = p._dbStatus()
 	}
+
 	web.JSON(c, data, err)
 }
 
@@ -178,13 +179,21 @@ type fmSiteSMTP struct {
 	Port                 int    `form:"port"`
 	Ssl                  bool   `form:"ssl"`
 	Username             string `form:"username"`
-	Password             string `form:"password"`
-	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=Password"`
+	Password             string `form:"password" binding:"min=6,max=32"`
+	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
 func (p *Engine) getAdminSiteSMTP(c *gin.Context) {
 	var smtp map[string]interface{}
-	p.Settings.Get("site.smtp", &smtp)
+	if err := p.Settings.Get("site.smtp", &smtp); err == nil {
+		smtp["password"] = ""
+	} else {
+		smtp["host"] = "localhost"
+		smtp["port"] = 25
+		smtp["ssl"] = false
+		smtp["username"] = "no-reply@change-me.com"
+		smtp["password"] = ""
+	}
 	web.JSON(c, smtp, nil)
 }
 
@@ -192,7 +201,6 @@ func (p *Engine) postAdminSiteSMTP(c *gin.Context) {
 	var fm fmSiteSMTP
 	err := c.Bind(&fm)
 	if err == nil {
-
 		val := map[string]interface{}{
 			"host":     fm.Host,
 			"port":     fm.Port,
@@ -219,8 +227,8 @@ func (p *Engine) getAdminLocales(c *gin.Context) {
 }
 
 type fmLocale struct {
-	Code    string `form:"code" validate:"required,max=255"`
-	Message string `form:"message" validate:"required"`
+	Code    string `form:"code" binding:"required,max=255"`
+	Message string `form:"message" binding:"required"`
 }
 
 func (p *Engine) postAdminLocales(c *gin.Context) {

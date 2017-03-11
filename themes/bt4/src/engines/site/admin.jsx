@@ -1,6 +1,6 @@
 import React, {Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {ListGroup, ListGroupItem, FormGroup,ControlLabel, FormControl, Button} from 'react-bootstrap';
+import {ListGroup, ListGroupItem, Checkbox, HelpBlock, FormGroup,ControlLabel, FormControl, Button} from 'react-bootstrap';
 import i18next from 'i18next';
 
 import {get, post} from '../../ajax'
@@ -268,30 +268,39 @@ export class Smtp extends Component{
   constructor(props){
     super(props)
     this.state = {
-      name:'',
-      email: '',
+      host:'',
+      port: 465,
+      ssl:true,
+      username: '',
+      password: '',
+      passwordConfirmation:'',
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   componentDidMount() {
-    get('/site/info').then(
+    get('/admin/site/smtp').then(
       function(rst){
-        this.setState(rst.author)
+        this.setState(rst)
       }.bind(this)
     );
   }
   handleChange(e) {
     var data = {};
-    data[e.target.id] = e.target.value;
+    var t = e.target;
+    data[t.id] = t.type === 'checkbox' ? t.checked : t.value;
     this.setState(data);
   }
   handleSubmit(e) {
     e.preventDefault();
     var data = new FormData()
-    data.append('name', this.state.name)
-    data.append('email', this.state.email)
-    post('/admin/site/author', data)
+    data.append('host', this.state.host)
+    data.append('port', this.state.port)
+    data.append('ssl', this.state.ssl)
+    data.append('username', this.state.username)
+    data.append('password', this.state.password)
+    data.append('passwordConfirmation', this.state.passwordConfirmation)
+    post('/admin/site/smtp', data)
       .then(function(rst){
         alert(i18next.t('success'))
       })
@@ -301,29 +310,92 @@ export class Smtp extends Component{
   }
   render() {
     return (<div className="col-md-offset-1 col-md-10">
-      <h3>{i18next.t('site.admin.author.title')}</h3>
+      <h3>{i18next.t('site.admin.smtp.title')}</h3>
       <hr/>
       <form onSubmit={this.handleSubmit}>
-        <FormGroup controlId="name">
-          <ControlLabel>{i18next.t('attributes.fullName')}</ControlLabel>
+        <FormGroup controlId="host">
+          <ControlLabel>{i18next.t('attributes.host')}</ControlLabel>
           <FormControl
             type="text"
-            value={this.state.name}
+            value={this.state.host}
             onChange={this.handleChange}
           />
         </FormGroup>
-        <FormGroup controlId="email">
-          <ControlLabel>{i18next.t('attributes.email')}</ControlLabel>
+        <FormGroup controlId="port">
+          <ControlLabel>{i18next.t('attributes.port')}</ControlLabel>
+          <FormControl value={this.state.port} onChange={this.handleChange} componentClass="select" placeholder="select">
+            {[25,465,587].map((p,i)=>(<option value={p} key={i}>{p}</option>))}
+          </FormControl>
+        </FormGroup>
+        <Checkbox id="ssl" checked={this.state.ssl} onChange={this.handleChange}>
+          {i18next.t('attributes.ssl')}
+        </Checkbox>
+        <FormGroup controlId="username">
+          <ControlLabel>{i18next.t('site.admin.smtp.sender')}</ControlLabel>
           <FormControl
             type="email"
-            value={this.state.email}
+            value={this.state.username}
             onChange={this.handleChange}
           />
+        </FormGroup>
+        <FormGroup controlId="password">
+          <ControlLabel>{i18next.t('attributes.password')}</ControlLabel>
+          <FormControl
+            type="password"
+            value={this.state.password}
+            onChange={this.handleChange}
+          />
+          <HelpBlock>{i18next.t('helps.password')}</HelpBlock>
+        </FormGroup>
+        <FormGroup controlId="passwordConfirmation">
+          <ControlLabel>{i18next.t('attributes.passwordConfirmation')}</ControlLabel>
+          <FormControl
+            type="password"
+            value={this.state.passwordConfirmation}
+            onChange={this.handleChange}
+          />
+          <HelpBlock>{i18next.t('helps.passwordConfirmation')}</HelpBlock>
         </FormGroup>
         <Button type="submit" bsStyle="primary">
           {i18next.t('buttons.submit')}
         </Button>
       </form>
+    </div>)
+  }
+}
+
+
+export class Status extends Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      host:'',
+      port: 465,
+      ssl:true,
+      username: '',
+      password: '',
+      passwordConfirmation:'',
+    }
+  }
+  componentDidMount() {
+    get('/admin/site/status').then(
+      function(rst){
+        this.setState(rst)
+      }.bind(this)
+    );
+  }
+  render() {
+    return (<div className="row">
+      {["os", "database", "jobs"].map((k,i)=>(<div key={i} className="col-md-6">
+        <h4>{i18next.t(`site.admin.status.${k}`)}</h4>
+        <hr/>
+        <pre><code>{JSON.stringify(this.state[k], null, 2)}</code></pre>
+      </div>))}
+      <div className="col-md-6">
+        <h4>{i18next.t('site.admin.status.cache')}</h4>
+        <hr/>
+        <pre><code>{this.state.cache}</code></pre>
+      </div>
     </div>)
   }
 }
