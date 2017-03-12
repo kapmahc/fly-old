@@ -7,6 +7,9 @@ const Widget = () => (<NavDropdown title={i18next.t('auth.dashboard.title')} id=
   {['logs', 'info', 'change-password'].map((k, i)=>(<LinkContainer key={i}to={`/users/${k}`}>
     <MenuItem>{i18next.t(`auth.users.${k}.title`)}</MenuItem>
   </LinkContainer>))}
+  <LinkContainer to={'/attachments'}>
+    <MenuItem>{i18next.t('auth.attachments.index.title')}</MenuItem>
+  </LinkContainer>
 </NavDropdown>)
 
 export default Widget

@@ -23,7 +23,7 @@ const Widget = ({user}) =>{
     <LinkContainer to="/admin/leave-words">
       <MenuItem>{i18next.t('site.leave-words.index.title')}</MenuItem>
     </LinkContainer>
-  </NavDropdown>) : (<li></li>)
+  </NavDropdown>) : null
 }
 
 

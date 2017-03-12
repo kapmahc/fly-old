@@ -93,16 +93,12 @@ CREATE TABLE attachments (
   url           VARCHAR(255)                NOT NULL,
   length        INT                         NOT NULL,
   media_type    VARCHAR(32)                 NOT NULL,
-  resource_type VARCHAR(255)                NOT NULL,
-  resource_id   BIGINT                      NOT NULL,
   user_id       BIGINT                      NOT NULL,
-  sort_order    INT                         NOT NULL DEFAULT 0,
-  created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now()
+  created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  updated_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 CREATE UNIQUE INDEX idx_attachments_url
   ON attachments (url);
-CREATE UNIQUE INDEX idx_attachments_resources
-  ON attachments (resource_type, resource_id);
 CREATE INDEX idx_attachments_title
   ON attachments (title);
 CREATE INDEX idx_attachments_media_type

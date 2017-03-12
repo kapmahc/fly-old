@@ -17,7 +17,7 @@ const Widget = ({user}) =>{
     </LinkContainer>
     {user.isAdmin ? (<LinkContainer to="/forum/dashboard/tags">
       <MenuItem>{i18next.t('forum.dashboard.tags.title')}</MenuItem>
-    </LinkContainer>) : <li></li>}
+    </LinkContainer>) : null}
   </NavDropdown>)
 }
 

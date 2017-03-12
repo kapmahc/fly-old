@@ -26,8 +26,7 @@ func NewPagination(r *http.Request, total int64) *Pagination {
 	var count = total / size
 	if total < size {
 		count = 1
-	}
-	if total%page != 0 {
+	} else if total%page != 0 {
 		count++
 	}
 

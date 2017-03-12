@@ -3,6 +3,7 @@ import { Route } from 'react-router'
 
 import {Index, SignIn,SignUp,Confirm,Unlock,ForgotPassword,ResetPassword, Layout} from './non-sign-in'
 import {Info, Logs, ChangePassword} from './must-sign-in'
+import {Dashboard as Attachments} from './attachments'
 import Dashboard from './Dashboard'
 import Root from '../../Dashboard'
 
@@ -21,6 +22,7 @@ export default {
       <Route path="forgot-password" component={ForgotPassword}/>
       <Route path="reset-password/:token" component={ResetPassword}/>
     </Route>),
+    (<Route key="auth.attachments" path="attachments" component={Attachments}/>),
     (<Route key="auth-must-sign-in" path="/users" component={Root}>
       <Route path="info" component={Info}/>
       <Route path="logs" component={Logs}/>

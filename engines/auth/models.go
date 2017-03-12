@@ -34,7 +34,7 @@ type User struct {
 	UID             string     `json:"uid"`
 	Password        []byte     `json:"-"`
 	ProviderID      string     `json:"-"`
-	ProviderType    string     `json:"providerNype"`
+	ProviderType    string     `json:"providerType"`
 	Home            string     `json:"home"`
 	Logo            string     `json:"logo"`
 	SignInCount     uint       `json:"signInCount"`
@@ -80,15 +80,12 @@ func (p User) String() string {
 
 // Attachment attachment
 type Attachment struct {
-	ID           uint
-	Title        string
-	URL          string
-	Length       uint
-	MediaType    string
-	ResourceType string
-	ResourceID   uint
-	SortOrder    int
-	CreatedAt    time.Time
+	web.Model
+
+	Title     string `json:"title"`
+	URL       string `json:"url"`
+	Length    uint   `json:"length"`
+	MediaType string `json:"mediaType"`
 
 	UserID uint
 	User   User
