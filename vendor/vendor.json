@@ -651,6 +651,12 @@
 			"revisionTime": "2017-02-28T17:26:26Z"
 		},
 		{
+			"checksumSHA1": "LGXeoFu5U86xjYFW3YCY3rOIa+o=",
+			"path": "golang.org/x/tools/blog/atom",
+			"revision": "f60b69ed8cd7a29e91f87050ae23a29581a0f367",
+			"revisionTime": "2017-03-08T22:01:44Z"
+		},
+		{
 			"checksumSHA1": "2NA4aSa/A7FnIlI9SrZkqZc5A38=",
 			"path": "gopkg.in/gin-contrib/cors.v1",
 			"revision": "fb918bcd825b9e20f0c3c365981baf9454029b6c",
