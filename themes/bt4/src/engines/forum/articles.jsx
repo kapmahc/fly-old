@@ -1,4 +1,5 @@
 import React, {Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import {Table, FormGroup,ControlLabel, FormControl, Thumbnail,
   HelpBlock,Pagination,
   ButtonGroup, ButtonToolbar, Button} from 'react-bootstrap';
@@ -126,7 +127,7 @@ class Form extends Component{
   }
   render() {
     return (<div className="row">
-      <h3>{i18next.t('auth.users.info.title')}</h3>
+      <h3>{this.state.id ? `${i18next.t('buttons.edit')}[${this.state.id}]` : i18next.t('forum.articles.new.title')}</h3>
       <hr/>
       <form onSubmit={this.handleSubmit}>
         <FormGroup controlId="title">
@@ -162,7 +163,7 @@ class Form extends Component{
 }
 
 
-export class Show extends Component{
+class ShowW extends Component{
   constructor(props){
     super(props)
     this.state = {
@@ -182,6 +183,7 @@ export class Show extends Component{
     );
   }
   render() {
+    const {user} = this.props
     return (<div className="row">
       <h3>{this.state.title}</h3>
       <hr/>
@@ -191,12 +193,24 @@ export class Show extends Component{
       <div className="col-md-12">
         {this.state.tags.map((t,i)=>(<Link to={`/forum/tags/${t.id}`} className="block">{t.name}</Link>))}
       </div>
-      <h4>{i18next.t('forum.comments.index.title')}</h4>
+      <h4>
+        {i18next.t('forum.comments.index.title')}
+        {user.uid ? (<Link className="block" to={`/forum/comments/new?articleId=${this.state.id}`}>{i18next.t("buttons.new")}</Link>): <br/>}
+      </h4>
       <hr/>
       <Comments items={this.state.comments}/>
     </div>)
   }
 }
+
+
+ShowW.propTypes = {
+  user: PropTypes.object.isRequired
+}
+
+export const Show = connect(
+  state => ({user: state.currentUser})
+)(ShowW)
 
 export const New = ()=>(<Form />)
 export const Edit = ({params})=>(<Form id={params.id} />)
@@ -239,6 +253,7 @@ export class Dashboard extends Component{
       <Table striped bordered condensed hover>
         <thead>
           <tr>
+            <th>{i18next.t('attributes.updatedAt')}</th>
             <th>{i18next.t('attributes.title')}</th>
             <th>
               {i18next.t('buttons.manage')}
@@ -250,6 +265,7 @@ export class Dashboard extends Component{
         </thead>
         <tbody>
           {this.state.items.map((a,i)=>(<tr key={i}>
+            <td>{a.updatedAt}</td>
             <td>{a.title}</td>
             <td>
               <ButtonToolbar><ButtonGroup bsSize="sm">

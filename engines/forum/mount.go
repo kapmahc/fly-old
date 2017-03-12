@@ -19,6 +19,7 @@ func (p *Engine) Mount(rt *gin.Engine) {
 
 	fg.GET("/comments", p.indexComments)
 	fg.POST("/comments", p.Jwt.MustSignInMiddleware, p.createComment)
+	fg.GET("/comments/:id", p.showComment)
 	fg.POST("/comments/:id", p.Jwt.MustSignInMiddleware, p.canEditComment, p.updateComment)
 	fg.DELETE("/comments/:id", p.Jwt.MustSignInMiddleware, p.canEditComment, p.destroyComment)
 

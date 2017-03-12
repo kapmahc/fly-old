@@ -16,7 +16,7 @@ type Article struct {
 	UserID   uint      `json:"userId"`
 	User     auth.User `json:"user"`
 	Tags     []Tag     `json:"tags" gorm:"many2many:forum_articles_tags;"`
-	Comments []Comment
+	Comments []Comment `json:"comments"`
 }
 
 // TableName table name

@@ -12,6 +12,6 @@ const (
 //Model base model
 type Model struct {
 	ID        uint      `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time `json:"updatedAt"`
-	UpdatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }

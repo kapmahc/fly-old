@@ -17,6 +17,7 @@ func (p *Engine) myArticles(c *gin.Context) {
 		qry = qry.Where("user_id = ?", user.ID)
 	}
 	err := qry.Order("updated_at DESC").Find(&articles).Error
+
 	web.JSON(c, articles, err)
 }
 

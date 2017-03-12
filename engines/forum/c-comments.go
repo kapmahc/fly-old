@@ -39,41 +39,54 @@ func (p *Engine) indexComments(c *gin.Context) {
 	web.JSON(c, pag, err)
 }
 
-type fmComment struct {
+type fmCommentAdd struct {
 	Body      string `form:"body" binding:"required,max=800"`
 	Type      string `form:"type" binding:"required,max=8"`
-	ArticleID uint   `form:"article_id" binding:"required"`
+	ArticleID uint   `form:"articleId" binding:"required"`
 }
 
 func (p *Engine) createComment(c *gin.Context) {
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 
-	var fm fmComment
+	var fm fmCommentAdd
 	err := c.Bind(&fm)
+	var cm *Comment
 	if err == nil {
-		err = p.Db.Create(&Comment{
+		cm = &Comment{
 			Body:      fm.Body,
 			Type:      fm.Type,
 			ArticleID: fm.ArticleID,
 			UserID:    user.ID,
-		}).Error
+		}
+		err = p.Db.Create(cm).Error
 	}
 
-	web.JSON(c, nil, err)
+	web.JSON(c, cm, err)
+}
+
+func (p *Engine) showComment(c *gin.Context) {
+	var cm Comment
+	err := p.Db.Where("id = ?", c.Param("id")).First(&cm).Error
+	web.JSON(c, cm, err)
+}
+
+type fmCommentEdit struct {
+	Body string `form:"body" binding:"required,max=800"`
+	Type string `form:"type" binding:"required,max=8"`
 }
 
 func (p *Engine) updateComment(c *gin.Context) {
 	comment := c.MustGet("comment").(*Comment)
 
-	var fm fmComment
+	var fm fmCommentEdit
 	err := c.Bind(&fm)
 	if err == nil {
-		err = p.Db.Where("id = ?", comment.ID).Updates(map[string]interface{}{
+		err = p.Db.Model(comment).Updates(map[string]interface{}{
 			"body": fm.Body,
 			"type": fm.Type,
 		}).Error
 	}
-	web.JSON(c, nil, err)
+	web.JSON(c, comment, err)
 }
 
 func (p *Engine) destroyComment(c *gin.Context) {
