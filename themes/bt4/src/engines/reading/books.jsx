@@ -5,8 +5,7 @@ import {LinkContainer} from 'react-router-bootstrap'
 
 
 import {get} from '../../ajax'
-
-const PAGE_SIZE = 60
+import {PAGE_SIZE} from '../../constants'
 
 export class Index extends Component{
   constructor(props){

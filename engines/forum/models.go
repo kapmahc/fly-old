@@ -13,9 +13,10 @@ type Article struct {
 	Body    string `json:"body"`
 	Type    string `json:"type"`
 
-	UserID uint      `json:"userId"`
-	User   auth.User `json:"user"`
-	Tags   []Tag     `json:"tags" gorm:"many2many:forum_articles_tags;"`
+	UserID   uint      `json:"userId"`
+	User     auth.User `json:"user"`
+	Tags     []Tag     `json:"tags" gorm:"many2many:forum_articles_tags;"`
+	Comments []Comment
 }
 
 // TableName table name

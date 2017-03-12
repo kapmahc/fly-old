@@ -8,6 +8,18 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
+func (p *Engine) myComments(c *gin.Context) {
+	user := c.MustGet(auth.CurrentUser).(*auth.User)
+	isa := c.MustGet(auth.IsAdmin).(bool)
+	var comments []Comment
+	qry := p.Db.Select([]string{"body", "article_id", "updated_at", "id"})
+	if !isa {
+		qry = qry.Where("user_id = ?", user.ID)
+	}
+	err := qry.Order("updated_at DESC").Find(&comments).Error
+	web.JSON(c, comments, err)
+}
+
 func (p *Engine) indexComments(c *gin.Context) {
 	var total int64
 	err := p.Db.Model(&Comment{}).Count(&total).Error

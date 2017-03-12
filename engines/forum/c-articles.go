@@ -8,6 +8,18 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
+func (p *Engine) myArticles(c *gin.Context) {
+	user := c.MustGet(auth.CurrentUser).(*auth.User)
+	isa := c.MustGet(auth.IsAdmin).(bool)
+	var articles []Article
+	qry := p.Db.Select([]string{"title", "updated_at", "id"})
+	if !isa {
+		qry = qry.Where("user_id = ?", user.ID)
+	}
+	err := qry.Order("updated_at DESC").Find(&articles).Error
+	web.JSON(c, articles, err)
+}
+
 func (p *Engine) indexArticles(c *gin.Context) {
 	var total int64
 	var pag *web.Pagination
@@ -39,6 +51,7 @@ func (p *Engine) createArticle(c *gin.Context) {
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 	var fm fmArticle
 	err := c.Bind(&fm)
+	var a *Article
 	if err == nil {
 		var tags []Tag
 		for _, it := range fm.Tags {
@@ -49,7 +62,7 @@ func (p *Engine) createArticle(c *gin.Context) {
 				break
 			}
 		}
-		a := Article{
+		a = &Article{
 			Title:   fm.Title,
 			Summary: fm.Summary,
 			Body:    fm.Body,
@@ -57,18 +70,21 @@ func (p *Engine) createArticle(c *gin.Context) {
 			UserID:  user.ID,
 		}
 		if err == nil {
-			err = p.Db.Create(&a).Error
+			err = p.Db.Create(a).Error
 		}
 		if err == nil {
 			err = p.Db.Model(a).Association("Tags").Append(tags).Error
 		}
 	}
-	web.JSON(c, nil, err)
+	web.JSON(c, a, err)
 }
 
 func (p *Engine) showArticle(c *gin.Context) {
 	var a Article
-	err := p.Db.Select("id = ?", c.Param("id")).First(&a).Error
+	err := p.Db.Where("id = ?", c.Param("id")).First(&a).Error
+	if err == nil {
+		err = p.Db.Model(&a).Related(&a.Comments).Error
+	}
 	if err == nil {
 		err = p.Db.Model(&a).Association("Tags").Find(&a.Tags).Error
 	}
@@ -90,7 +106,7 @@ func (p *Engine) updateArticle(c *gin.Context) {
 			}
 		}
 		if err == nil {
-			err = p.Db.Where("id = ?", a.ID).Updates(map[string]interface{}{
+			err = p.Db.Model(a).Updates(map[string]interface{}{
 				"title":   fm.Title,
 				"summary": fm.Summary,
 				"body":    fm.Body,
@@ -101,7 +117,7 @@ func (p *Engine) updateArticle(c *gin.Context) {
 			err = p.Db.Model(a).Association("Tags").Replace(tags).Error
 		}
 	}
-	web.JSON(c, nil, err)
+	web.JSON(c, a, err)
 }
 
 func (p *Engine) destroyArticle(c *gin.Context) {
