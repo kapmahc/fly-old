@@ -1,6 +1,7 @@
 package reading
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -23,17 +24,20 @@ func (p *Engine) indexBooks(c *gin.Context) {
 
 func (p *Engine) showBook(c *gin.Context) {
 	id := c.Param("id")
-	bk, err := p.readBook(id)
-	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
-		return
+	var buf bytes.Buffer
+	it, bk, err := p.readBook(id)
+	if err == nil {
+		// c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")
+		p.writePoints(
+			&buf,
+			fmt.Sprintf("%s/reading/pages/%s", viper.GetString("server.backend"), id),
+			bk.Ncx.Points,
+		)
 	}
-	c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")
-	p.writePoints(
-		c.Writer,
-		fmt.Sprintf("%s/reading/pages/%s", viper.GetString("server.backend"), id),
-		bk.Ncx.Points,
-	)
+	web.JSON(c, gin.H{
+		"book": it,
+		"home": buf.String(),
+	}, err)
 }
 
 func (p *Engine) showPage(c *gin.Context) {
@@ -46,8 +50,12 @@ func (p *Engine) showPage(c *gin.Context) {
 
 // -----------------------
 
+func (p *Engine) bookHomePage(id string) {
+
+}
+
 func (p *Engine) readBookPage(w http.ResponseWriter, id string, name string) error {
-	bk, err := p.readBook(id)
+	_, bk, err := p.readBook(id)
 	if err != nil {
 		return err
 	}
@@ -110,11 +118,12 @@ func (p *Engine) writePoints(wrt io.Writer, href string, points []epub.NavPoint)
 	wrt.Write([]byte("</ol>"))
 }
 
-func (p *Engine) readBook(id string) (*epub.Book, error) {
+func (p *Engine) readBook(id string) (*Book, *epub.Book, error) {
 	var book Book
 	if err := p.Db.
 		Where("id = ?", id).First(&book).Error; err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return epub.Open(path.Join(p.root(), book.File))
+	bk, err := epub.Open(path.Join(p.root(), book.File))
+	return &book, bk, err
 }

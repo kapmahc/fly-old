@@ -1,11 +1,13 @@
 import auth from './auth'
 import site from './site'
 import blog from './blog'
+import reading from './reading'
 
 const engines = {
   auth,
   site,
-  blog
+  blog,
+  reading
 }
 
 export default {
