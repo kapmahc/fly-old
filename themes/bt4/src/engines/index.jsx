@@ -2,11 +2,13 @@ import auth from './auth'
 import site from './site'
 import blog from './blog'
 import reading from './reading'
+import forum from './forum'
 
 const engines = {
   auth,
   site,
   blog,
+  forum,
   reading
 }
 

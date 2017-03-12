@@ -7,8 +7,7 @@ import (
 
 func (p *Engine) indexTags(c *gin.Context) {
 	var tags []Tag
-	err := p.Db.Select([]string{"name", "id"}).
-		Find(&tags).Error
+	err := p.Db.Find(&tags).Error
 	web.JSON(c, tags, err)
 }
 
@@ -20,10 +19,12 @@ func (p *Engine) createTag(c *gin.Context) {
 
 	var fm fmTag
 	err := c.Bind(&fm)
+	var t *Tag
 	if err == nil {
-		err = p.Db.Create(&Tag{Name: fm.Name}).Error
+		t = &Tag{Name: fm.Name}
+		err = p.Db.Create(t).Error
 	}
-	web.JSON(c, nil, err)
+	web.JSON(c, t, err)
 }
 
 func (p *Engine) showTag(c *gin.Context) {
@@ -45,7 +46,7 @@ func (p *Engine) updateTag(c *gin.Context) {
 	if err == nil {
 		err = p.Db.Model(&tag).Update("name", fm.Name).Error
 	}
-	web.JSON(c, nil, err)
+	web.JSON(c, tag, err)
 }
 
 func (p *Engine) destroyTag(c *gin.Context) {

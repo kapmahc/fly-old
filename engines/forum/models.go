@@ -8,14 +8,14 @@ import (
 // Article article
 type Article struct {
 	web.Model
-	Title   string
-	Summary string
-	Body    string
-	Type    string
+	Title   string `json:"title"`
+	Summary string `json:"summary"`
+	Body    string `json:"body"`
+	Type    string `json:"type"`
 
-	UserID uint
-	User   auth.User
-	Tags   []Tag `gorm:"many2many:forum_articles_tags;"`
+	UserID uint      `json:"userId"`
+	User   auth.User `json:"user"`
+	Tags   []Tag     `json:"tags" gorm:"many2many:forum_articles_tags;"`
 }
 
 // TableName table name
@@ -26,8 +26,8 @@ func (Article) TableName() string {
 // Tag tag
 type Tag struct {
 	web.Model
-	Name     string
-	Articles []Article `gorm:"many2many:forum_articles_tags;"`
+	Name     string    `json:"name"`
+	Articles []Article `json:"articles" gorm:"many2many:forum_articles_tags;"`
 }
 
 // TableName table name
@@ -38,13 +38,13 @@ func (Tag) TableName() string {
 // Comment comment
 type Comment struct {
 	web.Model
-	Body string
-	Type string
+	Body string `json:"body"`
+	Type string `json:"type"`
 
-	UserID    uint
-	User      auth.User
-	ArticleID uint
-	Article   Article
+	UserID    uint      `json:"userId"`
+	User      auth.User `json:"user"`
+	ArticleID uint      `json:"articleId"`
+	Article   Article   `json:"article"`
 }
 
 // TableName table name

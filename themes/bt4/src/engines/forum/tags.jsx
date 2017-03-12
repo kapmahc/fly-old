@@ -1,21 +1,21 @@
 import React, {Component } from 'react'
-import {Table, HelpBlock, FormGroup,ControlLabel, FormControl,
+import {Table, FormGroup,ControlLabel, FormControl, Thumbnail,
   ButtonGroup, ButtonToolbar, Button} from 'react-bootstrap';
 import i18next from 'i18next';
+import {LinkContainer} from 'react-router-bootstrap'
 
 import {get, post, _delete} from '../../ajax'
-import {timeago} from '../../utils'
-import Markdown from '../../components/Markdown'
+import {List as Articles} from './articles'
 
 export class Index extends Component{
   constructor(props){
     super(props)
     this.state = {
-      items:[]
+      items: []
     }
   }
   componentDidMount() {
-    get('/notices').then(
+    get('/forum/tags').then(
       function(rst){
         this.setState({items:rst})
       }.bind(this)
@@ -23,22 +23,53 @@ export class Index extends Component{
   }
   render() {
     return (<div className="row">
-      <h3>{i18next.t('site.notices.index.title')}</h3>
+      <h3>{i18next.t('forum.tags.index.title')}</h3>
       <hr/>
-          {this.state.items.map((n,i)=>(<blockquote key={i}>
-            <Markdown body={n.body}/>
-            <footer><cite>{timeago(n.updatedAt)}</cite></footer>
-          </blockquote>))}
+      {this.state.items.map((t,i)=>(<div key={i} className="col-md-2">
+      <Thumbnail>
+        <h3>{t.name}</h3>
+        <p>
+          <LinkContainer target="_blank" to={`/forum/tags/${t.id}`}>
+            <Button bsStyle="primary">{i18next.t("buttons.view")}</Button>
+          </LinkContainer>
+        </p>
+      </Thumbnail>
+      </div>))}
     </div>)
   }
 }
 
-export class Admin extends Component{
+export class Show extends Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      name: '',
+      articles:[]
+    }
+  }
+  componentDidMount() {
+    const {params} = this.props
+    get(`/forum/tags/${params.id}`).then(
+      function(rst){
+        this.setState(rst)
+      }.bind(this)
+    );
+  }
+  render() {
+    return (<div className="row">
+      <h3>{this.state.name}</h3>
+      <hr/>
+      <Articles items={this.state.articles || []}/>
+    </div>)
+  }
+}
+
+export class Dashboard extends Component{
   constructor(props){
     super(props)
     this.state = {
       id: null,
-      body: '',
+      name: '',
       title: null,
       items: []
     }
@@ -49,7 +80,7 @@ export class Admin extends Component{
     this.handleNew = this.handleNew.bind(this);
   }
   componentDidMount() {
-    get('/notices').then(
+    get('/forum/tags').then(
       function(rst){
         this.setState({items:rst})
       }.bind(this)
@@ -63,23 +94,22 @@ export class Admin extends Component{
   handleNew(e) {
     this.setState({id:null, title:i18next.t('buttons.new')});
   }
-  handleEdit(n) {
-    this.setState({id: n.id, body: n.body, title:`${i18next.t('buttons.edit')} [${n.id}]`});
+  handleEdit(t) {
+    this.setState({id: t.id, name: t.name, title:`${i18next.t('buttons.edit')} [${t.id}]`});
   }
   handleSubmit(e) {
     e.preventDefault();
     var data = new FormData()
-    data.append('type', 'markdown')
-    data.append('body', this.state.body)
+    data.append('name', this.state.name)
     var id = this.state.id
-    post(id ? `/notices/${id}`:'/notices', data)
+    post(id ? `/forum/tags/${id}`:'/forum/tags', data)
       .then(function(rst){
         alert(i18next.t('success'))
-        var items = this.state.items.filter((n, _) => n.id !== id)
+        var items = this.state.items.filter((t, _) => t.id !== id)
         items.unshift(rst)
         this.setState({
           title: null,
-          body:'',
+          name:'',
           id:null,
           items: items
         })
@@ -90,11 +120,11 @@ export class Admin extends Component{
   }
   handleRemove(id) {
     if(confirm(i18next.t('are-you-sure'))){
-      _delete(`/notices/${id}`)
+      _delete(`/forum/tags/${id}`)
         .then(function(rst){
           alert(i18next.t('success'))
           this.setState({
-            items: this.state.items.filter((n, _) => n.id !== id)
+            items: this.state.items.filter((t, _) => t.id !== id)
           });
         }.bind(this))
         .catch((err) => {
@@ -110,14 +140,11 @@ export class Admin extends Component{
           <h3>{this.state.title}</h3>
           <hr/>
           <form onSubmit={this.handleSubmit}>
-            <FormGroup controlId="body">
-              <ControlLabel>{i18next.t('attributes.body')}</ControlLabel>
+            <FormGroup controlId="name">
+              <ControlLabel>{i18next.t('attributes.name')}</ControlLabel>
               <FormControl
-                value={this.state.body}
-                onChange={this.handleChange}
-                rows={8}
-                componentClass="textarea" />
-              <HelpBlock>{i18next.t('helps.markdown')}</HelpBlock>
+                value={this.state.name}
+                onChange={this.handleChange} />
             </FormGroup>
             <Button type="submit" bsStyle="primary">
               {i18next.t('buttons.submit')}
@@ -126,13 +153,13 @@ export class Admin extends Component{
         </div>) : <br/>
       }
       <div className="col-md-10 col-md-offset-1">
-      <h3>{i18next.t('site.notices.index.title')}</h3>
+      <h3>{i18next.t('forum.dashboard.tags.title')}</h3>
       <hr/>
       <Table striped bordered condensed hover>
         <thead>
           <tr>
             <th>{i18next.t('attributes.updatedAt')}</th>
-            <th>{i18next.t('attributes.body')}</th>
+            <th>{i18next.t('attributes.name')}</th>
             <th>
               {i18next.t('buttons.manage')}
               <Button bsStyle="success" bsSize="sm" onClick={this.handleNew}>{i18next.t('buttons.new')}</Button>
@@ -140,17 +167,13 @@ export class Admin extends Component{
           </tr>
         </thead>
         <tbody>
-          {this.state.items.map((n,i)=>(<tr key={i}>
-            <td>{n.updatedAt}</td>
-            <td>
-              <pre><code>
-                {n.body}
-              </code></pre>
-            </td>
+          {this.state.items.map((t,i)=>(<tr key={i}>
+            <td>{t.updatedAt}</td>
+            <td>{t.name}</td>
             <td>
               <ButtonToolbar><ButtonGroup bsSize="sm">
-                <Button bsStyle="warning" onClick={()=>this.handleEdit(n)}>{i18next.t('buttons.edit')}</Button>
-                <Button bsStyle="danger" onClick={()=>this.handleRemove(n.id)}>{i18next.t('buttons.remove')}</Button>
+                <Button bsStyle="warning" onClick={()=>this.handleEdit(t)}>{i18next.t('buttons.edit')}</Button>
+                <Button bsStyle="danger" onClick={()=>this.handleRemove(t.id)}>{i18next.t('buttons.remove')}</Button>
               </ButtonGroup></ButtonToolbar>
           </td>
           </tr>))}
