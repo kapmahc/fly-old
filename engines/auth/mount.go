@@ -6,6 +6,13 @@ import gin "gopkg.in/gin-gonic/gin.v1"
 func (p *Engine) Mount(rt *gin.Engine) {
 	rt.GET("/users", p.indexUsers)
 
+	rt.GET("/attachment/*name", p.getAttachment)
+	rt.GET("/attachments", p.Jwt.MustSignInMiddleware, p.indexAttachments)
+	rt.POST("/attachments", p.Jwt.MustSignInMiddleware, p.createAttachment)
+	rt.GET("/attachments/:id", p.showAttachment)
+	rt.POST("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, p.updateAttachment)
+	rt.DELETE("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, p.destroyAttachment)
+
 	ung := rt.Group("/users")
 	ung.POST("/sign-in", p.postUsersSignIn)
 	ung.POST("/sign-up", p.postUsersSignUp)

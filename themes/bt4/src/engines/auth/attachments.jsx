@@ -1,63 +1,89 @@
 import React, {Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {Table, FormGroup,ControlLabel, FormControl, Thumbnail,
-  HelpBlock,Pagination,
+import {Table,
   ButtonGroup, ButtonToolbar, Button} from 'react-bootstrap';
 import i18next from 'i18next';
-import {LinkContainer} from 'react-router-bootstrap'
-import {browserHistory, Link} from 'react-router'
+import Dropzone from 'react-dropzone'
 
 import {get, post, _delete} from '../../ajax'
-import Markdown from '../../components/Markdown'
-import {PAGE_SIZE} from '../../constants'
 import {Forbidden} from '../../components/alerts'
+
+
+
+export class Uploader extends Component{
+  constructor(props){
+    super(props)
+    this.state = {}
+    this.handleDrop = this.handleDrop.bind(this);
+  }
+  componentDidMount() {
+  }
+  handleDrop(files) {
+    var data = new FormData()
+    files.forEach((file)=> {      
+      data.append('files', file)
+    });
+    post('/attachments', data)
+      .then(function(rst){
+        alert(i18next.t('success'))
+      })
+      .catch((err) => {
+        alert(err)
+      })
+  }
+  render() {
+    return (<Dropzone onDrop={this.handleDrop}>
+      <div>{i18next.t('hints.uploader')}</div>
+    </Dropzone>)
+  }
+}
 
 class DashboardW extends Component{
   constructor(props){
     super(props)
     this.state = {
-      page:1,
-      size:PAGE_SIZE,
-      total:0,
-      count:1,
       items:[]
     }
-    this.handleSelect = this.handleSelect.bind(this);
   }
   componentDidMount() {
-    this.loadArticles(1, PAGE_SIZE)
-  }
-  handleSelect(page){
-    this.loadArticles(page, PAGE_SIZE)
-  }
-  loadArticles(page, size){
-    get(`/forum/articles?page=${page}&size=${size}`).then(
+    get(`/attachments`).then(
       function(rst){
-        this.setState(rst)
+        this.setState({items:rst})
       }.bind(this)
     );
   }
   render() {
     const {user} = this.props
-    var pager = (<div className="col-md-12">
-      <Pagination
-          prev
-          next
-          first
-          last
-          ellipsis
-          boundaryLinks
-          items={this.state.count}
-          maxButtons={5}
-          activePage={this.state.page}
-          onSelect={this.handleSelect} />
-      </div>)
     return user.uid ? (<div className="row">
       <h3>{i18next.t('auth.attachments.index.title')}</h3>
       <hr/>
-      {pager}
-
-      {pager}
+      <Uploader/>
+      <br/>
+      <Table striped bordered condensed hover>
+        <thead>
+          <tr>
+            <th>{i18next.t('attributes.updatedAt')}</th>
+            <th>
+              {i18next.t('attributes.name')}
+            </th>
+            <th>
+              {i18next.t('buttons.manage')}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.items.map((a,i)=>(<tr key={i}>
+            <td>{a.updatedAt}</td>
+            <td><a href={a.url} target="_blank">{a.title}</a></td>
+            <td>
+              <ButtonToolbar><ButtonGroup bsSize="sm">
+                <Button bsStyle="warning" onClick={()=>this.handleEdit(a)}>{i18next.t('buttons.edit')}</Button>
+                <Button bsStyle="danger" onClick={()=>this.handleRemove(a.id)}>{i18next.t('buttons.remove')}</Button>
+              </ButtonGroup></ButtonToolbar>
+          </td>
+          </tr>))}
+        </tbody>
+      </Table>
     </div>):<Forbidden/>
   }
 }
