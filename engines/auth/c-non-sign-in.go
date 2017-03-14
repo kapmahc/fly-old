@@ -109,21 +109,21 @@ type fmEmail struct {
 	Email string `form:"email" binding:"required,email"`
 }
 
-func (p *Engine) getUsersConfirm(c *gin.Context) {
+func (p *Engine) getUsersConfirm(c *gin.Context) (string, error) {
 	token := c.Param("token")
 	lang := c.MustGet(web.LOCALE).(string)
 	user, err := p.parseToken(lang, token, actConfirm)
-	if err == nil {
-		if user.IsConfirm() {
-			err = p.I18n.E(lang, "auth.errors.user-already-confirm")
-		}
+	if err != nil {
+		return "", err
 	}
-	if err == nil {
-		p.Db.Model(user).Update("confirmed_at", time.Now())
-		p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.confirm"))
+	if user.IsConfirm() {
+		return "", p.I18n.E(lang, "auth.errors.user-already-confirm")
 	}
 
-	web.Redirect(c, p.signInURL(), err)
+	p.Db.Model(user).Update("confirmed_at", time.Now())
+	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.confirm"))
+
+	return p.signInURL(), nil
 }
 
 func (p *Engine) postUsersConfirm(c *gin.Context) {
@@ -145,20 +145,21 @@ func (p *Engine) postUsersConfirm(c *gin.Context) {
 	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.email-for-confirm")}, err)
 }
 
-func (p *Engine) getUsersUnlock(c *gin.Context) {
+func (p *Engine) getUsersUnlock(c *gin.Context) (string, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 	token := c.Param("token")
 	user, err := p.parseToken(lang, token, actUnlock)
-	if err == nil {
-		if !user.IsLock() {
-			err = p.I18n.E(lang, "auth.errors.user-not-lock")
-		}
+	if err != nil {
+		return "", err
 	}
-	if err == nil {
-		p.Db.Model(user).Update(map[string]interface{}{"locked_at": nil})
-		p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.unlock"))
+	if !user.IsLock() {
+		return "", p.I18n.E(lang, "auth.errors.user-not-lock")
 	}
-	web.Redirect(c, p.signInURL(), err)
+
+	p.Db.Model(user).Update(map[string]interface{}{"locked_at": nil})
+	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.unlock"))
+
+	return p.signInURL(), nil
 }
 
 func (p *Engine) postUsersUnlock(c *gin.Context) {

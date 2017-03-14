@@ -17,11 +17,14 @@ import (
 // }
 
 // Redirect redirect
-func Redirect(c *gin.Context, u string, err error) {
-	if err == nil {
+func Redirect(f func(*gin.Context) (u string, e error)) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		u, e := f(c)
+		if e != nil {
+			c.String(http.StatusInternalServerError, e.Error())
+			return
+		}
 		c.Redirect(http.StatusFound, u)
-	} else {
-		c.String(http.StatusInternalServerError, err.Error())
 	}
 }
 

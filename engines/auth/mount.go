@@ -1,6 +1,9 @@
 package auth
 
-import gin "gopkg.in/gin-gonic/gin.v1"
+import (
+	"github.com/kapmahc/fly/web"
+	gin "gopkg.in/gin-gonic/gin.v1"
+)
 
 // Mount web mount-points
 func (p *Engine) Mount(rt *gin.Engine) {
@@ -16,9 +19,9 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	ung := rt.Group("/users")
 	ung.POST("/sign-in", p.postUsersSignIn)
 	ung.POST("/sign-up", p.postUsersSignUp)
-	ung.GET("/confirm/:token", p.getUsersConfirm)
+	ung.GET("/confirm/:token", web.Redirect(p.getUsersConfirm))
 	ung.POST("/confirm", p.postUsersConfirm)
-	ung.GET("/unlock/:token", p.getUsersUnlock)
+	ung.GET("/unlock/:token", web.Redirect(p.getUsersUnlock))
 	ung.POST("/unlock", p.postUsersUnlock)
 	ung.POST("/forgot-password", p.postUsersForgotPassword)
 	ung.POST("/reset-password/:token", p.postUsersResetPassword)
