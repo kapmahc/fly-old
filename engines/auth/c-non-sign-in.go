@@ -17,30 +17,33 @@ type fmSignUp struct {
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
-func (p *Engine) postUsersSignUp(c *gin.Context) {
+func (p *Engine) postUsersSignUp(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmSignUp
 	var count int
-	err := c.Bind(&fm)
-	if err == nil {
-		err = p.Db.
-			Model(&User{}).
-			Where("email = ?", fm.Email).
-			Count(&count).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	if err == nil && count > 0 {
-		err = p.I18n.E(lang, "auth.errors.email-already-exists")
+	if err := p.Db.
+		Model(&User{}).
+		Where("email = ?", fm.Email).
+		Count(&count).Error; err != nil {
+		return nil, err
 	}
-	if err == nil {
-		var user *User
-		user, err = p.Dao.AddEmailUser(fm.Name, fm.Email, fm.Password)
-		if err == nil {
-			p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.sign-up"))
-			p.sendEmail(lang, user, actConfirm)
-		}
+
+	if count > 0 {
+		return nil, p.I18n.E(lang, "auth.errors.email-already-exists")
 	}
-	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.email-for-confirm")}, err)
+
+	user, err := p.Dao.AddEmailUser(fm.Name, fm.Email, fm.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.sign-up"))
+	p.sendEmail(lang, user, actConfirm)
+	return gin.H{}, nil
 }
 
 type fmSignIn struct {
@@ -49,60 +52,59 @@ type fmSignIn struct {
 	RememberMe bool   `form:"rememberMe"`
 }
 
-func (p *Engine) postUsersSignIn(c *gin.Context) {
+func (p *Engine) postUsersSignIn(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmSignIn
-	var user *User
-	err := c.Bind(&fm)
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
 	ip := c.ClientIP()
-	if err == nil {
-		user, err = p.Dao.GetByEmail(fm.Email)
-		if err == nil {
-			if !p.Security.Chk([]byte(fm.Password), user.Password) {
-				p.Dao.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-failed"))
-				err = p.I18n.E(lang, "auth.errors.email-password-not-match")
-			}
-		}
-		if err == nil {
-			if !user.IsConfirm() {
-				err = p.I18n.E(lang, "auth.errors.user-not-confirm")
-			}
-		}
-		if err == nil {
-			if user.IsLock() {
-				err = p.I18n.E(lang, "auth.errors.user-is-lock")
-			}
-		}
+
+	user, err := p.Dao.GetByEmail(fm.Email)
+	if err != nil {
+		return nil, err
+	}
+	if !p.Security.Chk([]byte(fm.Password), user.Password) {
+		p.Dao.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-failed"))
+		return nil, p.I18n.E(lang, "auth.errors.email-password-not-match")
 	}
 
-	if err == nil {
-		p.Dao.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-success"))
-		user.SignInCount++
-		user.LastSignInAt = user.CurrentSignInAt
-		user.LastSignInIP = user.CurrentSignInIP
-		now := time.Now()
-		user.CurrentSignInAt = &now
-		user.CurrentSignInIP = ip
-		p.Db.Model(user).Updates(map[string]interface{}{
-			"last_sign_in_at":    user.LastSignInAt,
-			"last_sign_in_ip":    user.LastSignInIP,
-			"current_sign_in_at": user.CurrentSignInAt,
-			"current_sign_in_ip": user.CurrentSignInIP,
-			"sign_in_count":      user.SignInCount,
-		})
-
+	if !user.IsConfirm() {
+		return nil, p.I18n.E(lang, "auth.errors.user-not-confirm")
 	}
 
-	var tkn []byte
-	if err == nil {
-		cm := jws.Claims{}
-		cm.Set(UID, user.UID)
-		cm.Set("name", user.Name)
-		cm.Set(IsAdmin, p.Dao.Is(user.ID, RoleAdmin))
-		tkn, err = p.Jwt.Sum(cm, time.Hour*24*7)
+	if user.IsLock() {
+		return nil, p.I18n.E(lang, "auth.errors.user-is-lock")
 	}
-	web.JSON(c, gin.H{"token": string(tkn)}, err)
+
+	p.Dao.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-success"))
+	user.SignInCount++
+	user.LastSignInAt = user.CurrentSignInAt
+	user.LastSignInIP = user.CurrentSignInIP
+	now := time.Now()
+	user.CurrentSignInAt = &now
+	user.CurrentSignInIP = ip
+	if err = p.Db.Model(user).Updates(map[string]interface{}{
+		"last_sign_in_at":    user.LastSignInAt,
+		"last_sign_in_ip":    user.LastSignInIP,
+		"current_sign_in_at": user.CurrentSignInAt,
+		"current_sign_in_ip": user.CurrentSignInIP,
+		"sign_in_count":      user.SignInCount,
+	}).Error; err != nil {
+		return nil, err
+	}
+
+	cm := jws.Claims{}
+	cm.Set(UID, user.UID)
+	cm.Set("name", user.Name)
+	cm.Set(IsAdmin, p.Dao.Is(user.ID, RoleAdmin))
+	tkn, err := p.Jwt.Sum(cm, time.Hour*24*7)
+	if err != nil {
+		return nil, err
+	}
+
+	return gin.H{"token": string(tkn)}, nil
 }
 
 type fmEmail struct {
@@ -126,23 +128,23 @@ func (p *Engine) getUsersConfirm(c *gin.Context) (string, error) {
 	return p.signInURL(), nil
 }
 
-func (p *Engine) postUsersConfirm(c *gin.Context) {
+func (p *Engine) postUsersConfirm(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 	var fm fmEmail
-	var user *User
-	err := c.Bind(&fm)
-	if err == nil {
-		user, err = p.Dao.GetByEmail(fm.Email)
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	if err == nil {
-		if user.IsConfirm() {
-			err = p.I18n.E(lang, "auth.errors.user-already-confirm")
-		}
+	user, err := p.Dao.GetByEmail(fm.Email)
+	if err != nil {
+		return nil, err
 	}
-	if err == nil {
-		p.sendEmail(lang, user, actConfirm)
+
+	if user.IsConfirm() {
+		return nil, p.I18n.E(lang, "auth.errors.user-already-confirm")
 	}
-	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.email-for-confirm")}, err)
+
+	p.sendEmail(lang, user, actConfirm)
+	return gin.H{}, nil
 }
 
 func (p *Engine) getUsersUnlock(c *gin.Context) (string, error) {
@@ -162,40 +164,40 @@ func (p *Engine) getUsersUnlock(c *gin.Context) (string, error) {
 	return p.signInURL(), nil
 }
 
-func (p *Engine) postUsersUnlock(c *gin.Context) {
+func (p *Engine) postUsersUnlock(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmEmail
-	var user *User
-	err := c.Bind(&fm)
-	if err == nil {
-		user, err = p.Dao.GetByEmail(fm.Email)
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	if err == nil {
-		if !user.IsLock() {
-			err = p.I18n.E(lang, "auth.errors.user-not-lock")
-		}
+	user, err := p.Dao.GetByEmail(fm.Email)
+	if err != nil {
+		return nil, err
 	}
-	if err == nil {
-		p.sendEmail(lang, user, actUnlock)
+	if !user.IsLock() {
+		return nil, p.I18n.E(lang, "auth.errors.user-not-lock")
+	}
 
-	}
-	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.email-for-unlock")}, err)
+	p.sendEmail(lang, user, actUnlock)
+	return gin.H{}, nil
 }
 
-func (p *Engine) postUsersForgotPassword(c *gin.Context) {
+func (p *Engine) postUsersForgotPassword(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmEmail
 	var user *User
-	err := c.Bind(&fm)
-	if err == nil {
-		user, err = p.Dao.GetByEmail(fm.Email)
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	if err == nil {
-		p.sendEmail(lang, user, actResetPassword)
+	user, err := p.Dao.GetByEmail(fm.Email)
+	if err != nil {
+		return nil, err
 	}
-	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.email-for-reset-password")}, err)
+
+	p.sendEmail(lang, user, actResetPassword)
+	return gin.H{}, nil
 }
 
 type fmResetPassword struct {
@@ -203,20 +205,21 @@ type fmResetPassword struct {
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
-func (p *Engine) postUsersResetPassword(c *gin.Context) {
+func (p *Engine) postUsersResetPassword(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmResetPassword
-	var user *User
-	err := c.Bind(&fm)
-	if err == nil {
-		user, err = p.parseToken(lang, c.Param("token"), actResetPassword)
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	if err == nil {
-		p.Db.Model(user).Update("password", p.Security.Sum([]byte(fm.Password)))
-		p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.reset-password"))
+	user, err := p.parseToken(lang, c.Param("token"), actResetPassword)
+	if err != nil {
+		return nil, err
 	}
-	web.JSON(c, gin.H{"message": p.I18n.T(lang, "auth.messages.reset-password-success")}, err)
+	p.Db.Model(user).Update("password", p.Security.Sum([]byte(fm.Password)))
+	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.reset-password"))
+
+	return gin.H{}, err
 }
 
 func (p *Engine) signInURL() string {

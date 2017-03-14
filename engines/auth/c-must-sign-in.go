@@ -5,11 +5,11 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) deleteUsersSignOut(c *gin.Context) {
+func (p *Engine) deleteUsersSignOut(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
 	lang := c.MustGet(web.LOCALE).(string)
 	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.sign-out"))
-	web.JSON(c, nil, nil)
+	return gin.H{}, nil
 }
 
 type fmInfo struct {
@@ -18,24 +18,26 @@ type fmInfo struct {
 	Logo string `form:"logo" binding:"max=255"`
 }
 
-func (p *Engine) getUsersInfo(c *gin.Context) {
+func (p *Engine) getUsersInfo(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
-	web.JSON(c, user, nil)
+	return user, nil
 }
 
-func (p *Engine) postUsersInfo(c *gin.Context) {
+func (p *Engine) postUsersInfo(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
 
 	var fm fmInfo
-	err := c.Bind(&fm)
-	if err == nil {
-		err = p.Db.Model(user).Where("id = ?", user.ID).Updates(map[string]interface{}{
-			"home": fm.Home,
-			"logo": fm.Logo,
-			"name": fm.Name,
-		}).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	web.JSON(c, nil, err)
+
+	err := p.Db.Model(user).Where("id = ?", user.ID).Updates(map[string]interface{}{
+		"home": fm.Home,
+		"logo": fm.Logo,
+		"name": fm.Name,
+	}).Error
+
+	return gin.H{}, err
 }
 
 type fmChangePassword struct {
@@ -44,25 +46,26 @@ type fmChangePassword struct {
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=NewPassword"`
 }
 
-func (p *Engine) postUsersChangePassword(c *gin.Context) {
+func (p *Engine) postUsersChangePassword(c *gin.Context) (interface{}, error) {
 
 	user := c.MustGet(CurrentUser).(*User)
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmChangePassword
-	err := c.Bind(&fm)
-	if err == nil {
-		if !p.Security.Chk([]byte(fm.CurrentPassword), user.Password) {
-			err = p.I18n.E(lang, "auth.errors.bad-password")
-		}
+	if err := c.Bind(&fm); err == nil {
+		return nil, err
 	}
-	if err == nil {
-		err = p.Db.Model(user).Where("id = ?", user.ID).Update("password", p.Security.Sum([]byte(fm.NewPassword))).Error
+
+	if !p.Security.Chk([]byte(fm.CurrentPassword), user.Password) {
+		return nil, p.I18n.E(lang, "auth.errors.bad-password")
 	}
-	web.JSON(c, nil, err)
+
+	err := p.Db.Model(user).Where("id = ?", user.ID).Update("password", p.Security.Sum([]byte(fm.NewPassword))).Error
+
+	return gin.H{}, err
 }
 
-func (p *Engine) getUsersLogs(c *gin.Context) {
+func (p *Engine) getUsersLogs(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
 
 	var logs []Log
@@ -71,5 +74,5 @@ func (p *Engine) getUsersLogs(c *gin.Context) {
 		Where("user_id = ?", user.ID).
 		Order("id DESC").Limit(120).
 		Find(&logs).Error
-	web.JSON(c, logs, err)
+	return logs, err
 }

@@ -29,13 +29,13 @@ func Redirect(f func(*gin.Context) (u string, e error)) gin.HandlerFunc {
 }
 
 // JSON json render
-func JSON(c *gin.Context, data interface{}, err error) {
-	if err == nil {
-		if data == nil {
-			data = gin.H{}
+func JSON(f func(*gin.Context) (interface{}, error)) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		v, e := f(c)
+		if c != nil {
+			c.String(http.StatusInternalServerError, e.Error())
+			return
 		}
-		c.JSON(http.StatusOK, data)
-	} else {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusOK, v)
 	}
 }
