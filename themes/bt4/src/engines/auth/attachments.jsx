@@ -91,6 +91,12 @@ class DashboardW extends Component{
   }
   render() {
     const {user} = this.props
+    var cb = function(a){
+      if (a.mediaType.startsWith('image')){
+        return `![${a.title}](${a.url})`
+      }
+      return `[${a.title}](${a.url})`
+    }
     return user.uid ? (<div className="row">
     <h3>{i18next.t('auth.attachments.index.title')}</h3>
     <hr/>
@@ -133,7 +139,7 @@ class DashboardW extends Component{
             <td>{a.updatedAt}</td>
             <td>
               <a href={a.url} target="_blank">{a.title}</a>
-              <button alt={i18next.t('auth.attachments.index.copy-toclip-board')} dangerouslySetInnerHTML={{__html:octicons.clippy.toSVG()}} className="clipboard" data-clipboard-text={`[![not found](${a.title})](${a.url})`}></button>
+              <button alt={i18next.t('auth.attachments.index.copy-toclip-board')} dangerouslySetInnerHTML={{__html:octicons.clippy.toSVG()}} className="clipboard" data-clipboard-text={cb(a)}></button>
             </td>
             <td>
               <ButtonToolbar><ButtonGroup bsSize="sm">
