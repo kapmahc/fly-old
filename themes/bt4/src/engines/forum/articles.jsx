@@ -248,7 +248,7 @@ export class Dashboard extends Component{
 
     return (<div className="row">
       <div className="col-md-10 col-md-offset-1">
-      <h3>{i18next.t('forum.dashboard.tags.title')}</h3>
+      <h3>{i18next.t('forum.dashboard.articles.title')}</h3>
       <hr/>
       <Table striped bordered condensed hover>
         <thead>

@@ -132,7 +132,7 @@ export class SignUp extends Component{
     data.append('passwordConfirmation', this.state.passwordConfirmation)
     post('/users/sign-up', data)
       .then(function(rst){
-        alert(rst.message)
+        alert(i18next.t('auth.messages.email-for-confirm'))
         browserHistory.push('/users/sign-in')
       })
       .catch((err) => {
@@ -208,7 +208,7 @@ export class EmailForm extends Component{
     data.append('email', this.state.email)
     post(`/users/${action}`, data)
       .then(function(rst){
-        alert(rst.message)
+        alert(i18next.t(`auth.messages.email-for-${action}`))
         browserHistory.push('/users/sign-in')
       })
       .catch((err) => {

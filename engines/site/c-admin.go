@@ -190,7 +190,7 @@ type fmSiteSMTP struct {
 }
 
 func (p *Engine) getAdminSiteSMTP(c *gin.Context) (interface{}, error) {
-	var smtp map[string]interface{}
+	smtp := make(map[string]interface{})
 	if err := p.Settings.Get("site.smtp", &smtp); err == nil {
 		smtp["password"] = ""
 	} else {
