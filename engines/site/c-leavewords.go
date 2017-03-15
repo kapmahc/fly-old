@@ -1,14 +1,11 @@
 package site
 
-import (
-	"github.com/kapmahc/fly/web"
-	gin "gopkg.in/gin-gonic/gin.v1"
-)
+import gin "gopkg.in/gin-gonic/gin.v1"
 
-func (p *Engine) indexLeaveWords(c *gin.Context) {
+func (p *Engine) indexLeaveWords(c *gin.Context) (interface{}, error) {
 	var items []LeaveWord
 	err := p.Db.Order("created_at DESC").Find(&items).Error
-	web.JSON(c, items, err)
+	return items, err
 }
 
 type fmLeaveWord struct {
@@ -16,18 +13,19 @@ type fmLeaveWord struct {
 	Type string `form:"type" binding:"required,max=8"`
 }
 
-func (p *Engine) createLeaveWord(c *gin.Context) {
+func (p *Engine) createLeaveWord(c *gin.Context) (interface{}, error) {
 	var fm fmLeaveWord
-	err := c.Bind(&fm)
-	if err == nil {
-		err = p.Db.Create(&LeaveWord{Type: fm.Type, Body: fm.Body}).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	web.JSON(c, nil, err)
+
+	err := p.Db.Create(&LeaveWord{Type: fm.Type, Body: fm.Body}).Error
+	return gin.H{}, err
 }
 
-func (p *Engine) destroyLeaveWord(c *gin.Context) {
+func (p *Engine) destroyLeaveWord(c *gin.Context) (interface{}, error) {
 	err := p.Db.
 		Where("id = ?", c.Param("id")).
 		Delete(LeaveWord{}).Error
-	web.JSON(c, nil, err)
+	return gin.H{}, err
 }

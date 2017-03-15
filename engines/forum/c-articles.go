@@ -8,7 +8,7 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) myArticles(c *gin.Context) {
+func (p *Engine) myArticles(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 	isa := c.MustGet(auth.IsAdmin).(bool)
 	var articles []Article
@@ -18,26 +18,29 @@ func (p *Engine) myArticles(c *gin.Context) {
 	}
 	err := qry.Order("updated_at DESC").Find(&articles).Error
 
-	web.JSON(c, articles, err)
+	return articles, err
 }
 
-func (p *Engine) indexArticles(c *gin.Context) {
+func (p *Engine) indexArticles(c *gin.Context) (interface{}, error) {
 	var total int64
 	var pag *web.Pagination
-	err := p.Db.Model(&Article{}).Count(&total).Error
-	if err == nil {
-		pag = web.NewPagination(c.Request, total)
-		var articles []Article
-		err = p.Db.Select([]string{"id", "title", "summary", "user_id", "updated_at"}).
-			Limit(pag.Limit()).Offset(pag.Offset()).
-			Find(&articles).Error
-
-		for _, it := range articles {
-			pag.Items = append(pag.Items, it)
-		}
+	if err := p.Db.Model(&Article{}).Count(&total).Error; err != nil {
+		return nil, err
 	}
 
-	web.JSON(c, pag, err)
+	pag = web.NewPagination(c.Request, total)
+	var articles []Article
+	if err := p.Db.Select([]string{"id", "title", "summary", "user_id", "updated_at"}).
+		Limit(pag.Limit()).Offset(pag.Offset()).
+		Find(&articles).Error; err != nil {
+		return nil, err
+	}
+
+	for _, it := range articles {
+		pag.Items = append(pag.Items, it)
+	}
+
+	return pag, nil
 }
 
 type fmArticle struct {
@@ -48,86 +51,94 @@ type fmArticle struct {
 	Tags    []string `form:"tags"`
 }
 
-func (p *Engine) createArticle(c *gin.Context) {
+func (p *Engine) createArticle(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 	var fm fmArticle
-	err := c.Bind(&fm)
-	var a *Article
-	if err == nil {
-		var tags []Tag
-		for _, it := range fm.Tags {
-			var t Tag
-			if err = p.Db.Select([]string{"id"}).Where("id = ?", it).First(&t).Error; err == nil {
-				tags = append(tags, t)
-			} else {
-				break
-			}
-		}
-		a = &Article{
-			Title:   fm.Title,
-			Summary: fm.Summary,
-			Body:    fm.Body,
-			Type:    fm.Type,
-			UserID:  user.ID,
-		}
-		if err == nil {
-			err = p.Db.Create(a).Error
-		}
-		if err == nil {
-			err = p.Db.Model(a).Association("Tags").Append(tags).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+
+	var tags []Tag
+	for _, it := range fm.Tags {
+		var t Tag
+		if err := p.Db.Select([]string{"id"}).Where("id = ?", it).First(&t).Error; err == nil {
+			tags = append(tags, t)
+		} else {
+			return nil, err
 		}
 	}
-	web.JSON(c, a, err)
+	a := Article{
+		Title:   fm.Title,
+		Summary: fm.Summary,
+		Body:    fm.Body,
+		Type:    fm.Type,
+		UserID:  user.ID,
+	}
+
+	if err := p.Db.Create(&a).Error; err != nil {
+		return nil, err
+	}
+	if err := p.Db.Model(&a).Association("Tags").Append(tags).Error; err != nil {
+		return nil, err
+	}
+
+	return a, nil
 }
 
-func (p *Engine) showArticle(c *gin.Context) {
+func (p *Engine) showArticle(c *gin.Context) (interface{}, error) {
 	var a Article
-	err := p.Db.Where("id = ?", c.Param("id")).First(&a).Error
-	if err == nil {
-		err = p.Db.Model(&a).Related(&a.Comments).Error
+	if err := p.Db.Where("id = ?", c.Param("id")).First(&a).Error; err != nil {
+		return nil, err
 	}
-	if err == nil {
-		err = p.Db.Model(&a).Association("Tags").Find(&a.Tags).Error
+
+	if err := p.Db.Model(&a).Related(&a.Comments).Error; err != nil {
+		return nil, err
 	}
-	web.JSON(c, a, err)
+
+	if err := p.Db.Model(&a).Association("Tags").Find(&a.Tags).Error; err != nil {
+		return nil, err
+	}
+
+	return a, nil
 }
 
-func (p *Engine) updateArticle(c *gin.Context) {
+func (p *Engine) updateArticle(c *gin.Context) (interface{}, error) {
 	a := c.MustGet("article").(*Article)
 	var fm fmArticle
-	err := c.Bind(&fm)
-	if err == nil {
-		var tags []Tag
-		for _, it := range fm.Tags {
-			var t Tag
-			if err = p.Db.Select([]string{"id"}).Where("id = ?", it).First(&t).Error; err == nil {
-				tags = append(tags, t)
-			} else {
-				break
-			}
-		}
-		if err == nil {
-			err = p.Db.Model(a).Updates(map[string]interface{}{
-				"title":   fm.Title,
-				"summary": fm.Summary,
-				"body":    fm.Body,
-				"type":    fm.Type,
-			}).Error
-		}
-		if err == nil {
-			err = p.Db.Model(a).Association("Tags").Replace(tags).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+
+	var tags []Tag
+	for _, it := range fm.Tags {
+		var t Tag
+		if err := p.Db.Select([]string{"id"}).Where("id = ?", it).First(&t).Error; err == nil {
+			tags = append(tags, t)
+		} else {
+			return nil, err
 		}
 	}
-	web.JSON(c, a, err)
+
+	if err := p.Db.Model(a).Updates(map[string]interface{}{
+		"title":   fm.Title,
+		"summary": fm.Summary,
+		"body":    fm.Body,
+		"type":    fm.Type,
+	}).Error; err != nil {
+		return nil, err
+	}
+
+	err := p.Db.Model(a).Association("Tags").Replace(tags).Error
+	return a, err
 }
 
-func (p *Engine) destroyArticle(c *gin.Context) {
+func (p *Engine) destroyArticle(c *gin.Context) (interface{}, error) {
 	a := c.MustGet("article").(*Article)
-	err := p.Db.Model(a).Association("Tags").Clear().Error
-	if err == nil {
-		err = p.Db.Delete(a).Error
+	if err := p.Db.Model(a).Association("Tags").Clear().Error; err != nil {
+		return nil, err
 	}
-	web.JSON(c, nil, err)
+	err := p.Db.Delete(a).Error
+	return gin.H{}, err
 }
 
 func (p *Engine) canEditArticle(c *gin.Context) {

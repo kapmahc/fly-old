@@ -17,12 +17,26 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) indexBooks(c *gin.Context) {
-	data, err := p.getBooks(c.Request)
-	web.JSON(c, data, err)
+func (p *Engine) indexBooks(c *gin.Context) (interface{}, error) {
+	var total int64
+	if err := p.Db.Model(&Book{}).Count(&total).Error; err != nil {
+		return nil, err
+	}
+	pag := web.NewPagination(c.Request, total)
+
+	var books []Book
+	if err := p.Db.
+		Limit(pag.Limit()).Offset(pag.Offset()).
+		Find(&books).Error; err != nil {
+		return nil, err
+	}
+	for _, b := range books {
+		pag.Items = append(pag.Items, b)
+	}
+	return pag, nil
 }
 
-func (p *Engine) showBook(c *gin.Context) {
+func (p *Engine) showBook(c *gin.Context) (interface{}, error) {
 	id := c.Param("id")
 	var buf bytes.Buffer
 	it, bk, err := p.readBook(id)
@@ -34,10 +48,10 @@ func (p *Engine) showBook(c *gin.Context) {
 			bk.Ncx.Points,
 		)
 	}
-	web.JSON(c, gin.H{
+	return gin.H{
 		"book": it,
 		"home": buf.String(),
-	}, err)
+	}, nil
 }
 
 func (p *Engine) showPage(c *gin.Context) {
@@ -49,10 +63,6 @@ func (p *Engine) showPage(c *gin.Context) {
 }
 
 // -----------------------
-
-func (p *Engine) bookHomePage(id string) {
-
-}
 
 func (p *Engine) readBookPage(w http.ResponseWriter, id string, name string) error {
 	_, bk, err := p.readBook(id)
@@ -80,25 +90,6 @@ func (p *Engine) readBookPage(w http.ResponseWriter, id string, name string) err
 		}
 	}
 	return errors.New("not found")
-}
-
-func (p *Engine) getBooks(r *http.Request) (*web.Pagination, error) {
-	var total int64
-	if err := p.Db.Model(&Book{}).Count(&total).Error; err != nil {
-		return nil, err
-	}
-	pag := web.NewPagination(r, total)
-
-	var books []Book
-	if err := p.Db.
-		Limit(pag.Limit()).Offset(pag.Offset()).
-		Find(&books).Error; err != nil {
-		return nil, err
-	}
-	for _, b := range books {
-		pag.Items = append(pag.Items, b)
-	}
-	return pag, nil
 }
 
 func (p *Engine) writePoints(wrt io.Writer, href string, points []epub.NavPoint) {

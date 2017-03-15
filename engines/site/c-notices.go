@@ -1,14 +1,11 @@
 package site
 
-import (
-	"github.com/kapmahc/fly/web"
-	gin "gopkg.in/gin-gonic/gin.v1"
-)
+import gin "gopkg.in/gin-gonic/gin.v1"
 
-func (p *Engine) indexNotices(c *gin.Context) {
+func (p *Engine) indexNotices(c *gin.Context) (interface{}, error) {
 	var items []Notice
 	err := p.Db.Order("updated_at DESC").Find(&items).Error
-	web.JSON(c, items, err)
+	return items, err
 }
 
 type fmNotice struct {
@@ -16,36 +13,38 @@ type fmNotice struct {
 	Type string `form:"type" binding:"required,max=8"`
 }
 
-func (p *Engine) createNotice(c *gin.Context) {
+func (p *Engine) createNotice(c *gin.Context) (interface{}, error) {
 	var fm fmNotice
-	err := c.Bind(&fm)
-	var n *Notice
-	if err == nil {
-		n = &Notice{Type: fm.Type, Body: fm.Body}
-		err = p.Db.Create(n).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	web.JSON(c, n, err)
+
+	n := Notice{Type: fm.Type, Body: fm.Body}
+	err := p.Db.Create(&n).Error
+	return n, err
 }
 
-func (p *Engine) updateNotice(c *gin.Context) {
+func (p *Engine) updateNotice(c *gin.Context) (interface{}, error) {
 	var fm fmNotice
-	err := c.Bind(&fm)
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
 	var n Notice
-	if err == nil {
-		err = p.Db.Where("id = ?", c.Param("id")).First(&n).Error
+	if err := p.Db.Where("id = ?", c.Param("id")).First(&n).Error; err != nil {
+		return nil, err
 	}
-	if err == nil {
-		err = p.Db.Model(&n).Updates(map[string]interface{}{
-			"body": fm.Body,
-			"type": fm.Type,
-		}).Error
-	}
-	web.JSON(c, n, err)
+
+	err := p.Db.Model(&n).Updates(map[string]interface{}{
+		"body": fm.Body,
+		"type": fm.Type,
+	}).Error
+
+	return n, err
 }
 
-func (p *Engine) destroyNotice(c *gin.Context) {
+func (p *Engine) destroyNotice(c *gin.Context) (interface{}, error) {
 	err := p.Db.
 		Where("id = ?", c.Param("id")).
 		Delete(Notice{}).Error
-	web.JSON(c, nil, err)
+	return gin.H{}, err
 }

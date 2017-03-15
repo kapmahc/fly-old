@@ -73,18 +73,21 @@ func (p *Engine) _jobsStatus() gin.H {
 		"tasks": p.Server.GetRegisteredTaskNames(),
 	}
 }
-func (p *Engine) getAdminSiteStatus(c *gin.Context) {
+func (p *Engine) getAdminSiteStatus(c *gin.Context) (interface{}, error) {
 	data := gin.H{
 		"os":   p._osStatus(),
 		"jobs": p._jobsStatus(),
 	}
 	var err error
 	data["cache"], err = p._cacheStatus()
-	if err == nil {
-		data["database"], err = p._dbStatus()
+	if err != nil {
+		return nil, err
 	}
-
-	web.JSON(c, data, err)
+	data["database"], err = p._dbStatus()
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }
 
 type fmSiteInfo struct {
@@ -95,26 +98,27 @@ type fmSiteInfo struct {
 	Copyright   string `form:"copyright"`
 }
 
-func (p *Engine) postAdminSiteInfo(c *gin.Context) {
+func (p *Engine) postAdminSiteInfo(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmSiteInfo
-	err := c.Bind(&fm)
-	if err == nil {
-		for k, v := range map[string]string{
-			"title":       fm.Title,
-			"subTitle":    fm.SubTitle,
-			"keywords":    fm.Keywords,
-			"description": fm.Description,
-			"copyright":   fm.Copyright,
-		} {
-			if err = p.I18n.Set(lang, "site."+k, v); err != nil {
-				break
-			}
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+
+	for k, v := range map[string]string{
+		"title":       fm.Title,
+		"subTitle":    fm.SubTitle,
+		"keywords":    fm.Keywords,
+		"description": fm.Description,
+		"copyright":   fm.Copyright,
+	} {
+		if err := p.I18n.Set(lang, "site."+k, v); err != nil {
+			return nil, err
 		}
 	}
 
-	web.JSON(c, nil, err)
+	return gin.H{}, nil
 }
 
 type fmSiteAuthor struct {
@@ -122,24 +126,25 @@ type fmSiteAuthor struct {
 	Email string `form:"email"`
 }
 
-func (p *Engine) postAdminSiteAuthor(c *gin.Context) {
+func (p *Engine) postAdminSiteAuthor(c *gin.Context) (interface{}, error) {
 
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmSiteAuthor
-	err := c.Bind(&fm)
-	if err == nil {
-		for k, v := range map[string]string{
-			"name":  fm.Name,
-			"email": fm.Email,
-		} {
-			if err = p.I18n.Set(lang, "site.author."+k, v); err != nil {
-				break
-			}
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+
+	for k, v := range map[string]string{
+		"name":  fm.Name,
+		"email": fm.Email,
+	} {
+		if err := p.I18n.Set(lang, "site.author."+k, v); err != nil {
+			return nil, err
 		}
 	}
 
-	web.JSON(c, nil, err)
+	return gin.H{}, nil
 }
 
 type fmSiteSeo struct {
@@ -147,31 +152,32 @@ type fmSiteSeo struct {
 	BaiduVerifyCode  string `form:"baiduVerifyCode"`
 }
 
-func (p *Engine) getAdminSiteSeo(c *gin.Context) {
+func (p *Engine) getAdminSiteSeo(c *gin.Context) (interface{}, error) {
 	var gc string
 	var bc string
 	p.Settings.Get("site.google.verify.code", &gc)
 	p.Settings.Get("site.baidu.verify.code", &bc)
-	web.JSON(c, gin.H{
+	return gin.H{
 		"googleVerifyCode": &gc,
 		"baiduVerifyCode":  &bc,
-	}, nil)
+	}, nil
 }
 
-func (p *Engine) postAdminSiteSeo(c *gin.Context) {
+func (p *Engine) postAdminSiteSeo(c *gin.Context) (interface{}, error) {
 	var fm fmSiteSeo
-	err := c.Bind(&fm)
-	if err == nil {
-		for k, v := range map[string]string{
-			"google.verify.code": fm.GoogleVerifyCode,
-			"baidu.verify.code":  fm.BaiduVerifyCode,
-		} {
-			if err = p.Settings.Set("site."+k, v, true); err != nil {
-				break
-			}
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+
+	for k, v := range map[string]string{
+		"google.verify.code": fm.GoogleVerifyCode,
+		"baidu.verify.code":  fm.BaiduVerifyCode,
+	} {
+		if err := p.Settings.Set("site."+k, v, true); err != nil {
+			return nil, err
 		}
 	}
-	web.JSON(c, nil, err)
+	return gin.H{}, nil
 }
 
 type fmSiteSMTP struct {
@@ -183,7 +189,7 @@ type fmSiteSMTP struct {
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
-func (p *Engine) getAdminSiteSMTP(c *gin.Context) {
+func (p *Engine) getAdminSiteSMTP(c *gin.Context) (interface{}, error) {
 	var smtp map[string]interface{}
 	if err := p.Settings.Get("site.smtp", &smtp); err == nil {
 		smtp["password"] = ""
@@ -194,27 +200,27 @@ func (p *Engine) getAdminSiteSMTP(c *gin.Context) {
 		smtp["username"] = "no-reply@change-me.com"
 		smtp["password"] = ""
 	}
-	web.JSON(c, smtp, nil)
+	return smtp, nil
 }
 
-func (p *Engine) postAdminSiteSMTP(c *gin.Context) {
+func (p *Engine) postAdminSiteSMTP(c *gin.Context) (interface{}, error) {
 	var fm fmSiteSMTP
-	err := c.Bind(&fm)
-	if err == nil {
-		val := map[string]interface{}{
-			"host":     fm.Host,
-			"port":     fm.Port,
-			"username": fm.Username,
-			"password": fm.Password,
-			"ssl":      fm.Ssl,
-		}
-		err = p.Settings.Set("site.smtp", val, true)
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
 
-	web.JSON(c, nil, err)
+	val := map[string]interface{}{
+		"host":     fm.Host,
+		"port":     fm.Port,
+		"username": fm.Username,
+		"password": fm.Password,
+		"ssl":      fm.Ssl,
+	}
+	err := p.Settings.Set("site.smtp", val, true)
+	return gin.H{}, err
 }
 
-func (p *Engine) getAdminLocales(c *gin.Context) {
+func (p *Engine) getAdminLocales(c *gin.Context) (interface{}, error) {
 
 	lang := c.MustGet(web.LOCALE).(string)
 
@@ -223,15 +229,15 @@ func (p *Engine) getAdminLocales(c *gin.Context) {
 		Where("lang = ?", lang).
 		Order("code ASC").Find(&items).Error
 
-	web.JSON(c, items, err)
+	return items, err
 }
 
-func (p *Engine) deleteAdminLocales(c *gin.Context) {
+func (p *Engine) deleteAdminLocales(c *gin.Context) (interface{}, error) {
 	err := p.Db.
 		Where("id = ?", c.Param("id")).
 		Delete(&web.Locale{}).Error
 
-	web.JSON(c, nil, err)
+	return gin.H{}, err
 }
 
 type fmLocale struct {
@@ -239,25 +245,27 @@ type fmLocale struct {
 	Message string `form:"message" binding:"required"`
 }
 
-func (p *Engine) postAdminLocales(c *gin.Context) {
+func (p *Engine) postAdminLocales(c *gin.Context) (interface{}, error) {
 
 	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmLocale
-	err := c.Bind(&fm)
-	if err == nil {
-		err = p.I18n.Set(lang, fm.Code, fm.Message)
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
+
+	if err := p.I18n.Set(lang, fm.Code, fm.Message); err != nil {
+		return nil, err
+	}
+
 	var l web.Locale
-	if err == nil {
-		err = p.Db.Where("lang = ? AND code = ?", lang, fm.Code).First(&l).Error
-	}
-	web.JSON(c, l, err)
+	err := p.Db.Where("lang = ? AND code = ?", lang, fm.Code).First(&l).Error
+	return l, err
 }
 
-func (p *Engine) getAdminUsers(c *gin.Context) {
+func (p *Engine) getAdminUsers(c *gin.Context) (interface{}, error) {
 	var items []auth.User
 	err := p.Db.
 		Order("last_sign_in_at DESC").Find(&items).Error
-	web.JSON(c, items, err)
+	return items, err
 }

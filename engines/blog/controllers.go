@@ -15,23 +15,25 @@ const (
 	MARKDOWN = ".md"
 )
 
-func (p *Engine) indexPosts(c *gin.Context) {
+func (p *Engine) indexPosts(c *gin.Context) (interface{}, error) {
 	data, err := p.getPosts(c.MustGet(web.LOCALE).(string))
-	web.JSON(c, data, err)
+	return data, err
 }
 
-func (p *Engine) showPost(c *gin.Context) {
+func (p *Engine) showPost(c *gin.Context) (interface{}, error) {
 	href := c.Param("href")[1:]
 	posts, err := p.getPosts(c.MustGet(web.LOCALE).(string))
-	if err == nil {
-		for _, i := range posts {
-			if i.Href == href {
-				web.JSON(c, i, nil)
-				return
-			}
+	if err != nil {
+		return nil, err
+	}
+
+	for _, i := range posts {
+		if i.Href == href {
+			return i, nil
 		}
 	}
-	web.JSON(c, Post{Href: href}, err)
+
+	return Post{Href: href}, nil
 }
 
 // -------------

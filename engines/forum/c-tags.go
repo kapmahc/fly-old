@@ -1,62 +1,62 @@
 package forum
 
-import (
-	"github.com/kapmahc/fly/web"
-	gin "gopkg.in/gin-gonic/gin.v1"
-)
+import gin "gopkg.in/gin-gonic/gin.v1"
 
-func (p *Engine) indexTags(c *gin.Context) {
+func (p *Engine) indexTags(c *gin.Context) (interface{}, error) {
 	var tags []Tag
 	err := p.Db.Find(&tags).Error
-	web.JSON(c, tags, err)
+	return tags, err
 }
 
 type fmTag struct {
 	Name string `form:"name" binding:"required,max=255"`
 }
 
-func (p *Engine) createTag(c *gin.Context) {
+func (p *Engine) createTag(c *gin.Context) (interface{}, error) {
 
 	var fm fmTag
-	err := c.Bind(&fm)
-	var t *Tag
-	if err == nil {
-		t = &Tag{Name: fm.Name}
-		err = p.Db.Create(t).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	web.JSON(c, t, err)
+	t := Tag{Name: fm.Name}
+	err := p.Db.Create(&t).Error
+	return t, err
 }
 
-func (p *Engine) showTag(c *gin.Context) {
+func (p *Engine) showTag(c *gin.Context) (interface{}, error) {
 	var tag Tag
-	err := p.Db.Where("id = ?", c.Param("id")).First(&tag).Error
-	if err == nil {
-		err = p.Db.Model(&tag).Association("Articles").Find(&tag.Articles).Error
+	if err := p.Db.Where("id = ?", c.Param("id")).First(&tag).Error; err != nil {
+		return nil, err
 	}
-	web.JSON(c, tag, err)
+
+	err := p.Db.Model(&tag).Association("Articles").Find(&tag.Articles).Error
+	return tag, err
 }
 
-func (p *Engine) updateTag(c *gin.Context) {
+func (p *Engine) updateTag(c *gin.Context) (interface{}, error) {
 	var fm fmTag
 	var tag Tag
-	err := c.Bind(&fm)
-	if err == nil {
-		err = p.Db.Where("id = ?", c.Param("id")).First(&tag).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	if err == nil {
-		err = p.Db.Model(&tag).Update("name", fm.Name).Error
+
+	if err := p.Db.Where("id = ?", c.Param("id")).First(&tag).Error; err != nil {
+		return nil, err
 	}
-	web.JSON(c, tag, err)
+	err := p.Db.Model(&tag).Update("name", fm.Name).Error
+	return tag, err
 }
 
-func (p *Engine) destroyTag(c *gin.Context) {
+func (p *Engine) destroyTag(c *gin.Context) (interface{}, error) {
 	var tag Tag
-	err := p.Db.Where("id = ?", c.Param("id")).First(&tag).Error
-	if err == nil {
-		err = p.Db.Model(&tag).Association("Articles").Clear().Error
+	if err := p.Db.Where("id = ?", c.Param("id")).First(&tag).Error; err != nil {
+		return nil, err
 	}
-	if err == nil {
-		err = p.Db.Delete(&tag).Error
+
+	if err := p.Db.Model(&tag).Association("Articles").Clear().Error; err != nil {
+		return nil, err
 	}
-	web.JSON(c, nil, err)
+
+	err := p.Db.Delete(&tag).Error
+	return gin.H{}, err
 }

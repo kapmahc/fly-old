@@ -8,7 +8,7 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) myComments(c *gin.Context) {
+func (p *Engine) myComments(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 	isa := c.MustGet(auth.IsAdmin).(bool)
 	var comments []Comment
@@ -17,26 +17,28 @@ func (p *Engine) myComments(c *gin.Context) {
 		qry = qry.Where("user_id = ?", user.ID)
 	}
 	err := qry.Order("updated_at DESC").Find(&comments).Error
-	web.JSON(c, comments, err)
+	return comments, err
 }
 
-func (p *Engine) indexComments(c *gin.Context) {
+func (p *Engine) indexComments(c *gin.Context) (interface{}, error) {
 	var total int64
-	err := p.Db.Model(&Comment{}).Count(&total).Error
-	var pag *web.Pagination
-	if err == nil {
-		pag = web.NewPagination(c.Request, total)
-
-		var comments []Comment
-		err = p.Db.Select([]string{"id", "type", "body", "article_id", "updated_at"}).
-			Limit(pag.Limit()).Offset(pag.Offset()).
-			Find(&comments).Error
-		for _, it := range comments {
-			pag.Items = append(pag.Items, it)
-		}
+	if err := p.Db.Model(&Comment{}).Count(&total).Error; err != nil {
+		return nil, err
 	}
+	var pag *web.Pagination
 
-	web.JSON(c, pag, err)
+	pag = web.NewPagination(c.Request, total)
+
+	var comments []Comment
+	if err := p.Db.Select([]string{"id", "type", "body", "article_id", "updated_at"}).
+		Limit(pag.Limit()).Offset(pag.Offset()).
+		Find(&comments).Error; err != nil {
+		return nil, err
+	}
+	for _, it := range comments {
+		pag.Items = append(pag.Items, it)
+	}
+	return pag, nil
 }
 
 type fmCommentAdd struct {
@@ -45,29 +47,28 @@ type fmCommentAdd struct {
 	ArticleID uint   `form:"articleId" binding:"required"`
 }
 
-func (p *Engine) createComment(c *gin.Context) {
+func (p *Engine) createComment(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 
 	var fm fmCommentAdd
-	err := c.Bind(&fm)
-	var cm *Comment
-	if err == nil {
-		cm = &Comment{
-			Body:      fm.Body,
-			Type:      fm.Type,
-			ArticleID: fm.ArticleID,
-			UserID:    user.ID,
-		}
-		err = p.Db.Create(cm).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+	cm := Comment{
+		Body:      fm.Body,
+		Type:      fm.Type,
+		ArticleID: fm.ArticleID,
+		UserID:    user.ID,
 	}
 
-	web.JSON(c, cm, err)
+	err := p.Db.Create(&cm).Error
+	return cm, err
 }
 
-func (p *Engine) showComment(c *gin.Context) {
+func (p *Engine) showComment(c *gin.Context) (interface{}, error) {
 	var cm Comment
 	err := p.Db.Where("id = ?", c.Param("id")).First(&cm).Error
-	web.JSON(c, cm, err)
+	return cm, err
 }
 
 type fmCommentEdit struct {
@@ -75,24 +76,27 @@ type fmCommentEdit struct {
 	Type string `form:"type" binding:"required,max=8"`
 }
 
-func (p *Engine) updateComment(c *gin.Context) {
+func (p *Engine) updateComment(c *gin.Context) (interface{}, error) {
 	comment := c.MustGet("comment").(*Comment)
 
 	var fm fmCommentEdit
-	err := c.Bind(&fm)
-	if err == nil {
-		err = p.Db.Model(comment).Updates(map[string]interface{}{
-			"body": fm.Body,
-			"type": fm.Type,
-		}).Error
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	web.JSON(c, comment, err)
+
+	if err := p.Db.Model(comment).Updates(map[string]interface{}{
+		"body": fm.Body,
+		"type": fm.Type,
+	}).Error; err != nil {
+		return nil, err
+	}
+	return comment, nil
 }
 
-func (p *Engine) destroyComment(c *gin.Context) {
+func (p *Engine) destroyComment(c *gin.Context) (interface{}, error) {
 	comment := c.MustGet("comment").(*Comment)
 	err := p.Db.Delete(comment).Error
-	web.JSON(c, nil, err)
+	return gin.H{}, err
 }
 
 func (p *Engine) canEditComment(c *gin.Context) {
