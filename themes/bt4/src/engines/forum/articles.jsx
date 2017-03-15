@@ -1,6 +1,7 @@
 import React, {Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {Table, FormGroup,ControlLabel, FormControl, Thumbnail,
+import {Table, FormGroup,ControlLabel, FormControl, Checkbox,
+  Thumbnail,
   HelpBlock,Pagination,
   ButtonGroup, ButtonToolbar, Button} from 'react-bootstrap';
 import i18next from 'i18next';
@@ -89,23 +90,36 @@ class Form extends Component{
       summary:'',
       type:'',
       body: '',
+      tags: [],
+      tagBoxes: [],
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   componentDidMount() {
+    get('/forum/tags').then(
+      function(rst){
+        this.setState({tagBoxes:rst})
+      }.bind(this)
+    );
     var id = this.state.id;
     if(id){
       get(`/forum/articles/${id}`).then(
         function(rst){
           this.setState(rst)
+          rst.tags.forEach((t)=>{
+            var tmp = {}
+            tmp[`tag-${t.id}`] = true
+            this.setState(tmp)
+          })
         }.bind(this)
       );
     }
   }
   handleChange(e) {
     var data = {};
-    data[e.target.id] = e.target.value;
+    var t = e.target
+    data[t.id] = t.type === 'checkbox' ? t.checked : t.value;
     this.setState(data);
   }
   handleSubmit(e) {
@@ -115,6 +129,10 @@ class Form extends Component{
     data.append('summary', this.state.summary)
     data.append('body', this.state.body)
     data.append('type', 'markdown')
+    this.state.tagBoxes.filter(function(t){
+      return this.state[`tag-${t.id}`] === true
+    }.bind(this)).forEach((t)=>data.append('tags', t.id))
+
     var id = this.state.id
     post(id ?`/forum/articles/${id}`: '/forum/articles', data)
       .then(function(rst){
@@ -144,6 +162,12 @@ class Form extends Component{
             value={this.state.summary}
             onChange={this.handleChange}
             componentClass="textarea" />
+        </FormGroup>
+        <FormGroup>
+          {this.state.tagBoxes.map(function(t, i){
+            var id = `tag-${t.id}`
+            return (<Checkbox checked={this.state[id] === true} id={id} key={i} onChange={this.handleChange} inline>{t.name}</Checkbox>)
+          }.bind(this))}
         </FormGroup>
         <FormGroup controlId="body">
           <ControlLabel>{i18next.t('attributes.body')}</ControlLabel>
@@ -189,10 +213,9 @@ class ShowW extends Component{
       <hr/>
       <b>{this.state.summary}</b>
       <br/>
+      {this.state.tags.map((t,i)=>(<Link key={i} to={`/forum/tags/${t.id}`} className="block">{t.name}</Link>))}
+      <br/>
       <Markdown body={this.state.body}/>
-      <div className="col-md-12">
-        {this.state.tags.map((t,i)=>(<Link to={`/forum/tags/${t.id}`} className="block">{t.name}</Link>))}
-      </div>
       <h4>
         {i18next.t('forum.comments.index.title')}
         {user.uid ? (<Link className="block" to={`/forum/comments/new?articleId=${this.state.id}`}>{i18next.t("buttons.new")}</Link>): <br/>}
