@@ -2,6 +2,7 @@ package auth
 
 import (
 	"crypto/aes"
+	"path"
 
 	"github.com/SermoDigital/jose/crypto"
 	log "github.com/Sirupsen/logrus"
@@ -50,10 +51,23 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			return err
 		}
 
+		uph := viper.GetString("server.frontend")
+		if !web.IsProduction() {
+			uph = viper.GetString("server.backend") + "/public"
+		}
+		up, err := web.NewFileSystemUploader(
+			path.Join("public", "attachments"),
+			uph+"/attachments",
+		)
+		if err != nil {
+			return err
+		}
+
 		if err := inj.Provide(
 			&inject.Object{Value: db},
 			&inject.Object{Value: bws},
 			&inject.Object{Value: rep},
+			&inject.Object{Value: up},
 			&inject.Object{Value: language.NewMatcher(tags)},
 			&inject.Object{Value: cip, Name: "aes.cip"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},

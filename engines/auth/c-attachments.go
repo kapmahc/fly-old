@@ -6,17 +6,6 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-// Uploader attachment uploader
-type Uploader interface{}
-
-// FileSystemUploader file-system storage
-type FileSystemUploader struct {
-}
-
-func (p *Engine) getAttachment(c *gin.Context) {
-
-}
-
 func (p *Engine) showAttachment(c *gin.Context) (interface{}, error) {
 	var a Attachment
 	err := p.Db.Where("id = ?", c.Param("id")).First(&a).Error
@@ -24,27 +13,43 @@ func (p *Engine) showAttachment(c *gin.Context) (interface{}, error) {
 }
 
 func (p *Engine) createAttachment(c *gin.Context) (interface{}, error) {
+	user := c.MustGet(CurrentUser).(*User)
 	if err := c.Request.ParseMultipartForm(10 * 1024); err != nil {
 		return nil, err
 	}
 
-	for _, fn := range c.Request.MultipartForm.File["files"] {
-		fd, err := fn.Open()
+	var items []Attachment
+
+	for _, f := range c.Request.MultipartForm.File["files"] {
+		url, size, err := p.Uploader.Save(f)
+		if err != nil {
+			return nil, err
+		}
+		fd, err := f.Open()
 		if err != nil {
 			return nil, err
 		}
 		defer fd.Close()
-		// out, err := os.Create("./tmp/" + filename + ".png")
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// defer out.Close()
-		// _, err = io.Copy(out, file)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
+
+		// http://golang.org/pkg/net/http/#DetectContentType
+		buf := make([]byte, 512)
+		if _, err = fd.Read(buf); err != nil {
+			return nil, err
+		}
+
+		a := Attachment{
+			Title:     f.Filename,
+			URL:       url,
+			UserID:    user.ID,
+			MediaType: http.DetectContentType(buf),
+			Length:    size / 1024,
+		}
+		if err := p.Db.Create(&a).Error; err != nil {
+			return nil, err
+		}
+		items = append(items, a)
 	}
-	return gin.H{}, nil
+	return items, nil
 }
 
 type fmAttachmentEdit struct {

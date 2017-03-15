@@ -84,7 +84,7 @@ type Attachment struct {
 
 	Title     string `json:"title"`
 	URL       string `json:"url"`
-	Length    uint   `json:"length"`
+	Length    int64  `json:"length"`
 	MediaType string `json:"mediaType"`
 
 	UserID uint

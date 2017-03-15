@@ -9,7 +9,6 @@ import (
 func (p *Engine) Mount(rt *gin.Engine) {
 	rt.GET("/users", web.JSON(p.indexUsers))
 
-	rt.GET("/attachment/*name", p.getAttachment)
 	rt.GET("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.indexAttachments))
 	rt.POST("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.createAttachment))
 	rt.GET("/attachments/:id", web.JSON(p.showAttachment))

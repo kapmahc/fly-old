@@ -611,6 +611,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		p.I18n.Middleware,
 		p.Jwt.CurrentUserMiddleware,
 	)
+	rt.Static("/public", "./public")
 	web.Walk(func(en web.Engine) error {
 		en.Mount(rt)
 		return nil

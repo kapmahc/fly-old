@@ -16,6 +16,7 @@ type Engine struct {
 	I18n     *web.I18n         `inject:""`
 	Jwt      *Jwt              `inject:""`
 	Server   *machinery.Server `inject:""`
+	Uploader web.Uploader      `inject:""`
 }
 
 // Atom rss.atom
