@@ -65,11 +65,9 @@ type Variant struct {
 	Height      float64    `json:"height"`
 	Length      float64    `json:"length"`
 	Width       float64    `json:"width"`
-	VendorID    uint       `json:"vendorId"`
-	Vendor      Vendor     `json:"vendor"`
 	ProductID   uint       `json:"productId"`
 	Product     Product    `json:"product"`
-	Properties  []Property `json:"properties" gorm:"many2many:shop_variants_properties;"`
+	Properties  []Property `json:"properties"`
 }
 
 // TableName table name
@@ -81,9 +79,10 @@ func (Variant) TableName() string {
 type Property struct {
 	web.Model
 
-	Key      string    `json:"key"`
-	Val      string    `json:"val"`
-	Variants []Variant `json:"variants" gorm:"many2many:shop_variants_properties;"`
+	Key       string  `json:"key"`
+	Val       string  `json:"val"`
+	VariantID uint    `json:"variantId"`
+	Variant   Variant `json:"variant"`
 }
 
 // TableName table name

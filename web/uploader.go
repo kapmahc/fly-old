@@ -12,6 +12,7 @@ import (
 // Uploader attachment uploader
 type Uploader interface {
 	Save(*multipart.FileHeader) (string, int64, error)
+	Remove(string) error
 }
 
 // NewFileSystemUploader new file-system uploader
@@ -24,6 +25,11 @@ func NewFileSystemUploader(root, home string) (Uploader, error) {
 type FileSystemUploader struct {
 	home string
 	root string
+}
+
+// Remove remove file
+func (p *FileSystemUploader) Remove(url string) error {
+	return os.Remove(path.Join(p.root, url[len(p.home)+1:]))
 }
 
 // Save save file to file-system

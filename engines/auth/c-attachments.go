@@ -70,7 +70,10 @@ func (p *Engine) updateAttachment(c *gin.Context) (interface{}, error) {
 func (p *Engine) destroyAttachment(c *gin.Context) (interface{}, error) {
 	a := c.MustGet("attachment").(*Attachment)
 	err := p.Db.Delete(a).Error
-	return a, err
+	if err != nil {
+		return nil, err
+	}
+	return a, p.Uploader.Remove(a.URL)
 }
 func (p *Engine) indexAttachments(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
