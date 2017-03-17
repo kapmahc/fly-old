@@ -1,6 +1,6 @@
 # fly
 
-A complete open source ecommerce solution for the Go language and React.
+A complete open source e-commerce solution for the Go language and React.
 
 ## Install go
 
