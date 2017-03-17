@@ -17,8 +17,8 @@ const Widget = ({info}) => (
       </p>
       <p>
         &copy; {info.copyright}
-        &middot; <a href="#">Privacy</a>
-        &middot; <a href="#">Terms</a>
+        &middot; <Link to='/blogs/pravicy.md'>{i18next.t('footer.pravicy')}</Link>
+      &middot; <Link to='/blogs/teams.md'>{i18next.t('footer.teams')}</Link>
       </p>
     </footer>
   </div>
