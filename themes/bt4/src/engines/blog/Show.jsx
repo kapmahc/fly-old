@@ -6,7 +6,7 @@ import {get} from '../../ajax'
 import Markdown from '../../components/Markdown'
 
 const Show = ({item}) => (<div className="row">
-  <h3>{item.title}</h3>
+  <h2>{item.title}</h2>
   <hr/>
   <Markdown body={item.body}/>
 </div>)

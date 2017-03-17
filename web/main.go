@@ -55,11 +55,12 @@ func init() {
 	viper.SetDefault("database", map[string]interface{}{
 		"driver": "postgres",
 		"args": map[string]interface{}{
-			"host":    "localhost",
-			"port":    5432,
-			"user":    "postgres",
-			"dbname":  "fly_dev",
-			"sslmode": "disable",
+			"host":     "localhost",
+			"port":     5432,
+			"user":     "postgres",
+			"password": "",
+			"dbname":   "fly_dev",
+			"sslmode":  "disable",
 		},
 		"pool": map[string]int{
 			"max_open": 180,
@@ -68,7 +69,7 @@ func init() {
 	})
 
 	viper.SetDefault("server", map[string]interface{}{
-		"name":     "fly",
+		"name":     "www.change-me.com",
 		"port":     8080,
 		"backend":  "http://localhost:8080",
 		"frontend": "http://localhost:3000",
