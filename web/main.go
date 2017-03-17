@@ -72,7 +72,7 @@ func init() {
 		"port":     8080,
 		"backend":  "http://localhost:8080",
 		"frontend": "http://localhost:3000",
-		"ssl":      false,
+		"ssl":      true,
 	})
 
 	viper.SetDefault("secrets", map[string]interface{}{

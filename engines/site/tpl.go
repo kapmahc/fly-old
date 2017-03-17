@@ -2,70 +2,143 @@ package site
 
 const (
 	nginxConf = `
-	{{if .Ssl}}
-		server {
-		  listen 80;
-		  server_name {{.Name}};
-		  rewrite ^(.*) https://$host$1 permanent;
+{{if .Ssl}}
+	server {
+		listen 80;
+		server_name {{.Name}};
+		rewrite ^(.*) https://$host$1 permanent;
+	}
+{{end}}
+	upstream {{.Name}}_prod {
+		server localhost:{{.Port}} fail_timeout=0;
+	}
+	server {
+{{if .Ssl}}
+		listen 443;
+		ssl  on;
+		ssl_certificate  /etc/ssl/certs/{{.Name}}.crt;
+		ssl_certificate_key  /etc/ssl/private/{{.Name}}.key;
+		ssl_session_timeout  5m;
+		ssl_protocols  SSLv2 SSLv3 TLSv1;
+		ssl_ciphers  RC4:HIGH:!aNULL:!MD5;
+		ssl_prefer_server_ciphers  on;
+{{else}}
+		listen 80;
+{{end}}
+		client_max_body_size 4G;
+		keepalive_timeout 10;
+		proxy_buffers 16 64k;
+		proxy_buffer_size 128k;
+		server_name {{.Name}};
+		root {{.Root}}/public;
+		index index.html;
+		access_log /var/log/nginx/{{.Name}}.access.log;
+		error_log /var/log/nginx/{{.Name}}.error.log;
+		location / {
+			try_files $uri $uri/ /index.html?/$request_uri;
 		}
-	{{end}}
-		upstream {{.Name}}_prod {
-		  server localhost:{{.Port}} fail_timeout=0;
+		location ^~ /static/ {
+			gzip_static on;
+			expires max;
+			access_log off;
+			add_header Cache-Control "public";
 		}
-		server {
+		location ~* \.(?:css|js)$ {
+			gzip_static on;
+			expires max;
+			access_log off;
+			add_header Cache-Control "public";
+		}
+		location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+			expires 1M;
+			access_log off;
+			add_header Cache-Control "public";
+		}
+		location ~* \.(?:rss|atom)$ {
+			expires 12h;
+			access_log off;
+			add_header Cache-Control "public";
+		}
+		location ~ ^/api/{{.Version}}(/?)(.*) {
 		{{if .Ssl}}
-		  listen 443;
-		  ssl  on;
-		  ssl_certificate  /etc/ssl/certs/{{.Name}}.crt;
-		  ssl_certificate_key  /etc/ssl/private/{{.Name}}.key;
-		  ssl_session_timeout  5m;
-		  ssl_protocols  SSLv2 SSLv3 TLSv1;
-		  ssl_ciphers  RC4:HIGH:!aNULL:!MD5;
-		  ssl_prefer_server_ciphers  on;
+			proxy_set_header X-Forwarded-Proto https;
 		{{else}}
-			listen 80;
+			proxy_set_header X-Forwarded-Proto http;
 		{{end}}
-		  client_max_body_size 4G;
-		  keepalive_timeout 10;
-		  proxy_buffers 16 64k;
-		  proxy_buffer_size 128k;
-		  server_name {{.Name}};
-		  root {{.Root}}/public;
-		  index index.html;
-		  access_log /var/log/nginx/{{.Name}}.access.log;
-		  error_log /var/log/nginx/{{.Name}}.error.log;
-		  location ~* \.(?:css|js)$ {
-		    gzip_static on;
-		    expires max;
-		    access_log off;
-		    add_header Cache-Control "public";
-		  }
-		  location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
-		    expires 1M;
-		    expires max;
-		    access_log off;
-		    add_header Cache-Control "public";
-		  }
-		  location ~* \.(?:rss|atom)$ {
-		    expires 12h;
-		    access_log off;
-		    add_header Cache-Control "public";
-		  }
-		  location / {
-			{{if .Ssl}}
-		    proxy_set_header X-Forwarded-Proto https;
-			{{else}}
-			  proxy_set_header X-Forwarded-Proto http;
-			{{end}}
-		    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-		    proxy_set_header Host $http_host;
-		    proxy_set_header X-Real-IP $remote_addr;
-		    proxy_redirect off;
-		    proxy_pass http://{{.Name}}_prod;
-		    # limit_req zone=one;
-		  }
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header Host $http_host;
+			proxy_set_header X-Real-IP $remote_addr;
+			proxy_redirect off;
+			proxy_pass http://{{.Name}}_prod/$2$is_args$args;
+			# limit_req zone=one;
 		}
-		`
+	}
+	`
+	// nginxConf_gin = `
+	// {{if .Ssl}}
+	// 	server {
+	// 	  listen 80;
+	// 	  server_name {{.Name}};
+	// 	  rewrite ^(.*) https://$host$1 permanent;
+	// 	}
+	// {{end}}
+	// 	upstream {{.Name}}_prod {
+	// 	  server localhost:{{.Port}} fail_timeout=0;
+	// 	}
+	// 	server {
+	// 	{{if .Ssl}}
+	// 	  listen 443;
+	// 	  ssl  on;
+	// 	  ssl_certificate  /etc/ssl/certs/{{.Name}}.crt;
+	// 	  ssl_certificate_key  /etc/ssl/private/{{.Name}}.key;
+	// 	  ssl_session_timeout  5m;
+	// 	  ssl_protocols  SSLv2 SSLv3 TLSv1;
+	// 	  ssl_ciphers  RC4:HIGH:!aNULL:!MD5;
+	// 	  ssl_prefer_server_ciphers  on;
+	// 	{{else}}
+	// 		listen 80;
+	// 	{{end}}
+	// 	  client_max_body_size 4G;
+	// 	  keepalive_timeout 10;
+	// 	  proxy_buffers 16 64k;
+	// 	  proxy_buffer_size 128k;
+	// 	  server_name {{.Name}};
+	// 	  root {{.Root}}/public;
+	// 	  index index.html;
+	// 	  access_log /var/log/nginx/{{.Name}}.access.log;
+	// 	  error_log /var/log/nginx/{{.Name}}.error.log;
+	// 	  location ~* \.(?:css|js)$ {
+	// 	    gzip_static on;
+	// 	    expires max;
+	// 	    access_log off;
+	// 	    add_header Cache-Control "public";
+	// 	  }
+	// 	  location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+	// 	    expires 1M;
+	// 	    expires max;
+	// 	    access_log off;
+	// 	    add_header Cache-Control "public";
+	// 	  }
+	// 	  location ~* \.(?:rss|atom)$ {
+	// 	    expires 12h;
+	// 	    access_log off;
+	// 	    add_header Cache-Control "public";
+	// 	  }
+	// 	  location / {
+	// 		{{if .Ssl}}
+	// 	    proxy_set_header X-Forwarded-Proto https;
+	// 		{{else}}
+	// 		  proxy_set_header X-Forwarded-Proto http;
+	// 		{{end}}
+	// 	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	// 	    proxy_set_header Host $http_host;
+	// 	    proxy_set_header X-Real-IP $remote_addr;
+	// 	    proxy_redirect off;
+	// 	    proxy_pass http://{{.Name}}_prod;
+	// 	    # limit_req zone=one;
+	// 	  }
+	// 	}
+	// 	`
 
 	robotsTxt = `
 User-agent: *

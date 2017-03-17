@@ -9,7 +9,7 @@ backend:
 	-cp -rv demo/locales demo/db $(dst)/
 
 frontend:
-	cd themes/$(theme) && npm run build
+	cd themes/$(theme) && REACT_APP_BACKEND=/api/v1 npm run build
 	-cp -rv themes/$(theme)/build $(dst)/public
 
 init:
