@@ -1,0 +1,11 @@
+{{define "form-buttons"}}
+{{ .csrfField }}
+<button type="submit" class="btn btn-primary">{{t .l "buttons.submit"}}</button>
+<button type="reset" class="btn btn-secondary">{{t .l "buttons.reset"}}</button>
+{{end}}
+
+{{define "form-header"}}
+{{template "application-header" .}}
+<h2>{{.title}}</h2>
+<hr/>
+{{end}}

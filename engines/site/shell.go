@@ -630,6 +630,8 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	hnd := csrf.Protect(
 		[]byte(viper.GetString("server.csrf")),
 		csrf.Secure(web.IsProduction()),
+		csrf.CookieName("_csrf_token_"),
+		csrf.Path("/"),
 	)(rt)
 	// ---------------
 	addr := fmt.Sprintf(":%d", port)

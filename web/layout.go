@@ -20,6 +20,11 @@ type Link struct {
 	SortOrder int
 }
 
+// TableName table name
+func (Link) TableName() string {
+	return "links"
+}
+
 // Page page
 type Page struct {
 	Model
@@ -29,6 +34,11 @@ type Page struct {
 	Summary   string
 	Loc       string
 	SortOrder int
+}
+
+// TableName table name
+func (Page) TableName() string {
+	return "pages"
 }
 
 // Dropdown dropdown

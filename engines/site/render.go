@@ -11,6 +11,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/kapmahc/fly/web"
 )
 
 func (p *Engine) openRender(theme string) (*template.Template, error) {
@@ -62,6 +63,20 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 		"dtf": func(t time.Time) string {
 			return t.Format("Mon Jan _2 15:04:05 2006")
 		},
+		"links": func(loc string) []web.Link {
+			var items []web.Link
+			if err := p.Db.Order("sort_order DESC").Find(&items).Error; err != nil {
+				log.Error(err)
+			}
+			return items
+		},
+		"pages": func(loc string) []web.Page {
+			var items []web.Page
+			if err := p.Db.Order("sort_order DESC").Find(&items).Error; err != nil {
+				log.Error(err)
+			}
+			return items
+		},
 		"in": func(o interface{}, args []interface{}) bool {
 			for _, v := range args {
 				if o == v {
@@ -71,7 +86,17 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 			return false
 		},
 	}
-	return template.New("").
-		Funcs(funcs).
-		ParseGlob(path.Join("themes", theme, "views", "*"))
+
+	var files []string
+	filepath.Walk(path.Join("themes", theme, "views"), func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if filepath.Ext(path) == ".html" {
+			files = append(files, path)
+		}
+		return nil
+	})
+
+	return template.New("").Funcs(funcs).ParseFiles(files...)
 }

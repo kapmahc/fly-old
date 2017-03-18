@@ -23,6 +23,7 @@ func HTML(f func(*gin.Context, string, gin.H) (string, error)) gin.HandlerFunc {
 		d["languages"] = viper.GetStringSlice("languages")
 		d[csrf.TemplateTag] = csrf.TemplateField(c.Request)
 		c.Writer.Header().Set("X-CSRF-Token", csrf.Token(c.Request))
+
 		if v != "" {
 			c.HTML(http.StatusOK, v, d)
 		}
