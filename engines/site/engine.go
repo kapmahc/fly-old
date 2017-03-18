@@ -21,6 +21,7 @@ type Engine struct {
 	Jwt      *auth.Jwt         `inject:""`
 	Redis    *redis.Pool       `inject:""`
 	Matcher  language.Matcher  `inject:""`
+	Dao      *auth.Dao         `inject:""`
 }
 
 // RegisterWorker register worker

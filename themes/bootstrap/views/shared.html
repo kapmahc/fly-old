@@ -1,4 +1,4 @@
-{{define 'shared/meta'}}
+{{define "metas"}}
 <meta charset="utf-8">
 <meta name="description" content="{{t .l "site.description"}}">
 <meta name="keywords" content="{{t .l "site.keywords"}}">
@@ -7,8 +7,40 @@
 <meta name="csrf-token" content="{{.csrf}}">
 <link rel="icon" type="image/png" href="{{asset "favicon.png"}}">
 <link rel="stylesheet" href="{{asset "main.css"}}">
-<title>{{.title}}|{{t .l "site.sub-title"}}|{{t .l "site.title"}}</title>
+<title>{{.title}}|{{t .l "site.subTitle"}}|{{t .l "site.title"}}</title>
 <script src="{{asset "manifest.js"}}"></script>
 <script src="{{asset "vendor.js"}}"></script>
 <script src="{{asset "main.js"}}"></script>
+{{end}}
+
+{{define "flashs"}}
+{{if .error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+    <h4 class="alert-heading">{{t .l "flashs.error"}}</h4>
+    <p>{{str2htm .error}}</p>
+</div>
+{{end}}
+
+{{if .warning}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+    <h4 class="alert-heading">{{t .l "flashs.warning"}}</h4>
+    <p>{{str2htm .warning}}</p>
+</div>
+{{end}}
+
+{{if .info}}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+    <h4 class="alert-heading">{{t .l "flashs.info"}}</h4>
+    <p>{{str2htm .info}}</p>
+</div>
+{{end}}
 {{end}}

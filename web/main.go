@@ -76,9 +76,11 @@ func init() {
 	})
 
 	viper.SetDefault("secrets", map[string]interface{}{
-		"jwt":  RandomStr(32),
-		"aes":  RandomStr(32),
-		"hmac": RandomStr(32),
+		"jwt":    RandomStr(32),
+		"aes":    RandomStr(32),
+		"hmac":   RandomStr(32),
+		"csrf":   RandomStr(32),
+		"cookie": RandomStr(32),
 	})
 
 	viper.SetDefault("elasticsearch", map[string]interface{}{

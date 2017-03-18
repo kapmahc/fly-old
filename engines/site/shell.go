@@ -17,6 +17,7 @@ import (
 	"github.com/facebookgo/inject"
 	"github.com/fvbock/endless"
 	"github.com/google/uuid"
+	"github.com/gorilla/csrf"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
@@ -25,7 +26,6 @@ import (
 	"github.com/urfave/cli"
 	"golang.org/x/text/language"
 	"golang.org/x/tools/blog/atom"
-	cors "gopkg.in/gin-contrib/cors.v1"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -600,14 +600,24 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	rt := gin.Default()
+	// --------------
+	theme := viper.GetString("server.theme")
+	rt.Static("/public", path.Join("themes", theme, "public"))
 
-	cfg := cors.DefaultConfig()
-	cfg.AllowMethods = append(cfg.AllowMethods, http.MethodDelete, http.MethodPatch)
-	cfg.AllowCredentials = true
-	cfg.AllowHeaders = append(cfg.AllowHeaders, "Authorization")
-	cfg.AllowOrigins = []string{web.Home()}
+	tpl, err := p.openRender(theme)
+	if err != nil {
+		return err
+	}
+	rt.SetHTMLTemplate(tpl)
+	// ---------
+
+	// cfg := cors.DefaultConfig()
+	// cfg.AllowMethods = append(cfg.AllowMethods, http.MethodDelete, http.MethodPatch)
+	// cfg.AllowCredentials = true
+	// cfg.AllowHeaders = append(cfg.AllowHeaders, "Authorization")
+	// cfg.AllowOrigins = []string{web.Home()}
 	rt.Use(
-		cors.New(cfg),
+		// cors.New(cfg),
 		p.I18n.Middleware,
 		p.Jwt.CurrentUserMiddleware,
 	)
@@ -616,23 +626,15 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		return nil
 	})
 
-	// --------------
-	theme := viper.GetString("server.theme")
-	rt.Static("/public", path.Join("themes", theme, "public"))
-	fm := template.FuncMap{}
-	tpl, err := template.New("").
-		Funcs(fm).
-		ParseGlob(path.Join("themes", theme, "views", "*"))
-	if err != nil {
-		return err
-	}
-	rt.SetHTMLTemplate(tpl)
-
 	// -------------
-
+	hnd := csrf.Protect(
+		[]byte(viper.GetString("server.csrf")),
+		csrf.Secure(web.IsProduction()),
+	)(rt)
+	// ---------------
 	addr := fmt.Sprintf(":%d", port)
 	if web.IsProduction() {
-		srv := endless.NewServer(addr, rt)
+		srv := endless.NewServer(addr, hnd)
 		srv.BeforeBegin = func(add string) {
 			fd, err := os.OpenFile(path.Join("tmp", "pid"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 			if err != nil {
@@ -647,7 +649,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		return srv.ListenAndServe()
 	}
 
-	return http.ListenAndServe(addr, rt)
+	return http.ListenAndServe(addr, hnd)
 }
 
 func (p *Engine) writeSitemap(root string) error {

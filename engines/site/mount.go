@@ -1,14 +1,15 @@
 package site
 
 import (
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Mount web mount-points
 func (p *Engine) Mount(rt *gin.Engine) {
-	rt.GET("/install", p.getInstall)
-	rt.POST("/install", p.postInstall)
+	rt.GET("/install", auth.HTML(p.getInstall))
+	rt.POST("/install", auth.HTML(p.postInstall))
 	// ----------------
 	rt.GET("/locales/:lang", web.JSON(p.getLocales))
 	rt.GET("/site/info", web.JSON(p.getSiteInfo))
