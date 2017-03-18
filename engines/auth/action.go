@@ -50,15 +50,25 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		if err != nil {
 			return err
 		}
+		// --------------------
+		var up web.Uploader
+		theme := viper.GetString("server.theme")
+		if web.IsProduction() {
+			up, err = web.NewFileSystemUploader(
+				path.Join("themes", theme, "public", "attachments"),
+				"/attachments",
+			)
+		} else {
+			up, err = web.NewFileSystemUploader(
+				path.Join("themes", theme, "public", "attachments"),
+				"/public/attachments",
+			)
+		}
 
-		up, err := web.NewFileSystemUploader(
-			path.Join("themes", viper.GetString("server.theme"), "public", "attachments"),
-			"/public/attachments",
-		)
 		if err != nil {
 			return err
 		}
-
+		// ---------------
 		if err := inj.Provide(
 			&inject.Object{Value: db},
 			&inject.Object{Value: bws},

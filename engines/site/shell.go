@@ -46,7 +46,7 @@ func (p *Engine) Shell() []cli.Command {
 			Name:  "seo",
 			Usage: "generate sitemap.xml.gz/rss.atom/robots.txt ...etc",
 			Action: auth.Action(func(*cli.Context, *inject.Graph) error {
-				root := "public"
+				root := path.Join("themes", viper.GetString("server.theme"), "public")
 				os.MkdirAll(root, 0755)
 				if err := p.writeSitemap(root); err != nil {
 					return err
@@ -602,7 +602,10 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	rt := gin.Default()
 	// --------------
 	theme := viper.GetString("server.theme")
-	rt.Static("/public", path.Join("themes", theme, "public"))
+	if !web.IsProduction() {
+		// using nginx for production
+		rt.Static("/public", path.Join("themes", theme, "public"))
+	}
 
 	tpl, err := p.openRender(theme)
 	if err != nil {
