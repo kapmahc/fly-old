@@ -1,5 +1,5 @@
 dst=dist
-theme=bt4
+theme=bootstrap
 
 all: backend frontend
 
@@ -9,8 +9,8 @@ backend:
 	-cp -rv demo/locales demo/db $(dst)/
 
 frontend:
-	cd themes/$(theme) && REACT_APP_BACKEND=/api/v1 npm run build
-	-cp -rv themes/$(theme)/build $(dst)/public
+	cd themes/$(theme) && npm run build
+	-cp -rv themes/$(theme)/assets $(dst)/public
 
 init:
 	go get -u github.com/kardianos/govendor
