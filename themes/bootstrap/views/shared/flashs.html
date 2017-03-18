@@ -9,23 +9,23 @@
 </div>
 {{end}}
 
-{{if .warning}}
+{{if .alert}}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
-    <h4 class="alert-heading">{{t .l "flashs.warning"}}</h4>
-    <p>{{str2htm .warning}}</p>
+    <h4 class="alert-heading">{{t .l "flashs.alert"}}</h4>
+    <p>{{str2htm .alert}}</p>
 </div>
 {{end}}
 
-{{if .info}}
+{{if .notice}}
 <div class="alert alert-info alert-dismissible fade show" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
-    <h4 class="alert-heading">{{t .l "flashs.info"}}</h4>
-    <p>{{str2htm .info}}</p>
+    <h4 class="alert-heading">{{t .l "flashs.notice"}}</h4>
+    <p>{{str2htm .notice}}</p>
 </div>
 {{end}}
 {{end}}

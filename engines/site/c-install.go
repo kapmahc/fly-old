@@ -16,13 +16,9 @@ type fmInstall struct {
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
-func (p *Engine) getInstall(c *gin.Context, l string, d gin.H) (string, error) {
-	d["title"] = p.I18n.T(l, "site.install.title")
-	return "site-install", nil
-}
-
-func (p *Engine) postInstall(c *gin.Context, l string, d gin.H) (string, error) {
+func (p *Engine) formInstall(c *gin.Context, l string, d gin.H) (string, error) {
 	tpl := "site-install"
+	d["title"] = p.I18n.T(l, "site.install.title")
 	var count int
 	if err := p.Db.Model(&auth.User{}).Count(&count).Error; err != nil {
 		return tpl, err
@@ -30,28 +26,31 @@ func (p *Engine) postInstall(c *gin.Context, l string, d gin.H) (string, error) 
 	if count > 0 {
 		return tpl, p.I18n.E(l, "errors.forbidden")
 	}
-	var fm fmInstall
-	if err := c.Bind(&fm); err != nil {
-		return tpl, err
-	}
-	p.I18n.Set(l, "site.title", fm.Title)
-	p.I18n.Set(l, "site.subTitle", fm.SubTitle)
-	user, err := p.Dao.AddEmailUser("root", fm.Email, fm.Password)
-	if err != nil {
-		return tpl, err
-	}
-	for _, r := range []string{auth.RoleAdmin, auth.RoleRoot} {
-		role, er := p.Dao.Role(r, auth.DefaultResourceType, auth.DefaultResourceID)
-		if err == nil {
-			er = p.Dao.Allow(role.ID, user.ID, 50, 0, 0)
+	if c.Request.Method == http.MethodPost {
+		var fm fmInstall
+		if err := c.Bind(&fm); err != nil {
+			return tpl, err
 		}
-		if er != nil {
-			return tpl, er
+		p.I18n.Set(l, "site.title", fm.Title)
+		p.I18n.Set(l, "site.subTitle", fm.SubTitle)
+		user, err := p.Dao.AddEmailUser("root", fm.Email, fm.Password)
+		if err != nil {
+			return tpl, err
 		}
+		for _, r := range []string{auth.RoleAdmin, auth.RoleRoot} {
+			role, er := p.Dao.Role(r, auth.DefaultResourceType, auth.DefaultResourceID)
+			if err == nil {
+				er = p.Dao.Allow(role.ID, user.ID, 50, 0, 0)
+			}
+			if er != nil {
+				return tpl, er
+			}
+		}
+		if err = p.Db.Model(user).UpdateColumn("confirmed_at", time.Now()).Error; err != nil {
+			return tpl, err
+		}
+		c.Redirect(http.StatusFound, "/users/sign-in")
+		return "", nil
 	}
-	if err = p.Db.Model(user).UpdateColumn("confirmed_at", time.Now()).Error; err != nil {
-		return tpl, err
-	}
-	c.Redirect(http.StatusFound, "/users/sign-in")
-	return "", nil
+	return tpl, nil
 }

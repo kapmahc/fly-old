@@ -1,0 +1,11 @@
+{{define "auth-users-email-form"}}
+{{template "form-header" .}}
+<form method="post" action="/users/{{.action}}">
+  <div class="form-group">
+    <label for="email">{{t .l "attributes.email"}}</label>
+    <input type="email" class="form-control" id="email" name="email">
+  </div>
+  {{template "form-buttons" .}}
+</form>
+{{template "application-footer" .}}
+{{end}}
