@@ -11,7 +11,7 @@ import (
 
 // Uploader attachment uploader
 type Uploader interface {
-	Save(*multipart.FileHeader) (string, int64, error)
+	Save(multipart.File, *multipart.FileHeader) (string, int64, error)
 	Remove(string) error
 }
 
@@ -33,18 +33,13 @@ func (p *FileSystemUploader) Remove(url string) error {
 }
 
 // Save save file to file-system
-func (p *FileSystemUploader) Save(fh *multipart.FileHeader) (string, int64, error) {
+func (p *FileSystemUploader) Save(fd multipart.File, fh *multipart.FileHeader) (string, int64, error) {
 	name := uuid.New().String() + path.Ext(fh.Filename)
-	src, err := fh.Open()
-	if err != nil {
-		return "", 0, err
-	}
-	defer src.Close()
 	dst, err := os.Create(path.Join(p.root, name))
 	if err != nil {
 		return "", 0, err
 	}
 	defer dst.Close()
-	size, err := io.Copy(dst, src)
+	size, err := io.Copy(dst, fd)
 	return p.home + "/" + name, size, err
 }

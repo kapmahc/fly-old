@@ -20,8 +20,7 @@ $.ajaxSetup({
 
 Dropzone.options.myAwesomeDropzone = {
   init: function() {
-    this.on("sending", function(file, xhr, formData) {
-      alert('aaa');
+    this.on("sending", function(file, xhr, formData) {      
       xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
     });
   }
@@ -73,6 +72,6 @@ $(function() {
     hljs.highlightBlock(block);
   });
   // ---------------------
-  
+
   // ---------------------
 });

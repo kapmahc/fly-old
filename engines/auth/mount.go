@@ -35,8 +35,9 @@ func (p *Engine) Mount(rt *gin.Engine) {
 
 	rt.GET("/attachments", p.Jwt.MustSignInMiddleware, HTML(p.indexAttachments))
 	rt.GET("/attachments/new", p.Jwt.MustSignInMiddleware, HTML(p.newAttachment))
-	// rt.POST("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.createAttachment))
-	// rt.POST("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.updateAttachment))
+	rt.POST("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.createAttachment))
+	rt.GET("/attachments/edit/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, HTML(p.updateAttachment))
+	rt.POST("/attachments/edit/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, HTML(p.updateAttachment))
 	rt.DELETE("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.destroyAttachment))
 
 }

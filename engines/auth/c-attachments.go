@@ -13,42 +13,35 @@ func (p *Engine) newAttachment(c *gin.Context, lang string, data gin.H) (string,
 
 func (p *Engine) createAttachment(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
-	if err := c.Request.ParseMultipartForm(10 * 1024); err != nil {
+
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
 		return nil, err
 	}
 
-	var items []Attachment
-
-	for _, f := range c.Request.MultipartForm.File["files"] {
-		url, size, err := p.Uploader.Save(f)
-		if err != nil {
-			return nil, err
-		}
-		fd, err := f.Open()
-		if err != nil {
-			return nil, err
-		}
-		defer fd.Close()
-
-		// http://golang.org/pkg/net/http/#DetectContentType
-		buf := make([]byte, 512)
-		if _, err = fd.Read(buf); err != nil {
-			return nil, err
-		}
-
-		a := Attachment{
-			Title:     f.Filename,
-			URL:       url,
-			UserID:    user.ID,
-			MediaType: http.DetectContentType(buf),
-			Length:    size / 1024,
-		}
-		if err := p.Db.Create(&a).Error; err != nil {
-			return nil, err
-		}
-		items = append(items, a)
+	url, size, err := p.Uploader.Save(file, header)
+	if err != nil {
+		return nil, err
 	}
-	return items, nil
+
+	// http://golang.org/pkg/net/http/#DetectContentType
+	buf := make([]byte, 512)
+	file.Seek(0, 0)
+	if _, err = file.Read(buf); err != nil {
+		return nil, err
+	}
+
+	a := Attachment{
+		Title:     header.Filename,
+		URL:       url,
+		UserID:    user.ID,
+		MediaType: http.DetectContentType(buf),
+		Length:    size / 1024,
+	}
+	if err := p.Db.Create(&a).Error; err != nil {
+		return nil, err
+	}
+	return a, nil
 }
 
 type fmAttachmentEdit struct {
@@ -59,6 +52,7 @@ func (p *Engine) updateAttachment(c *gin.Context, lang string, data gin.H) (stri
 	a := c.MustGet("attachment").(*Attachment)
 	tpl := "auth-attachments-edit"
 	data["title"] = p.I18n.T(lang, "buttons.edit")
+	data["item"] = a
 
 	if c.Request.Method == http.MethodPost {
 		var fm fmAttachmentEdit
@@ -68,6 +62,8 @@ func (p *Engine) updateAttachment(c *gin.Context, lang string, data gin.H) (stri
 		if err := p.Db.Model(a).Update("title", fm.Title).Error; err != nil {
 			return tpl, err
 		}
+		c.Redirect(http.StatusFound, "/attachments")
+		return "", nil
 	}
 	return tpl, nil
 }
