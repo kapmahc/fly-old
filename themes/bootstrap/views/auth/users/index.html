@@ -3,8 +3,9 @@
 {{$l := .l}}
 <h2>{{.title}}</h2>
 <hr/>
-<div class="card-columns">
+<div class="row">
   {{range .users}}
+  <div class="col-md-4">
     <div class="card">
       <img class="card-img-top img-fluid" src="{{.Logo}}" alt="logo">
       <div class="card-block">
@@ -13,6 +14,7 @@
         <a href="{{.Home}}" class="btn btn-primary" target="_blank">{{t $l "buttons.view"}}</a>
       </div>
     </div>
+  </div>
   {{end}}
 </div>
 {{template "application-footer" .}}

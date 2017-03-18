@@ -76,6 +76,7 @@ func (p *Engine) _jobsStatus() gin.H {
 }
 func (p *Engine) getAdminSiteStatus(c *gin.Context, lang string, data gin.H) (string, error) {
 	tpl := "site-admin-status"
+	data["title"] = p.I18n.T(lang, "site.admin.status.title")
 	data["os"] = p._osStatus()
 	data["jobs"] = p._jobsStatus()
 	var err error
@@ -226,6 +227,7 @@ func (p *Engine) formAdminSiteSMTP(c *gin.Context, lang string, data gin.H) (str
 		smtp["password"] = ""
 	}
 	data["smtp"] = smtp
+	data["ports"] = []int{25, 465, 587, 2525, 2526}
 	return tpl, nil
 }
 
