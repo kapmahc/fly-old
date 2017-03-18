@@ -44,6 +44,6 @@ func (Page) TableName() string {
 // Dropdown dropdown
 type Dropdown struct {
 	Label     string
-	Links     []Link
+	Links     []*Link
 	SortOrder int
 }

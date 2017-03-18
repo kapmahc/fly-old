@@ -9,6 +9,7 @@ import (
 	"github.com/kapmahc/fly/web"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
+	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Engine engine
@@ -57,6 +58,11 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/tags/%d", t.ID)})
 	}
 	return urls, nil
+}
+
+// Dashboard dashboard
+func (p *Engine) Dashboard(*gin.Context) *web.Dropdown {
+	return nil
 }
 
 func init() {

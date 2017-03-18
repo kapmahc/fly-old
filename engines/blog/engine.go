@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
+	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Engine engine
@@ -47,6 +48,11 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 
 	}
 	return urls, nil
+}
+
+// Dashboard dashboard
+func (p *Engine) Dashboard(*gin.Context) *web.Dropdown {
+	return nil
 }
 
 func init() {

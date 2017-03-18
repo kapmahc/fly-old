@@ -1,0 +1,22 @@
+{{define "site-dashboard"}}
+{{template "dashboard-header" .}}
+{{$l := .l}}
+<div class="row">
+  {{range .dashboard}}
+    {{if .}}
+      <div class="col-md-12">
+        <h3>{{t $l .Label}}</h3>
+        <hr />
+        <div class="btn-group" role="group">
+          {{range .Links}}
+            {{if .}}
+              <a class="btn btn-secondary" href="{{.Href}}">{{t $l .Label}}</a>
+            {{end}}
+          {{end}}
+        </div>
+      </div>
+    {{end}}
+  {{end}}
+</div>
+{{template "application-footer" .}}
+{{end}}

@@ -14,6 +14,7 @@ type Engine interface {
 	RegisterWorker()
 	Atom(lang string) ([]*atom.Entry, error)
 	Sitemap() ([]stm.URL, error)
+	Dashboard(*gin.Context) *Dropdown
 }
 
 // -----------------------------------------------------------------------------

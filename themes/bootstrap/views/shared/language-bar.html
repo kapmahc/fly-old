@@ -3,7 +3,7 @@
     <a class="nav-link dropdown-toggle" id="language-bar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {{t .l "language-bar.switch"}}
     </a>
-    <div class="dropdown-menu" aria-labelledby="switch-lang-bar">
+    <div class="dropdown-menu" aria-labelledby="language-bar">
       {{$l := .l}}
       {{range .languages}}
       {{$v := fmt "languages.%s" .}}

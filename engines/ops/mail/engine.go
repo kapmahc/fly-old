@@ -35,6 +35,11 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
 }
 
+// Dashboard dashboard
+func (p *Engine) Dashboard(*gin.Context) *web.Dropdown {
+	return nil
+}
+
 func init() {
 	web.Register(&Engine{})
 }
