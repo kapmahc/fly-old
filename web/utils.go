@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"syscall"
+	"time"
 )
 
 //Shell exec shell command
@@ -18,17 +19,11 @@ func Shell(cmd string, args ...string) error {
 
 //RandomStr randome string
 func RandomStr(n int) string {
-	// b := make([]byte, n)
-	// if _, err := rand.Read(b); err != nil {
-	// 	panic(err)
-	// }
-	//
-	// return fmt.Sprintf("%X", b)
-
 	letters := []rune("abcdefghijklmnopqrstuvwxyz0123456789")
+	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	buf := make([]rune, n)
 	for i := range buf {
-		buf[i] = letters[rand.Intn(len(letters))]
+		buf[i] = letters[rd.Intn(len(letters))]
 	}
 	return string(buf)
 }

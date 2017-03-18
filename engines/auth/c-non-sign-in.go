@@ -1,12 +1,10 @@
 package auth
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/SermoDigital/jose/jws"
 	"github.com/kapmahc/fly/web"
-	"github.com/spf13/viper"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -223,5 +221,5 @@ func (p *Engine) postUsersResetPassword(c *gin.Context) (interface{}, error) {
 }
 
 func (p *Engine) signInURL() string {
-	return fmt.Sprintf("%s/users/sign-in", viper.Get("server.frontend"))
+	return "/users/sign-in"
 }

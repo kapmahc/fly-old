@@ -605,7 +605,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	cfg.AllowMethods = append(cfg.AllowMethods, http.MethodDelete, http.MethodPatch)
 	cfg.AllowCredentials = true
 	cfg.AllowHeaders = append(cfg.AllowHeaders, "Authorization")
-	cfg.AllowOrigins = []string{viper.GetString("server.frontend")}
+	cfg.AllowOrigins = []string{web.Home()}
 	rt.Use(
 		cors.New(cfg),
 		p.I18n.Middleware,
@@ -616,6 +616,16 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		en.Mount(rt)
 		return nil
 	})
+
+	// ---------
+	fm := template.FuncMap{}
+	tpl, err := template.New("").Funcs(fm).ParseGlob("")
+	if err != nil {
+		return err
+	}
+	rt.SetHTMLTemplate(tpl)
+
+	// -------------
 
 	addr := fmt.Sprintf(":%d", port)
 	if web.IsProduction() {
@@ -639,7 +649,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 
 func (p *Engine) writeSitemap(root string) error {
 	sm := stm.NewSitemap()
-	sm.SetDefaultHost(viper.GetString("server.frontend"))
+	sm.SetDefaultHost(web.Home())
 	sm.SetPublicPath(root)
 	sm.SetCompress(true)
 	sm.SetSitemapsPath("/")
@@ -677,7 +687,7 @@ func (p *Engine) writeRssAtom(root string, lang string) error {
 		},
 		Entry: make([]*atom.Entry, 0),
 	}
-	home := viper.GetString("server.frontend")
+	home := web.Home()
 	if err := web.Walk(func(en web.Engine) error {
 		items, err := en.Atom(lang)
 		if err != nil {
@@ -719,7 +729,7 @@ func (p *Engine) writeRobotsTxt(root string) error {
 	defer fd.Close()
 	return t.Execute(fd, struct {
 		Home string
-	}{Home: viper.GetString("server.frontend")})
+	}{Home: web.Home()})
 }
 
 func (p *Engine) writeGoogleVerify(root string) error {

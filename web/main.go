@@ -69,11 +69,9 @@ func init() {
 	})
 
 	viper.SetDefault("server", map[string]interface{}{
-		"name":     "www.change-me.com",
-		"port":     8080,
-		"backend":  "http://localhost:8080",
-		"frontend": "http://localhost:3000",
-		"ssl":      true,
+		"name": "www.change-me.com",
+		"port": 8080,
+		"ssl":  true,
 	})
 
 	viper.SetDefault("secrets", map[string]interface{}{

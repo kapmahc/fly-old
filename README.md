@@ -65,7 +65,4 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   - [gin](https://github.com/gin-gonic/gin)
   - [viper](https://github.com/spf13/viper)
   - [validator](https://godoc.org/gopkg.in/go-playground/validator.v9)
-  - [react](https://facebook.github.io/react/docs/installation.html#creating-a-single-page-application)
-  - [react-redux](http://redux.js.org/docs/basics/UsageWithReact.html)
-  - [react-bootstrap](https://react-bootstrap.github.io/components.html)
-  - [Create React App](https://github.com/facebookincubator/create-react-app)
+  

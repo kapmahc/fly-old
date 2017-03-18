@@ -7,6 +7,9 @@ import (
 
 // Mount web mount-points
 func (p *Engine) Mount(rt *gin.Engine) {
+	rt.GET("/install", p.getInstall)
+	rt.POST("/install", p.postInstall)
+	// ----------------
 	rt.GET("/locales/:lang", web.JSON(p.getLocales))
 	rt.GET("/site/info", web.JSON(p.getSiteInfo))
 

@@ -51,13 +51,9 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			return err
 		}
 
-		uph := viper.GetString("server.frontend")
-		if !web.IsProduction() {
-			uph = viper.GetString("server.backend") + "/public"
-		}
 		up, err := web.NewFileSystemUploader(
 			path.Join("public", "attachments"),
-			uph+"/attachments",
+			"/public/attachments",
 		)
 		if err != nil {
 			return err
