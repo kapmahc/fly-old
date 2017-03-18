@@ -4,10 +4,10 @@ import hljs from 'highlight.js'
 
 require("./main.css");
 
-require("file-loader!./fail.png")
-require("file-loader!./up.png")
-require("file-loader!./down.png")
-require("file-loader!./favicon.png")
+require("file-loader?emitFile=false!./fail.png")
+require("file-loader?emitFile=false!./up.png")
+require("file-loader?emitFile=false!./down.png")
+require("file-loader?emitFile=false!./favicon.png")
 
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
@@ -24,7 +24,7 @@ $(function() {
     $(this).html(marked(txt));
   });
   // ---------------------
-  $("a.nav-link").each(function() {    
+  $("a.nav-link").each(function() {
     if($(this).attr("href") == window.location.pathname){
       $(this).addClass("active");
     }

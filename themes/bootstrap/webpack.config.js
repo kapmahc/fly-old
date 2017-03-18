@@ -26,15 +26,15 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: /node_modules/,
-        loader: ExtractTextPlugin.extract({
-          loader: 'css-loader?sourceMap'
+        use: ExtractTextPlugin.extract({
+          use: 'css-loader?sourceMap'
         })
       },
       {
         test: /\.scss$/,
         loaders: ["style-loader", "css-loader", "sass-loader"]
       },
-      { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: "file-loader?name=[name].[hash].[ext]" }
+      { test: /\.(png|woff|woff2|eot|ttf|svg)$/, use: "file-loader?name=[name].[hash].[ext]" }
     ]
   },
   devtool: 'source-map',
