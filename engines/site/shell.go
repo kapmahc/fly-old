@@ -633,6 +633,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		csrf.Secure(web.IsProduction()),
 		csrf.CookieName("_csrf_"),
 		csrf.Path("/"),
+		csrf.FieldName("authenticity_token"),
 	)(rt)
 	// ---------------
 	addr := fmt.Sprintf(":%d", port)

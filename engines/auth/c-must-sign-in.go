@@ -26,26 +26,27 @@ type fmInfo struct {
 	Logo string `form:"logo" binding:"max=255"`
 }
 
-func (p *Engine) getUsersInfo(c *gin.Context) (interface{}, error) {
+func (p *Engine) formUsersInfo(c *gin.Context, lang string, data gin.H) (string, error) {
 	user := c.MustGet(CurrentUser).(*User)
-	return user, nil
-}
+	data["user"] = user
+	data["title"] = p.I18n.T(lang, "auth.users.info.title")
+	tpl := "auth-users-info"
+	if c.Request.Method == http.MethodPost {
 
-func (p *Engine) postUsersInfo(c *gin.Context) (interface{}, error) {
-	user := c.MustGet(CurrentUser).(*User)
+		var fm fmInfo
+		if err := c.Bind(&fm); err != nil {
+			return tpl, err
+		}
 
-	var fm fmInfo
-	if err := c.Bind(&fm); err != nil {
-		return nil, err
+		if err := p.Db.Model(user).Updates(map[string]interface{}{
+			"home": fm.Home,
+			"logo": fm.Logo,
+			"name": fm.Name,
+		}).Error; err != nil {
+			return tpl, err
+		}
 	}
-
-	err := p.Db.Model(user).Where("id = ?", user.ID).Updates(map[string]interface{}{
-		"home": fm.Home,
-		"logo": fm.Logo,
-		"name": fm.Name,
-	}).Error
-
-	return gin.H{}, err
+	return tpl, nil
 }
 
 type fmChangePassword struct {
@@ -54,33 +55,36 @@ type fmChangePassword struct {
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=NewPassword"`
 }
 
-func (p *Engine) postUsersChangePassword(c *gin.Context) (interface{}, error) {
-
+func (p *Engine) formUsersChangePassword(c *gin.Context, lang string, data gin.H) (string, error) {
 	user := c.MustGet(CurrentUser).(*User)
-	lang := c.MustGet(web.LOCALE).(string)
-
-	var fm fmChangePassword
-	if err := c.Bind(&fm); err == nil {
-		return nil, err
+	data["title"] = p.I18n.T(lang, "auth.users.change-password.title")
+	tpl := "auth-users-change-password"
+	if c.Request.Method == http.MethodPost {
+		var fm fmChangePassword
+		if err := c.Bind(&fm); err != nil {
+			return tpl, err
+		}
+		if !p.Security.Chk([]byte(fm.CurrentPassword), user.Password) {
+			return tpl, p.I18n.E(lang, "auth.errors.bad-password")
+		}
+		if err := p.Db.Model(user).
+			Update("password", p.Security.Sum([]byte(fm.NewPassword))).Error; err != nil {
+			return tpl, err
+		}
+		data[web.NOTICE] = p.I18n.T(lang, "success")
 	}
-
-	if !p.Security.Chk([]byte(fm.CurrentPassword), user.Password) {
-		return nil, p.I18n.E(lang, "auth.errors.bad-password")
-	}
-
-	err := p.Db.Model(user).Where("id = ?", user.ID).Update("password", p.Security.Sum([]byte(fm.NewPassword))).Error
-
-	return gin.H{}, err
+	return tpl, nil
 }
 
-func (p *Engine) getUsersLogs(c *gin.Context) (interface{}, error) {
+func (p *Engine) getUsersLogs(c *gin.Context, lang string, data gin.H) (string, error) {
 	user := c.MustGet(CurrentUser).(*User)
-
+	data["title"] = p.I18n.T(lang, "auth.users.logs.title")
 	var logs []Log
 	err := p.Db.
 		Select([]string{"ip", "message", "created_at"}).
 		Where("user_id = ?", user.ID).
 		Order("id DESC").Limit(120).
 		Find(&logs).Error
-	return logs, err
+	data["logs"] = logs
+	return "auth-users-logs", err
 }

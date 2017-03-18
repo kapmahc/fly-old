@@ -1,4 +1,5 @@
 {{define "auth-users-sign-in"}}
+{{template "application-header" .}}
 {{template "form-header" .}}
 <form method="post">
   <div class="form-group">
@@ -12,5 +13,6 @@
   </div>
   {{template "form-buttons" .}}
 </form>
+{{template "auth-users-links" .}}
 {{template "application-footer" .}}
 {{end}}

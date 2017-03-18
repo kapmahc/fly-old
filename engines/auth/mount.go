@@ -24,6 +24,14 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	ung.POST("/forgot-password", HTML(p.formUsersForgotPassword))
 	ung.GET("/reset-password/:token", HTML(p.formUsersResetPassword))
 	ung.POST("/reset-password/:token", HTML(p.formUsersResetPassword))
+
+	umg := rt.Group("/users", p.Jwt.MustSignInMiddleware)
+	umg.GET("/info", HTML(p.formUsersInfo))
+	umg.POST("/info", HTML(p.formUsersInfo))
+	umg.GET("/change-password", HTML(p.formUsersChangePassword))
+	umg.POST("/change-password", HTML(p.formUsersChangePassword))
+	umg.GET("/logs", HTML(p.getUsersLogs))
+	umg.DELETE("/sign-out", web.JSON(p.deleteUsersSignOut))
 	// ---------------
 
 	rt.GET("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.indexAttachments))
@@ -31,12 +39,5 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	rt.GET("/attachments/:id", web.JSON(p.showAttachment))
 	rt.POST("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.updateAttachment))
 	rt.DELETE("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.destroyAttachment))
-
-	umg := rt.Group("/users", p.Jwt.MustSignInMiddleware)
-	umg.POST("/info", web.JSON(p.postUsersInfo))
-	umg.GET("/info", web.JSON(p.getUsersInfo))
-	umg.POST("/change-password", web.JSON(p.postUsersChangePassword))
-	umg.GET("/logs", web.JSON(p.getUsersLogs))
-	umg.DELETE("/sign-out", web.JSON(p.deleteUsersSignOut))
 
 }
