@@ -2,6 +2,7 @@ import $ from 'jquery'
 import marked from 'marked'
 import hljs from 'highlight.js'
 import Dropzone from 'dropzone'
+import Clipboard from 'clipboard'
 
 require("./main.css");
 
@@ -9,6 +10,7 @@ require("file-loader?emitFile=false!./fail.png")
 require("file-loader?emitFile=false!./up.png")
 require("file-loader?emitFile=false!./down.png")
 require("file-loader?emitFile=false!./favicon.png")
+require("file-loader?emitFile=false!./clippy.svg")
 
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
@@ -20,7 +22,7 @@ $.ajaxSetup({
 
 Dropzone.options.myAwesomeDropzone = {
   init: function() {
-    this.on("sending", function(file, xhr, formData) {      
+    this.on("sending", function(file, xhr, formData) {
       xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
     });
   }
@@ -72,6 +74,6 @@ $(function() {
     hljs.highlightBlock(block);
   });
   // ---------------------
-
+  new Clipboard('.clipboard');
   // ---------------------
 });

@@ -16,13 +16,19 @@
   <tbody>
     {{range .attachments}}
     <tr>
-      <th scope="row">{{.Title}}</th>
-      <th scope="row">{{.Length}}KB</th>
+      <th scope="row">
+        <a href="{{.URL}}" target="_blank">{{.Title}}</a>
+        {{$img := starts .MediaType "image"}}
+        <a class="clipboard" data-clipboard-text="{{if $img }}!{{end}}[{{.Title}}]({{.URL}})">
+          <img width="24" src="{{asset "clippy.svg"}}" alt="{{t $l "auth.attachments.index.copy-toclip-board"}}">
+        </a>
+      </th>
+      <td>{{.Length}}KB</td>
       <td>
         <div class="btn-group btn-group-sm" role="group">
-          <a class="btn btn-info" href="{{.URL}}" target="_blank">{{t $.l "buttons.view"}}</a>
-          <a class="btn btn-warning" href="/attachments/edit/{{.ID}}">{{t $.l "buttons.edit"}}</a>
-          <a class="btn btn-danger" data-method="delete" data-next="/attachments" data-confirm="{{t $l "are-you-sure"}}" href="/attachments/{{.ID}}">{{t $.l "buttons.remove"}}</a>
+          <a class="btn btn-info" href="{{.URL}}" target="_blank">{{t $l "buttons.view"}}</a>
+          <a class="btn btn-warning" href="/attachments/edit/{{.ID}}">{{t $l "buttons.edit"}}</a>
+          <a class="btn btn-danger" data-method="delete" data-next="/attachments" data-confirm="{{t $l "are-you-sure"}}" href="/attachments/{{.ID}}">{{t $l "buttons.remove"}}</a>
         </div>
       </td>
     </tr>

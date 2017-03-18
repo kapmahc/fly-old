@@ -28,7 +28,7 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 			name := info.Name()
 
 			switch filepath.Ext(name) {
-			case ".css", ".js", ".png":
+			case ".css", ".js", ".png", ".svg":
 				ss := strings.Split(name, ".")
 				if len(ss) == 3 {
 					assets[fmt.Sprintf("%s.%s", ss[0], ss[2])] = name
@@ -84,6 +84,9 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 				}
 			}
 			return false
+		},
+		"starts": func(s string, b string) bool {
+			return strings.HasPrefix(s, b)
 		},
 	}
 

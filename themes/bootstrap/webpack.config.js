@@ -16,6 +16,7 @@ module.exports = {
       'marked',
       'highlight.js',
       'dropzone',
+      'clipboard',
     ],
   },
   output: {
