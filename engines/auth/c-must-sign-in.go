@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
@@ -9,6 +12,11 @@ func (p *Engine) deleteUsersSignOut(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
 	lang := c.MustGet(web.LOCALE).(string)
 	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.sign-out"))
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:    TOKEN,
+		Expires: time.Now().Add(time.Hour * -1),
+		Path:    "/",
+	})
 	return gin.H{}, nil
 }
 

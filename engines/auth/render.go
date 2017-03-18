@@ -19,10 +19,21 @@ func HTML(f func(*gin.Context, string, gin.H) (string, error)) gin.HandlerFunc {
 		if e != nil {
 			d[web.ERROR] = e.Error()
 		}
+
 		d["l"] = l
 		d["languages"] = viper.GetStringSlice("languages")
+
 		d[csrf.TemplateTag] = csrf.TemplateField(c.Request)
-		c.Writer.Header().Set("X-CSRF-Token", csrf.Token(c.Request))
+		token := csrf.Token(c.Request)
+		d["csrf"] = token
+		c.Writer.Header().Set("X-CSRF-Token", token)
+
+		if user, ok := c.Get(CurrentUser); ok {
+			d[CurrentUser] = user
+		}
+		if admin, ok := c.Get(IsAdmin); ok {
+			d[IsAdmin] = admin
+		}
 
 		if v != "" {
 			c.HTML(http.StatusOK, v, d)
