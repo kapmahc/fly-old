@@ -31,13 +31,16 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	asg.POST("/smtp", auth.HTML(p.formAdminSiteSMTP))
 	// ----------------
 
-	rt.GET("/notices", web.JSON(p.indexNotices))
-	rt.POST("/notices", p.Jwt.MustAdminMiddleware, web.JSON(p.createNotice))
-	rt.POST("/notices/:id", p.Jwt.MustAdminMiddleware, web.JSON(p.updateNotice))
+	rt.GET("/notices", auth.HTML(p.indexNotices))
+	rt.GET("/notices/new", p.Jwt.MustAdminMiddleware, auth.HTML(p.createNotice))
+	rt.POST("/notices/new", p.Jwt.MustAdminMiddleware, auth.HTML(p.createNotice))
+	rt.GET("/notices/edit/:id", p.Jwt.MustAdminMiddleware, auth.HTML(p.updateNotice))
+	rt.POST("/notices/edit/:id", p.Jwt.MustAdminMiddleware, auth.HTML(p.updateNotice))
 	rt.DELETE("/notices/:id", p.Jwt.MustAdminMiddleware, web.JSON(p.destroyNotice))
 
-	rt.GET("/leave-words", p.Jwt.MustAdminMiddleware, web.JSON(p.indexLeaveWords))
-	rt.POST("/leave-words", web.JSON(p.createLeaveWord))
+	rt.GET("/leave-words", p.Jwt.MustAdminMiddleware, auth.HTML(p.indexLeaveWords))
+	rt.GET("/leave-words/new", auth.HTML(p.createLeaveWord))
+	rt.POST("/leave-words/new", auth.HTML(p.createLeaveWord))
 	rt.DELETE("/leave-words/:id", p.Jwt.MustAdminMiddleware, web.JSON(p.destroyLeaveWord))
 
 }

@@ -119,6 +119,7 @@ func (p *Engine) formAdminSiteInfo(c *gin.Context, lang string, data gin.H) (str
 				return tpl, err
 			}
 		}
+		data[web.NOTICE] = p.I18n.T(lang, "success")
 	}
 
 	return tpl, nil
@@ -147,6 +148,7 @@ func (p *Engine) formAdminSiteAuthor(c *gin.Context, lang string, data gin.H) (s
 				return tpl, err
 			}
 		}
+		data[web.NOTICE] = p.I18n.T(lang, "success")
 	}
 	return tpl, nil
 }
@@ -174,6 +176,7 @@ func (p *Engine) formAdminSiteSeo(c *gin.Context, lang string, data gin.H) (stri
 				return tpl, err
 			}
 		}
+		data[web.NOTICE] = p.I18n.T(lang, "success")
 	}
 
 	var gc string
@@ -214,6 +217,7 @@ func (p *Engine) formAdminSiteSMTP(c *gin.Context, lang string, data gin.H) (str
 		if err := p.Settings.Set("site.smtp", val, true); err != nil {
 			return tpl, err
 		}
+		data[web.NOTICE] = p.I18n.T(lang, "success")
 	}
 
 	smtp := make(map[string]interface{})
