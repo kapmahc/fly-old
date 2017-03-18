@@ -626,6 +626,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		p.Jwt.CurrentUserMiddleware,
 	)
 	web.Walk(func(en web.Engine) error {
+		en.RegisterWorker()
 		en.Mount(rt)
 		return nil
 	})

@@ -2,8 +2,7 @@
 {{template "dashboard-header" .}}
 {{template "form-header" .}}
 {{$l := .l}}
-<div class="row">
-  <div class="col-md-6 block">
+<div class="card-columns">
     <div class="card">
       <div class="card-block">
         <h4 class="card-title">{{t $l "site.admin.status.os"}}</h4>
@@ -15,8 +14,6 @@
         {{end}}
       </ul>
     </div>
-  </div>
-  <div class="col-md-6 block">
     <div class="card">
       <div class="card-block">
         <h4 class="card-title">{{t $l "site.admin.status.database"}}</h4>
@@ -28,19 +25,6 @@
         {{end}}
       </ul>
     </div>
-  </div>
-  <div class="col-md-6 block">
-    <div class="card">
-      <div class="card-block">
-        <h4 class="card-title">{{t $l "site.admin.status.cache"}}</h4>
-        <p class="card-text"></p>
-      </div>
-      <ul class="list-group list-group-flush">
-        <pre><code>{{.cache}}</code></pre>
-      </ul>
-    </div>
-  </div>
-  <div class="col-md-3 block">
     <div class="card">
       <div class="card-block">
         <h4 class="card-title">{{t $l "site.admin.status.jobs"}}</h4>
@@ -52,7 +36,12 @@
         {{end}}
       </ul>
     </div>
-  </div>
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">{{t $l "site.admin.status.cache"}}</h4>
+        <p class="card-text"><pre><code>{{.cache}}</code></pre></p>
+      </div>      
+    </div>
 </div>
 {{template "application-footer" .}}
 {{end}}

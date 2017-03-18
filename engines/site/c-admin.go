@@ -238,7 +238,7 @@ func (p *Engine) getAdminLocales(c *gin.Context, lang string, data gin.H) (strin
 		Where("lang = ?", lang).
 		Order("code ASC").Find(&items).Error
 	data["items"] = items
-	return "site-admin-locales", err
+	return "site-admin-locales-index", err
 }
 
 func (p *Engine) deleteAdminLocales(c *gin.Context) (interface{}, error) {
@@ -256,13 +256,13 @@ type fmLocale struct {
 
 func (p *Engine) formAdminLocales(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "buttons.edit")
-	tpl := "site-admin-locale-edit"
+	tpl := "site-admin-locales-edit"
 	if c.Request.Method == http.MethodPost {
 		var fm fmLocale
 		if err := c.Bind(&fm); err != nil {
 			return tpl, err
 		}
-
+		data["code"] = fm.Code
 		if err := p.I18n.Set(lang, fm.Code, fm.Message); err != nil {
 			return tpl, err
 		}
@@ -279,5 +279,6 @@ func (p *Engine) getAdminUsers(c *gin.Context, lang string, data gin.H) (string,
 	err := p.Db.
 		Order("last_sign_in_at DESC").Find(&items).Error
 	data["users"] = items
+	data["title"] = p.I18n.T(lang, "site.admin.users.index.title")
 	return "site-admin-users-index", err
 }

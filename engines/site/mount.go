@@ -13,8 +13,9 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	rt.GET("/dashboard", p.Jwt.MustSignInMiddleware, auth.HTML(p.getDashboard))
 
 	ag := rt.Group("/admin", p.Jwt.MustAdminMiddleware)
-	ag.GET("/locales", auth.HTML(p.formAdminLocales))
-	ag.POST("/locales", auth.HTML(p.formAdminLocales))
+	ag.GET("/locales", auth.HTML(p.getAdminLocales))
+	ag.GET("/locales/edit", auth.HTML(p.formAdminLocales))
+	ag.POST("/locales/edit", auth.HTML(p.formAdminLocales))
 	ag.DELETE("/locales/:id", web.JSON(p.deleteAdminLocales))
 	ag.GET("/users", auth.HTML(p.getAdminUsers))
 

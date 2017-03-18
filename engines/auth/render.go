@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/kapmahc/fly/web"
 	"github.com/spf13/viper"
-
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
