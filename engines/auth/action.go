@@ -52,7 +52,7 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		}
 
 		up, err := web.NewFileSystemUploader(
-			path.Join("public", "attachments"),
+			path.Join("themes", viper.GetString("server.theme"), "public", "attachments"),
 			"/public/attachments",
 		)
 		if err != nil {

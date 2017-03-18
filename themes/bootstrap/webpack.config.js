@@ -4,7 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-const dist = 'assets'
+const dist = path.join('public', 'assets')
 
 module.exports = {
   entry: {

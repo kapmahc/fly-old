@@ -4,7 +4,11 @@
 # Build
 /dist
 
-
 # Editor
 .*.swp
 .*.un~
+
+# Test
+/etc
+/tmp
+/config.toml

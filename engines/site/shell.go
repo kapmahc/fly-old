@@ -611,15 +611,18 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		p.I18n.Middleware,
 		p.Jwt.CurrentUserMiddleware,
 	)
-	rt.Static("/public", "./public")
 	web.Walk(func(en web.Engine) error {
 		en.Mount(rt)
 		return nil
 	})
 
-	// ---------
+	// --------------
+	theme := viper.GetString("server.theme")
+	rt.Static("/public", path.Join("themes", theme, "public"))
 	fm := template.FuncMap{}
-	tpl, err := template.New("").Funcs(fm).ParseGlob("")
+	tpl, err := template.New("").
+		Funcs(fm).
+		ParseGlob(path.Join("themes", theme, "views", "*"))
 	if err != nil {
 		return err
 	}
