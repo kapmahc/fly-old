@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"errors"
 	"net/http"
 	"time"
 
@@ -14,6 +13,8 @@ import (
 )
 
 const (
+	// TOKEN token session key
+	TOKEN = "token"
 	// UID uid key
 	UID = "uid"
 	// CurrentUser current-user key
@@ -42,9 +43,13 @@ func (p *Jwt) Validate(buf []byte) (jwt.Claims, error) {
 	return tk.Claims(), nil
 }
 
-//Parse parse from request
-func (p *Jwt) Parse(r *http.Request) (jwt.Claims, error) {
+func (p *Jwt) parse(r *http.Request) (jwt.Claims, error) {
 	tk, err := jws.ParseJWTFromRequest(r)
+	if err == jws.ErrNoTokenInRequest {
+		if ck, er := r.Cookie(TOKEN); er == nil {
+			tk, err = jws.ParseJWT([]byte(ck.Value))
+		}
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -67,27 +72,33 @@ func (p *Jwt) Sum(cm jws.Claims, exp time.Duration) ([]byte, error) {
 	return jt.Serialize(p.Key)
 }
 
-func (p *Jwt) getUserFromRequest(req *http.Request) (*User, error) {
-	cm, err := p.Parse(req)
+func (p *Jwt) getUserFromRequest(c *gin.Context) (*User, error) {
+	lang := c.MustGet(web.LOCALE).(string)
+
+	cm, err := p.parse(c.Request)
 	if err != nil {
 		return nil, err
 	}
-	user, err := p.Dao.GetUserByUID(cm.Get("uid").(string))
+	user, err := p.Dao.GetUserByUID(cm.Get(UID).(string))
 	if err != nil {
 		return nil, err
 	}
-	if !user.IsConfirm() || user.IsLock() {
-		return nil, errors.New("bad user status")
+	if !user.IsConfirm() {
+		return nil, p.I18n.E(lang, "auth.errors.user-not-confirm")
+	}
+	if user.IsLock() {
+		return nil, p.I18n.E(lang, "auth.errors.user-is-lock")
 	}
 	return user, nil
 }
 
 // CurrentUserMiddleware current-user middleware
 func (p *Jwt) CurrentUserMiddleware(c *gin.Context) {
-	if user, err := p.getUserFromRequest(c.Request); err == nil {
+	if user, err := p.getUserFromRequest(c); err == nil {
 		c.Set(CurrentUser, user)
 		c.Set(IsAdmin, p.Dao.Is(user.ID, RoleAdmin))
 	}
+	c.Next()
 }
 
 // MustSignInMiddleware must-sign-in middleware

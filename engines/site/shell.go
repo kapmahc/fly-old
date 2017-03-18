@@ -618,6 +618,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	// cfg.AllowOrigins = []string{web.Home()}
 	rt.Use(
 		// cors.New(cfg),
+		// sessions.Sessions("_session_", sessions.NewCookieStore([]byte(viper.GetString("secrets.cookie")))),
 		p.I18n.Middleware,
 		p.Jwt.CurrentUserMiddleware,
 	)
@@ -628,9 +629,9 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 
 	// -------------
 	hnd := csrf.Protect(
-		[]byte(viper.GetString("server.csrf")),
+		[]byte(viper.GetString("secrets.csrf")),
 		csrf.Secure(web.IsProduction()),
-		csrf.CookieName("_csrf_token_"),
+		csrf.CookieName("_csrf_"),
 		csrf.Path("/"),
 	)(rt)
 	// ---------------

@@ -269,6 +269,12 @@
 			"revisionTime": "2017-02-11T01:26:11Z"
 		},
 		{
+			"checksumSHA1": "eYo4VDSOOliS3w+XwqxhN/6eK3g=",
+			"path": "github.com/boj/redistore",
+			"revision": "3f631e1df8711f449f7b1796f5b8b7716e4319d0",
+			"revisionTime": "2017-02-28T02:32:00Z"
+		},
+		{
 			"checksumSHA1": "fvVoeETRxg13N2GlxydO+5slZdM=",
 			"path": "github.com/bradfitz/gomemcache/memcache",
 			"revision": "1952afaa557dc08e8e0d89eafab110fb501c1a2b",
@@ -315,6 +321,18 @@
 			"path": "github.com/garyburd/redigo/redis",
 			"revision": "0d253a66e6e1349f4581d6d2b300ee434ee2da9f",
 			"revisionTime": "2017-02-16T21:49:44Z"
+		},
+		{
+			"checksumSHA1": "9w9aiY9/ga/Faix3n5U7jdYxWak=",
+			"path": "github.com/gin-contrib/sessions",
+			"revision": "f98078766c4670ce5aa89e55d5166d3170fb07d3",
+			"revisionTime": "2017-03-15T13:24:27Z"
+		},
+		{
+			"checksumSHA1": "RsNwOto8G8aXIiRrlFn4dtU9q/g=",
+			"path": "github.com/gin-gonic/gin",
+			"revision": "e2212d40c62a98b388a5eb48ecbdcf88534688ba",
+			"revisionTime": "2016-12-04T22:13:08Z"
 		},
 		{
 			"checksumSHA1": "UsILDoIB2S7ra+w2fMdb85mX3HM=",
@@ -387,6 +405,12 @@
 			"path": "github.com/gorilla/securecookie",
 			"revision": "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983",
 			"revisionTime": "2017-02-24T19:38:04Z"
+		},
+		{
+			"checksumSHA1": "qmq72HOuwQQ87E3WKFh/Wl/SE9c=",
+			"path": "github.com/gorilla/sessions",
+			"revision": "ba78acc856fe7c79891d516131b3d903cc8d9367",
+			"revisionTime": "2017-03-07T00:35:30Z"
 		},
 		{
 			"checksumSHA1": "Ok3Csn6Voou7pQT6Dv2mkwpqFtw=",
