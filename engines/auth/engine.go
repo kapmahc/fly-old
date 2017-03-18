@@ -50,6 +50,8 @@ func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
 			&web.Link{Href: "/users/change-password", Label: "auth.users.change-password.title"},
 			nil,
 			&web.Link{Href: "/users/logs", Label: "auth.users.logs.title"},
+			nil,
+			&web.Link{Href: "/attachments", Label: "auth.attachments.index.title"},
 		},
 	}
 }

@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import marked from 'marked'
 import hljs from 'highlight.js'
+import Dropzone from 'dropzone'
 
 require("./main.css");
 
@@ -16,6 +17,15 @@ $.ajaxSetup({
         }
     }
 });
+
+Dropzone.options.myAwesomeDropzone = {
+  init: function() {
+    this.on("sending", function(file, xhr, formData) {
+      alert('aaa');
+      xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+    });
+  }
+};
 
 $(function() {
   // ---------------------
@@ -62,5 +72,7 @@ $(function() {
   $('pre code').each(function(i, block) {
     hljs.highlightBlock(block);
   });
+  // ---------------------
+  
   // ---------------------
 });

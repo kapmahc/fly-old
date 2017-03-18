@@ -15,6 +15,7 @@ module.exports = {
       'bootstrap',
       'marked',
       'highlight.js',
+      'dropzone',
     ],
   },
   output: {

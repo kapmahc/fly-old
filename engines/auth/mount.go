@@ -32,12 +32,11 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	umg.POST("/change-password", HTML(p.formUsersChangePassword))
 	umg.GET("/logs", HTML(p.getUsersLogs))
 	umg.DELETE("/sign-out", web.JSON(p.deleteUsersSignOut))
-	// ---------------
 
-	rt.GET("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.indexAttachments))
-	rt.POST("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.createAttachment))
-	rt.GET("/attachments/:id", web.JSON(p.showAttachment))
-	rt.POST("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.updateAttachment))
+	rt.GET("/attachments", p.Jwt.MustSignInMiddleware, HTML(p.indexAttachments))
+	rt.GET("/attachments/new", p.Jwt.MustSignInMiddleware, HTML(p.newAttachment))
+	// rt.POST("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.createAttachment))
+	// rt.POST("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.updateAttachment))
 	rt.DELETE("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.destroyAttachment))
 
 }

@@ -6,10 +6,9 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) showAttachment(c *gin.Context) (interface{}, error) {
-	var a Attachment
-	err := p.Db.Where("id = ?", c.Param("id")).First(&a).Error
-	return a, err
+func (p *Engine) newAttachment(c *gin.Context, lang string, data gin.H) (string, error) {
+	data["title"] = p.I18n.T(lang, "buttons.upload")
+	return "auth-attachments-new", nil
 }
 
 func (p *Engine) createAttachment(c *gin.Context) (interface{}, error) {
@@ -56,15 +55,21 @@ type fmAttachmentEdit struct {
 	Title string `form:"title" binding:"required,max=255"`
 }
 
-func (p *Engine) updateAttachment(c *gin.Context) (interface{}, error) {
+func (p *Engine) updateAttachment(c *gin.Context, lang string, data gin.H) (string, error) {
 	a := c.MustGet("attachment").(*Attachment)
-	var fm fmAttachmentEdit
+	tpl := "auth-attachments-edit"
+	data["title"] = p.I18n.T(lang, "buttons.edit")
 
-	if err := c.Bind(&fm); err != nil {
-		return nil, err
+	if c.Request.Method == http.MethodPost {
+		var fm fmAttachmentEdit
+		if err := c.Bind(&fm); err != nil {
+			return tpl, err
+		}
+		if err := p.Db.Model(a).Update("title", fm.Title).Error; err != nil {
+			return tpl, err
+		}
 	}
-	err := p.Db.Model(a).Update("title", fm.Title).Error
-	return a, err
+	return tpl, nil
 }
 
 func (p *Engine) destroyAttachment(c *gin.Context) (interface{}, error) {
@@ -75,7 +80,7 @@ func (p *Engine) destroyAttachment(c *gin.Context) (interface{}, error) {
 	}
 	return a, p.Uploader.Remove(a.URL)
 }
-func (p *Engine) indexAttachments(c *gin.Context) (interface{}, error) {
+func (p *Engine) indexAttachments(c *gin.Context, lang string, data gin.H) (string, error) {
 	user := c.MustGet(CurrentUser).(*User)
 	isa := c.MustGet(IsAdmin).(bool)
 	var items []Attachment
@@ -84,7 +89,9 @@ func (p *Engine) indexAttachments(c *gin.Context) (interface{}, error) {
 		qry = qry.Where("user_id = ?", user.ID)
 	}
 	err := qry.Order("updated_at DESC").Find(&items).Error
-	return items, err
+	data["attachments"] = items
+	data["title"] = p.I18n.T(lang, "auth.attachments.index.title")
+	return "auth-attachments-index", err
 }
 
 func (p *Engine) canEditAttachment(c *gin.Context) {

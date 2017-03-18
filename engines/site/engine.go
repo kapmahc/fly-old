@@ -45,8 +45,26 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 }
 
 // Dashboard dashboard
-func (p *Engine) Dashboard(*gin.Context) *web.Dropdown {
-	return nil
+func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
+	if admin, ok := c.Get(auth.IsAdmin); !ok || !admin.(bool) {
+		return nil
+	}
+	return &web.Dropdown{
+		Label: "site.dashboard.title",
+		Links: []*web.Link{
+			&web.Link{Href: "/admin/site/status", Label: "site.admin.status.title"},
+			nil,
+			&web.Link{Href: "/admin/site/info", Label: "site.admin.info.title"},
+			&web.Link{Href: "/admin/site/author", Label: "site.admin.author.title"},
+			&web.Link{Href: "/admin/site/seo", Label: "site.admin.seo.title"},
+			&web.Link{Href: "/admin/site/smtp", Label: "site.admin.smtp.title"},
+			nil,
+			&web.Link{Href: "/admin/users", Label: "site.admin.users.index.title"},
+			&web.Link{Href: "/admin/locales", Label: "site.admin.locales.index.title"},
+			&web.Link{Href: "/admin/notices", Label: "site.notices.index.title"},
+			&web.Link{Href: "/admin/leave-words", Label: "site.leave-words.index.title"},
+		},
+	}
 }
 
 func init() {

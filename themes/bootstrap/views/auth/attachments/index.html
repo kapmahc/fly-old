@@ -1,0 +1,25 @@
+{{define "auth-attachments-index"}}
+{{template "dashboard-header" .}}
+{{template "form-header" .}}
+{{$l := .l}}
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>{{t $l "attributes.name"}}</th>
+      <th>
+        {{t $l "buttons.manage"}}
+        <a href="/attachments/new" target="_blank">{{t $l "buttons.new"}}</a>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .attachments}}
+    <tr>
+      <th scope="row">{{.Title}}</th>
+      <td></td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+{{template "application-footer" .}}
+{{end}}
