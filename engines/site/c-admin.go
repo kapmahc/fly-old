@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/garyburd/redigo/redis"
@@ -26,10 +27,14 @@ func (p *Engine) _osStatus() gin.H {
 		"version":    fmt.Sprintf("%s(%s)", runtime.GOOS, runtime.GOARCH),
 	}
 }
-func (p *Engine) _cacheStatus() (string, error) {
+func (p *Engine) _cacheStatus() ([]string, error) {
 	c := p.Redis.Get()
 	defer c.Close()
-	return redis.String(c.Do("INFO"))
+	sts, err := redis.String(c.Do("INFO"))
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(sts, "\n"), nil
 }
 
 func (p *Engine) _dbStatus() (gin.H, error) {

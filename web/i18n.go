@@ -125,7 +125,9 @@ func (p *I18n) Set(lng string, code, message string) error {
 		l.Message = message
 		err = p.Db.Save(&l).Error
 	}
-
+	if err == nil {
+		p.Cache.Set(p.key(lng, code), message, time.Hour*24)
+	}
 	return err
 }
 

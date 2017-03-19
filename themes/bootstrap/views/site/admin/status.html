@@ -2,7 +2,7 @@
 {{template "dashboard-header" .}}
 {{template "form-header" .}}
 {{$l := .l}}
-<div class="card-columns">
+<div class="card-columns" style="column-count: 2;">
     <div class="card">
       <div class="card-block">
         <h4 class="card-title">{{t $l "site.admin.status.os"}}</h4>
@@ -39,8 +39,13 @@
     <div class="card">
       <div class="card-block">
         <h4 class="card-title">{{t $l "site.admin.status.cache"}}</h4>
-        <p class="card-text"><pre><code>{{.cache}}</code></pre></p>
-      </div>      
+        <p class="card-text"></p>
+      </div>
+      <ul class="list-group list-group-flush">
+        {{range .cache}}
+          <li class="list-group-item list-group-item-action">{{.}}</li>
+        {{end}}
+      </ul>
     </div>
 </div>
 {{template "application-footer" .}}
