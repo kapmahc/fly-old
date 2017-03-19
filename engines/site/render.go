@@ -53,6 +53,21 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 		"asset": func(k string) string {
 			return fmt.Sprintf("/public/assets/%s", assets[k])
 		},
+		"even": func(i interface{}) bool {
+			if i != nil {
+				switch i.(type) {
+				case int:
+					return i.(int)%2 == 0
+				case uint:
+					return i.(uint)%2 == 0
+				case int64:
+					return i.(int64)%2 == 0
+				case uint64:
+					return i.(uint64)%2 == 0
+				}
+			}
+			return false
+		},
 		"fmt": fmt.Sprintf,
 		"eq": func(arg1, arg2 interface{}) bool {
 			return arg1 == arg2
