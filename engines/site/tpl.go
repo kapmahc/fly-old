@@ -30,7 +30,7 @@ const (
 		proxy_buffers 16 64k;
 		proxy_buffer_size 128k;
 		server_name {{.Name}};
-		root {{.Root}}/public;
+		root {{.Root}};
 		index index.html;
 		access_log /var/log/nginx/{{.Name}}.access.log;
 		error_log /var/log/nginx/{{.Name}}.error.log;
@@ -59,7 +59,7 @@ const (
 			proxy_set_header Host $http_host;
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_redirect off;
-			proxy_pass http://{{.Name}}_prod/$2$is_args$args;
+			proxy_pass http://{{.Name}}_prod;
 			# limit_req zone=one;
 		}
 

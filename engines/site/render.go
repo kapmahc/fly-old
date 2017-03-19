@@ -51,6 +51,9 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 			return reflect.TypeOf(v).String()
 		},
 		"asset": func(k string) string {
+			if web.IsProduction() {
+				return fmt.Sprintf("/assets/%s", assets[k])
+			}
 			return fmt.Sprintf("/public/assets/%s", assets[k])
 		},
 		"even": func(i interface{}) bool {

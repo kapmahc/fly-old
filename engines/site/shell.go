@@ -323,7 +323,7 @@ func (p *Engine) generateNginxConf(*cli.Context) error {
 	}{
 		Name:    name,
 		Port:    viper.GetInt("server.port"),
-		Root:    pwd,
+		Root:    path.Join(pwd, "themes", viper.GetString("server.theme"), "public"),
 		Version: "v1",
 		Ssl:     viper.GetBool("server.ssl"),
 	})
