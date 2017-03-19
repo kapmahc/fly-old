@@ -1,0 +1,12 @@
+{{define "forum-articles-show"}}
+{{template "application-header" .}}
+{{template "form-header" .}}
+<p>{{.item.Summary}}</p>
+<p>
+  {{range .item.Tags}}
+  <a href="/forum/tags/show/{{.ID}}" target="_blank" class="blank">{{.Name}}</a>
+  {{end}}
+</p>
+<p class="markdown">{{.item.Body}}</p>
+{{template "application-footer" .}}
+{{end}}

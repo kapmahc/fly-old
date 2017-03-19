@@ -63,6 +63,12 @@ func (p *Engine) createArticle(c *gin.Context, lang string, data gin.H) (string,
 	data["title"] = p.I18n.T(lang, "forum.articles.new.title")
 	tpl := "forum-articles-new"
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
+	var tags []Tag
+	if err := p.Db.Select([]string{"id", "name"}).Find(&tags).Error; err != nil {
+		return tpl, err
+	}
+	data["tags"] = tags
+
 	if c.Request.Method == http.MethodPost {
 		var fm fmArticle
 		if err := c.Bind(&fm); err != nil {
@@ -96,11 +102,6 @@ func (p *Engine) createArticle(c *gin.Context, lang string, data gin.H) (string,
 		return "", nil
 	}
 
-	var tags []Tag
-	if err := p.Db.Select([]string{"id", "name"}).Find(&tags).Error; err != nil {
-		return tpl, err
-	}
-	data["tags"] = tags
 	return tpl, nil
 }
 
@@ -112,15 +113,13 @@ func (p *Engine) showArticle(c *gin.Context, lang string, data gin.H) (string, e
 		return tpl, err
 	}
 	data["title"] = a.Title
-
 	if err := p.Db.Model(&a).Related(&a.Comments).Error; err != nil {
 		return tpl, err
 	}
-
 	if err := p.Db.Model(&a).Association("Tags").Find(&a.Tags).Error; err != nil {
 		return tpl, err
 	}
-
+	data["item"] = a
 	return tpl, nil
 }
 
@@ -128,6 +127,21 @@ func (p *Engine) updateArticle(c *gin.Context, lang string, data gin.H) (string,
 	data["title"] = p.I18n.T(lang, "buttons.edit")
 	tpl := "forum-articles-edit"
 	a := c.MustGet("article").(*Article)
+	if err := p.Db.Model(a).Association("Tags").Find(&a.Tags).Error; err != nil {
+		return tpl, err
+	}
+	var tags []Tag
+	if err := p.Db.Select([]string{"id", "name"}).Find(&tags).Error; err != nil {
+		return tpl, err
+	}
+	var ids []interface{}
+	for _, t := range a.Tags {
+		ids = append(ids, t.ID)
+	}
+	data["ids"] = ids
+	data["tags"] = tags
+	data["article"] = a
+
 	if c.Request.Method == http.MethodPost {
 		var fm fmArticle
 		if err := c.Bind(&fm); err != nil {
@@ -161,11 +175,6 @@ func (p *Engine) updateArticle(c *gin.Context, lang string, data gin.H) (string,
 		return "", nil
 	}
 
-	var tags []Tag
-	if err := p.Db.Select([]string{"id", "name"}).Find(&tags).Error; err != nil {
-		return tpl, err
-	}
-	data["tags"] = tags
 	return tpl, nil
 }
 

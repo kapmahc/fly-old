@@ -1,0 +1,17 @@
+{{define "forum-articles-index"}}
+{{template "application-header" .}}
+{{template "form-header" .}}
+{{template "pagination" .pager}}
+<div class="card-columns">
+  {{range .pager.Items}}
+  <div class="card">
+    <div class="card-block">
+      <h4 class="card-title"><a href="/forum/articles/show/{{.ID}}" target="_blank">{{.Title}}</a></h4>
+      <p class="card-text">{{.Summary}}</p>
+    </div>
+  </div>
+  {{end}}
+</div>
+{{template "pagination" .pager}}
+{{template "application-footer" .}}
+{{end}}
