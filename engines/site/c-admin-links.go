@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	linksLocs  = []interface{}{"top"}
+	linkLocs   = []interface{}{"top"}
 	sortOrders = []interface{}{}
 )
 
@@ -38,7 +38,7 @@ type fmLink struct {
 
 func (p *Engine) createAdminLink(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "buttons.new")
-	data["locs"] = linksLocs
+	data["locs"] = linkLocs
 	data["sortOrders"] = sortOrders
 	tpl := "site-admin-links-new"
 	if c.Request.Method == http.MethodPost {
@@ -63,7 +63,7 @@ func (p *Engine) createAdminLink(c *gin.Context, lang string, data gin.H) (strin
 
 func (p *Engine) updateAdminLink(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "buttons.edit")
-	data["locs"] = linksLocs
+	data["locs"] = linkLocs
 	data["sortOrders"] = sortOrders
 	tpl := "site-admin-links-edit"
 	id := c.Param("id")

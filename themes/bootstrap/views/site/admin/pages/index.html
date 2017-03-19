@@ -7,12 +7,10 @@
     <tr>
       <th>{{t $l "attributes.sortOrder"}}</th>
       <th>{{t $l "attributes.loc"}}</th>
-      <th>{{t $l "attributes.label"}}</th>
-      <th>{{t $l "attributes.href"}}</th>
-      <th>{{t $l "attributes.picture"}}</th>
-      <th>{{t $l "attributes.summary"}}</th>
+      <th>{{t $l "attributes.demo"}}</th>
       <th width="12%">
         {{t $l "buttons.manage"}}
+        <a href="/admin/pages/new">{{t $l "buttons.new"}}</a>
       </th>
     </tr>
   </thead>
@@ -21,15 +19,21 @@
     <tr>
       <th scope="row">{{.SortOrder}}</th>
       <td>{{.Loc}}</td>
-      <td>{{.Label}}</td>
-      <td>{{.Href}}</td>
-      <td>{{.Logo}}</td>
-      <td>{{.Summary}}</td>
+      <td>
+        <div class="card" style="width: 20rem;">
+          <img class="card-img-top" src="{{.Logo}}" alt="{{.Logo}}">
+          <div class="card-block">
+            <h4 class="card-title">
+              <a target="_blank" href="{{.Href}}">{{.Title}}</a>
+            </h4>
+            <p class="card-text">{{.Summary}}</p>
+          </div>
+        </div>
+      </td>
       <td>
         <div class="btn-group btn-group-sm" role="group">
-          <a target="_blank" class="btn btn-info" href="/forum/articles/show/{{.ID}}">{{t $l "buttons.view"}}</a>
-          <a class="btn btn-warning" href="/forum/articles/edit/{{.ID}}">{{t $l "buttons.edit"}}</a>
-          <a class="btn btn-danger" data-method="delete" data-next="/forum/articles/my" data-confirm="{{t $l "are-you-sure"}}" href="/forum/articles/{{.ID}}">{{t $.l "buttons.remove"}}</a>
+          <a class="btn btn-warning" href="/admin/pages/edit/{{.ID}}">{{t $l "buttons.edit"}}</a>
+          <a class="btn btn-danger" data-method="delete" data-next="/admin/pages" data-confirm="{{t $l "are-you-sure"}}" href="/admin/pages/{{.ID}}">{{t $.l "buttons.remove"}}</a>
         </div>
       </td>
     </tr>

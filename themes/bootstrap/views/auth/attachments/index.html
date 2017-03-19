@@ -17,9 +17,8 @@
     {{range .attachments}}
     <tr>
       <th scope="row">
-        <a href="{{.URL}}" target="_blank">{{.Title}}</a>
-        {{$img := starts .MediaType "image"}}
-        <a class="clipboard" data-clipboard-text="{{if $img }}!{{end}}[{{.Title}}]({{.URL}})">
+        <a href="{{.URL}}" target="_blank">{{.Title}}</a>        
+        <a class="clipboard" data-clipboard-text="{{.URL}}">
           <img width="24" src="{{asset "clippy.svg"}}" alt="{{t $l "auth.attachments.index.copy-toclip-board"}}">
         </a>
       </th>

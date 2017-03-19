@@ -7,6 +7,10 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
+var (
+	pageLocs = []interface{}{"carousel", "circle", "square"}
+)
+
 func (p *Engine) indexAdminPages(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "site.admin.pages.index.title")
 	tpl := "site-admin-pages-index"
@@ -29,6 +33,8 @@ type fmPage struct {
 
 func (p *Engine) createAdminPage(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "buttons.new")
+	data["locs"] = pageLocs
+	data["sortOrders"] = sortOrders
 	tpl := "site-admin-pages-new"
 	if c.Request.Method == http.MethodPost {
 		var fm fmPage
@@ -54,6 +60,8 @@ func (p *Engine) createAdminPage(c *gin.Context, lang string, data gin.H) (strin
 
 func (p *Engine) updateAdminPage(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "buttons.edit")
+	data["locs"] = pageLocs
+	data["sortOrders"] = sortOrders
 	tpl := "site-admin-pages-edit"
 	id := c.Param("id")
 
