@@ -2,6 +2,7 @@ package blog
 
 import (
 	"bufio"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
@@ -15,25 +16,30 @@ const (
 	MARKDOWN = ".md"
 )
 
-func (p *Engine) indexPosts(c *gin.Context) (interface{}, error) {
-	data, err := p.getPosts(c.MustGet(web.LOCALE).(string))
-	return data, err
+func (p *Engine) indexPosts(c *gin.Context, lang string, data gin.H) (string, error) {
+	items, err := p.getPosts(c.MustGet(web.LOCALE).(string))
+	data["items"] = items
+	data["title"] = p.I18n.T(lang, "blog.index.title")
+	return "blog-index", err
 }
 
-func (p *Engine) showPost(c *gin.Context) (interface{}, error) {
+func (p *Engine) showPost(c *gin.Context, lang string, data gin.H) (string, error) {
 	href := c.Param("href")[1:]
+	tpl := "blog-show"
 	posts, err := p.getPosts(c.MustGet(web.LOCALE).(string))
 	if err != nil {
-		return nil, err
+		return tpl, err
 	}
-
 	for _, i := range posts {
 		if i.Href == href {
-			return i, nil
+			data["body"] = i.Body
+			data["title"] = i.Title
+			return tpl, nil
 		}
 	}
 
-	return Post{Href: href}, nil
+	c.AbortWithStatus(http.StatusNotFound)
+	return "", nil
 }
 
 // -------------

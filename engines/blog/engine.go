@@ -42,7 +42,7 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		for _, i := range posts {
 			urls = append(
 				urls,
-				stm.URL{"loc": "/blogs/" + i.Href},
+				stm.URL{"loc": "/blog/" + i.Href},
 			)
 		}
 
