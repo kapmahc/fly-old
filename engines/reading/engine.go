@@ -5,6 +5,7 @@ import (
 
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 	"golang.org/x/tools/blog/atom"
 	gin "gopkg.in/gin-gonic/gin.v1"
@@ -14,6 +15,7 @@ import (
 type Engine struct {
 	Db   *gorm.DB  `inject:""`
 	I18n *web.I18n `inject:""`
+	Jwt  *auth.Jwt `inject:""`
 }
 
 // RegisterWorker register worker
@@ -45,7 +47,15 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 }
 
 // Dashboard dashboard
-func (p *Engine) Dashboard(*gin.Context) *web.Dropdown {
+func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
+	if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
+		return &web.Dropdown{
+			Label: "reading.dashboard.title",
+			Links: []*web.Link{
+				&web.Link{Href: "/reading/admin/books", Label: "reading.admin.books.index.title"},
+			},
+		}
+	}
 	return nil
 }
 

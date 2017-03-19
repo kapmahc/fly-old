@@ -5,7 +5,6 @@ import (
 
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
-
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
