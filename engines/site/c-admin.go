@@ -1,99 +1,11 @@
 package site
 
 import (
-	"fmt"
 	"net/http"
-	"runtime"
-	"strings"
-	"time"
 
-	"github.com/garyburd/redigo/redis"
 	"github.com/kapmahc/fly/web"
-	"github.com/spf13/viper"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
-
-func (p *Engine) _osStatus() gin.H {
-	var mem runtime.MemStats
-	runtime.ReadMemStats(&mem)
-	return gin.H{
-		"go version": runtime.Version(),
-		"go root":    runtime.GOROOT(),
-		"go runtime": runtime.NumGoroutine(),
-		"go last gc": time.Unix(int64(mem.LastGC), 0).String(),
-		"cpu":        runtime.NumCPU(),
-		"memory":     fmt.Sprintf("%dM/%dM", mem.Alloc/1024/1024, mem.Sys/1024/1024),
-		"now":        time.Now(),
-		"version":    fmt.Sprintf("%s(%s)", runtime.GOOS, runtime.GOARCH),
-	}
-}
-func (p *Engine) _cacheStatus() ([]string, error) {
-	c := p.Redis.Get()
-	defer c.Close()
-	sts, err := redis.String(c.Do("INFO"))
-	if err != nil {
-		return nil, err
-	}
-	return strings.Split(sts, "\n"), nil
-}
-
-func (p *Engine) _dbStatus() (gin.H, error) {
-	val := gin.H{}
-	switch viper.GetString("database.driver") {
-	case postgresqlDriver:
-		// http://blog.javachen.com/2014/04/07/some-metrics-in-postgresql.html
-		row := p.Db.Raw("select pg_size_pretty(pg_database_size('postgres'))").Row()
-		var size string
-		row.Scan(&size)
-		val["size"] = size
-		if rows, err := p.Db.
-			Raw("select pid,current_timestamp - least(query_start,xact_start) AS runtime,substr(query,1,25) AS current_query from pg_stat_activity where not pid=pg_backend_pid()").
-			Rows(); err == nil {
-			defer rows.Close()
-			for rows.Next() {
-				var pid int
-				var ts time.Time
-				var qry string
-				row.Scan(&pid, &ts, &qry)
-				val[fmt.Sprintf("pid-%d", pid)] = fmt.Sprintf("%s (%v)", ts.Format("15:04:05.999999"), qry)
-			}
-		} else {
-			return nil, err
-		}
-		val["url"] = fmt.Sprintf(
-			"%s://%s@%s:%d/%s",
-			viper.GetString("database.driver"),
-			viper.GetString("database.args.user"),
-			viper.GetString("database.args.host"),
-			viper.GetInt("database.args.port"),
-			viper.GetString("database.args.dbname"),
-		)
-
-	}
-	return val, nil
-}
-
-func (p *Engine) _jobsStatus() gin.H {
-	return gin.H{
-		"tasks": p.Server.GetRegisteredTaskNames(),
-	}
-}
-func (p *Engine) getAdminSiteStatus(c *gin.Context, lang string, data gin.H) (string, error) {
-	tpl := "site-admin-status"
-	data["title"] = p.I18n.T(lang, "site.admin.status.title")
-	data["os"] = p._osStatus()
-	data["jobs"] = p._jobsStatus()
-	var err error
-	data["cache"], err = p._cacheStatus()
-	if err != nil {
-		return tpl, err
-	}
-	data["database"], err = p._dbStatus()
-	if err != nil {
-		return tpl, err
-	}
-	return tpl, nil
-}
 
 type fmSiteInfo struct {
 	Title       string `form:"title"`
