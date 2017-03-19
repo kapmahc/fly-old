@@ -9,6 +9,7 @@ import (
 
 var (
 	pageLocs = []interface{}{"carousel", "circle", "square"}
+	defLogo  = "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
 )
 
 func (p *Engine) indexAdminPages(c *gin.Context, lang string, data gin.H) (string, error) {
@@ -26,6 +27,7 @@ type fmPage struct {
 	Title     string `form:"title" binding:"required,max=255"`
 	Href      string `form:"href" binding:"required,max=255"`
 	Loc       string `form:"loc" binding:"required,max=16"`
+	Action    string `form:"action" binding:"required,max=32"`
 	Logo      string `form:"logo" binding:"required,max=255"`
 	Summary   string `form:"summary" binding:"required,max=2048"`
 	SortOrder int    `form:"sortOrder"`
@@ -48,6 +50,7 @@ func (p *Engine) createAdminPage(c *gin.Context, lang string, data gin.H) (strin
 			Summary:   fm.Summary,
 			Logo:      fm.Logo,
 			Href:      fm.Href,
+			Action:    fm.Action,
 			SortOrder: fm.SortOrder,
 		}).Error; err != nil {
 			return tpl, err
@@ -84,6 +87,7 @@ func (p *Engine) updateAdminPage(c *gin.Context, lang string, data gin.H) (strin
 				"sort_order": fm.SortOrder,
 				"title":      fm.Title,
 				"summary":    fm.Summary,
+				"action":     fm.Action,
 				"logo":       fm.Logo,
 			}).Error; err != nil {
 			return tpl, err

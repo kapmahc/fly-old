@@ -32,6 +32,7 @@ type Page struct {
 	Logo      string
 	Title     string
 	Summary   string
+	Action    string
 	Loc       string
 	SortOrder int
 }

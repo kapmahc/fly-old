@@ -90,14 +90,14 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 		},
 		"links": func(loc string) []web.Link {
 			var items []web.Link
-			if err := p.Db.Order("sort_order DESC").Find(&items).Error; err != nil {
+			if err := p.Db.Where("loc = ?", loc).Order("sort_order DESC").Find(&items).Error; err != nil {
 				log.Error(err)
 			}
 			return items
 		},
 		"pages": func(loc string) []web.Page {
 			var items []web.Page
-			if err := p.Db.Order("sort_order DESC").Find(&items).Error; err != nil {
+			if err := p.Db.Where("loc = ?", loc).Order("sort_order DESC").Find(&items).Error; err != nil {
 				log.Error(err)
 			}
 			return items

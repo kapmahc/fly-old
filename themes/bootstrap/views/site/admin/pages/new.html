@@ -27,6 +27,10 @@
     <textarea class="form-control" id="summary" name="summary" rows="3"></textarea>
   </div>
   <div class="form-group">
+    <label for="action">{{t .l "attributes.action"}}</label>
+    <input type="text" class="form-control" id="action" name="action">
+  </div>
+  <div class="form-group">
     <label for="sortOrder">{{t .l "attributes.sortOrder"}}</label>
     <select class="form-control" id="sortOrder" name="sortOrder">
       {{range .sortOrders}}
