@@ -15,15 +15,15 @@
     </tr>
   </thead>
   <tbody>
-    {{range .links}}
+    {{range .items}}
     <tr>
       <th scope="row">{{.SortOrder}}</th>
       <td>{{.Loc}}</td>
       <td><a href="{{.Href}}" target="_blank">{{t $l .Label}}</a></td>
       <td>
         <div class="btn-group btn-group-sm" role="group">
-          <a class="btn btn-warning" href="/forum/articles/edit/{{.ID}}">{{t $l "buttons.edit"}}</a>
-          <a class="btn btn-danger" data-method="delete" data-next="/forum/articles/my" data-confirm="{{t $l "are-you-sure"}}" href="/forum/articles/{{.ID}}">{{t $.l "buttons.remove"}}</a>
+          <a class="btn btn-warning" href="/admin/links/edit/{{.ID}}">{{t $l "buttons.edit"}}</a>
+          <a class="btn btn-danger" data-method="delete" data-next="/admin/links" data-confirm="{{t $l "are-you-sure"}}" href="/admin/links/{{.ID}}">{{t $.l "buttons.remove"}}</a>
         </div>
       </td>
     </tr>

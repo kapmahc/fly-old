@@ -7,6 +7,17 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
+var (
+	linksLocs  = []interface{}{"top"}
+	sortOrders = []interface{}{}
+)
+
+func init() {
+	for i := -10; i <= 10; i++ {
+		sortOrders = append(sortOrders, i)
+	}
+}
+
 func (p *Engine) indexAdminLinks(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "site.admin.links.index.title")
 	tpl := "site-admin-links-index"
@@ -27,6 +38,8 @@ type fmLink struct {
 
 func (p *Engine) createAdminLink(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "buttons.new")
+	data["locs"] = linksLocs
+	data["sortOrders"] = sortOrders
 	tpl := "site-admin-links-new"
 	if c.Request.Method == http.MethodPost {
 		var fm fmLink
@@ -42,7 +55,7 @@ func (p *Engine) createAdminLink(c *gin.Context, lang string, data gin.H) (strin
 		}).Error; err != nil {
 			return tpl, err
 		}
-		c.JSON(http.StatusFound, "/admin/links")
+		c.Redirect(http.StatusFound, "/admin/links")
 		return "", nil
 	}
 	return tpl, nil
@@ -50,6 +63,8 @@ func (p *Engine) createAdminLink(c *gin.Context, lang string, data gin.H) (strin
 
 func (p *Engine) updateAdminLink(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "buttons.edit")
+	data["locs"] = linksLocs
+	data["sortOrders"] = sortOrders
 	tpl := "site-admin-links-edit"
 	id := c.Param("id")
 
@@ -74,7 +89,7 @@ func (p *Engine) updateAdminLink(c *gin.Context, lang string, data gin.H) (strin
 			}).Error; err != nil {
 			return tpl, err
 		}
-		c.JSON(http.StatusFound, "/admin/links")
+		c.Redirect(http.StatusFound, "/admin/links")
 		return "", nil
 	}
 

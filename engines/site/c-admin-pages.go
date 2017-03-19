@@ -46,7 +46,7 @@ func (p *Engine) createAdminPage(c *gin.Context, lang string, data gin.H) (strin
 		}).Error; err != nil {
 			return tpl, err
 		}
-		c.JSON(http.StatusFound, "/admin/pages")
+		c.Redirect(http.StatusFound, "/admin/pages")
 		return "", nil
 	}
 	return tpl, nil
@@ -80,7 +80,7 @@ func (p *Engine) updateAdminPage(c *gin.Context, lang string, data gin.H) (strin
 			}).Error; err != nil {
 			return tpl, err
 		}
-		c.JSON(http.StatusFound, "/admin/pages")
+		c.Redirect(http.StatusFound, "/admin/pages")
 		return "", nil
 	}
 
