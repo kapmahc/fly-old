@@ -14,13 +14,27 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	rt.GET("/dashboard", p.Jwt.MustSignInMiddleware, auth.HTML(p.getDashboard))
 
 	ag := rt.Group("/admin", p.Jwt.MustAdminMiddleware)
+
 	ag.GET("/locales", auth.HTML(p.getAdminLocales))
 	ag.GET("/locales/edit", auth.HTML(p.formAdminLocales))
 	ag.POST("/locales/edit", auth.HTML(p.formAdminLocales))
 	ag.DELETE("/locales/:id", web.JSON(p.deleteAdminLocales))
+
 	ag.GET("/users", auth.HTML(p.getAdminUsers))
-	ag.GET("/links", auth.HTML(p.getAdminLinks))
-	ag.GET("/pages", auth.HTML(p.getAdminPages))
+
+	ag.GET("/links", auth.HTML(p.indexAdminLinks))
+	ag.GET("/links/new", auth.HTML(p.createAdminLink))
+	ag.POST("/links/new", auth.HTML(p.createAdminLink))
+	ag.GET("/links/edit/:id", auth.HTML(p.updateAdminLink))
+	ag.POST("/links/edit/:id", auth.HTML(p.updateAdminLink))
+	ag.DELETE("/links/:id", web.JSON(p.destroyAdminLink))
+
+	ag.GET("/pages", auth.HTML(p.indexAdminPages))
+	ag.GET("/pages/new", auth.HTML(p.createAdminPage))
+	ag.POST("/pages/new", auth.HTML(p.createAdminPage))
+	ag.GET("/pages/edit/:id", auth.HTML(p.updateAdminPage))
+	ag.POST("/pages/edit/:id", auth.HTML(p.updateAdminPage))
+	ag.DELETE("/pages/:id", web.JSON(p.destroyAdminPage))
 
 	asg := ag.Group("/site")
 	asg.GET("/status", auth.HTML(p.getAdminSiteStatus))

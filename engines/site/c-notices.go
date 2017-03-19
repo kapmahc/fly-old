@@ -50,6 +50,13 @@ func (p *Engine) updateNotice(c *gin.Context, lang string, data gin.H) (string, 
 	data["title"] = p.I18n.T(lang, "buttons.edit")
 	tpl := "site-notices-form"
 	id := c.Param("id")
+
+	var n Notice
+	if err := p.Db.Where("id = ?", id).First(&n).Error; err != nil {
+		return tpl, err
+	}
+	data["body"] = n.Body
+
 	if c.Request.Method == http.MethodPost {
 		var fm fmNotice
 		if err := c.Bind(&fm); err != nil {
@@ -67,11 +74,6 @@ func (p *Engine) updateNotice(c *gin.Context, lang string, data gin.H) (string, 
 		data[web.NOTICE] = p.I18n.T(lang, "success")
 	}
 
-	var n Notice
-	if err := p.Db.Where("id = ?", id).First(&n).Error; err != nil {
-		return tpl, err
-	}
-	data["body"] = n.Body
 	return tpl, nil
 }
 
