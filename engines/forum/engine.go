@@ -31,7 +31,27 @@ func (p *Engine) Shell() []cli.Command {
 
 // Atom rss.atom
 func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
-	return []*atom.Entry{}, nil
+	var items []*atom.Entry
+
+	var articles []Article
+	if err := p.Db.
+		Select([]string{"id", "title", "summary", "updated_at"}).
+		Order("updated_at DESC").Limit(12).
+		Find(&articles).Error; err != nil {
+		return nil, err
+	}
+	for _, a := range articles {
+		items = append(items, &atom.Entry{
+			Title: a.Title,
+			Link: []atom.Link{
+				{Href: fmt.Sprintf("%s/forum/articles/show/%d", web.Home(), a.ID)},
+			},
+			ID:        fmt.Sprintf("forum-articles-%d", a.ID),
+			Published: atom.Time(a.UpdatedAt),
+			Summary:   &atom.Text{Body: a.Summary},
+		})
+	}
+	return items, nil
 }
 
 // Sitemap sitemap.xml.gz
