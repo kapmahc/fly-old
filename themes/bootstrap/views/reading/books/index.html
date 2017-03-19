@@ -1,0 +1,27 @@
+{{define "reading-books-index"}}
+{{template "application-header" .}}
+{{template "form-header" .}}
+{{$l := .l}}
+<div class="card-columns">
+  {{range .pager.Items}}
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title"><a href="/reading/books/{{.ID}}">{{.Title}}</a></h4>
+        <p class="card-text">
+          {{.Author}}
+        </p>
+      </div>
+      <ul class="list-group list-group-flush">
+        {{if .Subject}}<li class="list-group-item">{{.Subject}}</li>{{end}}
+        {{if .Publisher}}<li class="list-group-item">{{.Publisher}}</li>{{end}}
+        {{if .Description}}<li class="list-group-item">{{.Description}}</li>{{end}}
+        {{if .PublishedAt}}<li class="list-group-item">{{df .PublishedAt}}</li>{{end}}
+      </ul>
+      <div class="card-block">
+        <a href="/reading/books/{{.ID}}" target="_blank" class="btn btn-primary">{{t $l "buttons.view"}}</a>
+      </div>
+    </div>
+  {{end}}
+</div>
+{{template "application-footer" .}}
+{{end}}

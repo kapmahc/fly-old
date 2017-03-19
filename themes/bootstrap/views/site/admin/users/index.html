@@ -16,14 +16,10 @@
     <tr>
       <th scope="row">{{.Name}}&lt;{{.Email}}&gt;</th>
       <th scope="row">
-        {{if .LastSignInAt}}
-          {{dtf .LastSignInAt}} [{{.LastSignInIP}}]
-        {{end}}
+        {{dtf .LastSignInAt}} [{{.LastSignInIP}}]
       </th>
       <th scope="row">
-        {{if .CurrentSignInAt}}
-          {{dtf .CurrentSignInAt}} [{{.CurrentSignInIP}}]
-        {{end}}
+        {{dtf .CurrentSignInAt}} [{{.CurrentSignInIP}}]
       </th>
       <td>
       </td>

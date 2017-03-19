@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"html/template"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"path"
 	"strings"
@@ -16,10 +16,12 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) indexBooks(c *gin.Context) (interface{}, error) {
+func (p *Engine) indexBooks(c *gin.Context, lang string, data gin.H) (string, error) {
+	data["title"] = p.I18n.T(lang, "reading.books.index.title")
+	tpl := "reading-books-index"
 	var total int64
 	if err := p.Db.Model(&Book{}).Count(&total).Error; err != nil {
-		return nil, err
+		return tpl, err
 	}
 	pag := web.NewPagination(c.Request, total)
 
@@ -27,34 +29,37 @@ func (p *Engine) indexBooks(c *gin.Context) (interface{}, error) {
 	if err := p.Db.
 		Limit(pag.Limit()).Offset(pag.Offset()).
 		Find(&books).Error; err != nil {
-		return nil, err
+		return tpl, err
 	}
 	for _, b := range books {
 		pag.Items = append(pag.Items, b)
 	}
-	return pag, nil
+	data["pager"] = pag
+	return tpl, nil
 }
 
-func (p *Engine) showBook(c *gin.Context) (interface{}, error) {
+func (p *Engine) showBook(c *gin.Context, lang string, data gin.H) (string, error) {
 	id := c.Param("id")
+	tpl := "reading-books-show"
 	var buf bytes.Buffer
 	it, bk, err := p.readBook(id)
-	if err == nil {
-		// c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")
-		p.writePoints(
-			&buf,
-			fmt.Sprintf("%s/reading/pages/%s", web.Home(), id),
-			bk.Ncx.Points,
-		)
+	if err != nil {
+		return tpl, err
 	}
-	return gin.H{
-		"book": it,
-		"home": buf.String(),
-	}, nil
+
+	// c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")
+	p.writePoints(
+		&buf,
+		fmt.Sprintf("%s/reading/pages/%s", web.Home(), id),
+		bk.Ncx.Points,
+	)
+	data["homeage"] = template.HTML(buf.String())
+	data["book"] = it
+	data["title"] = it.Title
+	return tpl, nil
 }
 
 func (p *Engine) showPage(c *gin.Context) {
-	log.Printf("%+v\n", c.Params)
 	err := p.readBookPage(c.Writer, c.Param("id"), c.Param("href")[1:])
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())

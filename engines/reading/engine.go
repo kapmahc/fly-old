@@ -12,7 +12,8 @@ import (
 
 // Engine engine
 type Engine struct {
-	Db *gorm.DB `inject:""`
+	Db   *gorm.DB  `inject:""`
+	I18n *web.I18n `inject:""`
 }
 
 // RegisterWorker register worker

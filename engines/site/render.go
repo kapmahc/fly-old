@@ -60,8 +60,33 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 		"str2htm": func(s string) template.HTML {
 			return template.HTML(s)
 		},
-		"dtf": func(t time.Time) string {
-			return t.Format("Mon Jan _2 15:04:05 2006")
+		"dtf": func(t interface{}) string {
+			if t != nil {
+				f := "Mon Jan _2 15:04:05 2006"
+				switch t.(type) {
+				case time.Time:
+					return t.(time.Time).Format(f)
+				case *time.Time:
+					if t != (*time.Time)(nil) {
+						return t.(*time.Time).Format(f)
+					}
+				}
+			}
+			return ""
+		},
+		"df": func(t interface{}) string {
+			if t != nil {
+				f := "Mon Jan _2 2006"
+				switch t.(type) {
+				case time.Time:
+					return t.(time.Time).Format(f)
+				case *time.Time:
+					if t != (*time.Time)(nil) {
+						return t.(*time.Time).Format(f)
+					}
+				}
+			}
+			return ""
 		},
 		"links": func(loc string) []web.Link {
 			var items []web.Link
