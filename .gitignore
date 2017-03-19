@@ -3,6 +3,7 @@
 
 # Build
 /dist
+/dist.tar.bz2
 
 # Editor
 .*.swp
