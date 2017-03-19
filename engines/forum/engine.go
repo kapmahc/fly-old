@@ -47,7 +47,7 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		return nil, err
 	}
 	for _, a := range articles {
-		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/articles/%d", a.ID)})
+		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/articles/show/%d", a.ID)})
 	}
 
 	var tags []Tag
@@ -55,14 +55,33 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		return nil, err
 	}
 	for _, t := range tags {
-		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/tags/%d", t.ID)})
+		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/tags/show/%d", t.ID)})
 	}
 	return urls, nil
 }
 
 // Dashboard dashboard
-func (p *Engine) Dashboard(*gin.Context) *web.Dropdown {
-	return nil
+func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
+	if _, ok := c.Get(auth.CurrentUser); !ok {
+		return nil
+	}
+	dd := web.Dropdown{
+		Label: "forum.dashboard.title",
+		Links: []*web.Link{
+			&web.Link{Href: "/forum/articles/new", Label: "forum.articles.new.title"},
+			nil,
+			&web.Link{Href: "/forum/articles/my", Label: "forum.articles.my.title"},
+			&web.Link{Href: "/forum/comments/my", Label: "forum.comments.my.title"},
+		},
+	}
+	if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
+		dd.Links = append(
+			dd.Links,
+			nil,
+			&web.Link{Href: "/forum/tags?act=manage", Label: "forum.tags.index.title"},
+		)
+	}
+	return &dd
 }
 
 func init() {
