@@ -6,11 +6,14 @@
     {{if .}}
       <div class="col-md-12 block">
         <h3>{{t $l .Label}}</h3>
-        <hr />
+        <hr />        
         <div class="btn-group" role="group">
           {{range .Links}}
             {{if .}}
               <a class="btn btn-secondary" href="{{.Href}}">{{t $l .Label}}</a>
+            {{else}}
+              </div>
+              <div class="btn-group" role="group">
             {{end}}
           {{end}}
         </div>
