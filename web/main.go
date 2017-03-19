@@ -5,10 +5,9 @@ import (
 	"os"
 	"sort"
 
-	"golang.org/x/text/language"
-
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
+	"golang.org/x/text/language"
 )
 
 var (
@@ -24,7 +23,7 @@ func Main() error {
 	app := cli.NewApp()
 	app.Name = os.Args[0]
 	app.Version = fmt.Sprintf("%s(%s)", Version, BuildTime)
-	app.Usage = "FLY - A complete open source e-commerce solution by the Go language and React."
+	app.Usage = "FLY - A complete open source e-commerce solution by the Go language."
 	app.EnableBashCompletion = true
 	app.Commands = []cli.Command{}
 

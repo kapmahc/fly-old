@@ -1,6 +1,6 @@
 # fly
 
-A complete open source e-commerce solution for the Go language and React.
+A complete open source e-commerce solution for the Go language.
 
 ## Install go
 
@@ -65,4 +65,3 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   - [gin](https://github.com/gin-gonic/gin)
   - [viper](https://github.com/spf13/viper)
   - [validator](https://godoc.org/gopkg.in/go-playground/validator.v9)
-  
