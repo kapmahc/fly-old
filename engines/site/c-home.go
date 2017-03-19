@@ -6,3 +6,8 @@ func (p *Engine) getDashboard(c *gin.Context, lang string, data gin.H) (string, 
 	data["title"] = p.I18n.T(lang, "header.dashboard")
 	return "site-dashboard", nil
 }
+
+func (p *Engine) getHome(c *gin.Context, lang string, data gin.H) (string, error) {
+	data["title"] = p.I18n.T(lang, "header.home")
+	return "site-home", nil
+}

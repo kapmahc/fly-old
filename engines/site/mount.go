@@ -8,6 +8,7 @@ import (
 
 // Mount web mount-points
 func (p *Engine) Mount(rt *gin.Engine) {
+	rt.GET("/", auth.HTML(p.getHome))
 	rt.GET("/install", auth.HTML(p.formInstall))
 	rt.POST("/install", auth.HTML(p.formInstall))
 	rt.GET("/dashboard", p.Jwt.MustSignInMiddleware, auth.HTML(p.getDashboard))
@@ -18,6 +19,8 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	ag.POST("/locales/edit", auth.HTML(p.formAdminLocales))
 	ag.DELETE("/locales/:id", web.JSON(p.deleteAdminLocales))
 	ag.GET("/users", auth.HTML(p.getAdminUsers))
+	ag.GET("/links", auth.HTML(p.getAdminLinks))
+	ag.GET("/pages", auth.HTML(p.getAdminPages))
 
 	asg := ag.Group("/site")
 	asg.GET("/status", auth.HTML(p.getAdminSiteStatus))
@@ -29,7 +32,6 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	asg.POST("/seo", auth.HTML(p.formAdminSiteSeo))
 	asg.GET("/smtp", auth.HTML(p.formAdminSiteSMTP))
 	asg.POST("/smtp", auth.HTML(p.formAdminSiteSMTP))
-	// ----------------
 
 	rt.GET("/notices", auth.HTML(p.indexNotices))
 	rt.GET("/notices/new", p.Jwt.MustAdminMiddleware, auth.HTML(p.createNotice))
