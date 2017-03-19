@@ -88,9 +88,10 @@ type fmCommentEdit struct {
 }
 
 func (p *Engine) updateComment(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "forum.comments.edit.title")
+	data["title"] = p.I18n.T(lang, "buttons.edit")
 	tpl := "forum-comments-edit"
 	cm := c.MustGet("comment").(*Comment)
+	data["item"] = cm
 
 	switch c.Request.Method {
 	case http.MethodPost:
@@ -108,7 +109,6 @@ func (p *Engine) updateComment(c *gin.Context, lang string, data gin.H) (string,
 		c.Redirect(http.StatusFound, fmt.Sprintf("/forum/articles/show/%d", cm.ArticleID))
 		return "", nil
 	}
-	data["item"] = cm
 	return tpl, nil
 }
 

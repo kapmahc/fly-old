@@ -7,6 +7,14 @@
   <a href="/forum/tags/show/{{.ID}}" target="_blank" class="blank">{{.Name}}</a>
   {{end}}
 </p>
-<p class="markdown">{{.item.Body}}</p>
+<p class="markdown block">{{.item.Body}}</p>
+<h3>
+  {{t .l "forum.comments.index.title"}}
+  {{if .currentUser}}
+    <a class="btn btn-link" href="/forum/comments/new?articleId={{.item.ID}}">{{t .l "buttons.new"}}</a>
+  {{end}}
+</h3>
+<hr/>
+{{template "forum-comments-list" .item.Comments}}
 {{template "application-footer" .}}
 {{end}}

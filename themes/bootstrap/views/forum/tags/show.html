@@ -1,17 +1,6 @@
 {{define "forum-tags-show"}}
 {{template "application-header" .}}
 {{template "form-header" .}}
-<div class="card-columns">
-  {{range .item.Articles}}
-  <div class="card">
-    <div class="card-block">
-      <h4 class="card-title"><a href="/forum/articles/show/{{.ID}}" target="_blank">{{.Title}}</a></h4>
-      <p class="card-text">
-        {{.Summary}}
-      </p>
-    </div>
-  </div>
-  {{end}}
-</div>
+{{template "forum-articles-list" .item.Articles}}
 {{template "application-footer" .}}
 {{end}}
