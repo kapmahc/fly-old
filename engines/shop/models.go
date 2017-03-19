@@ -189,8 +189,9 @@ func (Payment) TableName() string {
 // Zone zone
 type Zone struct {
 	web.Model
-	Name   string  `json:"name"`
-	States []State `json:"states"`
+	Name            string           `json:"name"`
+	States          []State          `json:"states"`
+	ShippingMethods []ShippingMethod `json:"shippingMethods" gorm:"many2many:shop_zones_shipping_methods;"`
 }
 
 // TableName table name
@@ -230,8 +231,10 @@ type ShippingMethod struct {
 	web.Model
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	ZoneID      uint   `json:"zoneID"`
-	Zone        Zone   `json:"zone"`
+	Logo        string `json:"logo"`
+	Tracking    string `json:"tracking"`
+	Active      bool   `json:"active"`
+	Zones       []Zone `json:"zones" gorm:"many2many:shop_zones_shipping_methods;"`
 }
 
 // TableName table name

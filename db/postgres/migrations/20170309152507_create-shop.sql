@@ -122,6 +122,7 @@ CREATE TABLE shop_payment_methods(
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 CREATE INDEX idx_shop_payment_methods_type ON shop_payment_methods (type);
+CREATE INDEX idx_shop_payment_methods_name ON shop_payment_methods (name);
 
 CREATE TABLE shop_payments(
   id SERIAL PRIMARY KEY,
@@ -165,13 +166,20 @@ CREATE UNIQUE INDEX idx_shop_states_country_name ON shop_states(country_id, name
 CREATE TABLE shop_shipping_methods(
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  tracking VARCHAR(255) NOT NULL,
+  logo VARCHAR(255) NOT NULL,
+  active BOOLEAN NOT NULL,
   description TEXT NOT NULL,
-  zone_id BIGINT NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
-CREATE UNIQUE INDEX shop_shipping_methods_name ON shop_shipping_methods(name);
+CREATE INDEX shop_shipping_methods_name ON shop_shipping_methods(name);
 
+CREATE TABLE shop_zones_shipping_methods (
+  shipping_method_id BIGINT NOT NULL,
+  zone_id     BIGINT NOT NULL,
+  PRIMARY KEY (shipping_method_id, zone_id)
+);
 
 CREATE TABLE shop_shipments(
   id SERIAL PRIMARY KEY,
@@ -234,6 +242,7 @@ DROP TABLE shop_chargebacks;
 DROP TABLE shop_return_inventory_units;
 DROP TABLE shop_return_authorizations;
 DROP TABLE shop_shipments;
+DROP TABLE shop_zones_shipping_methods;
 DROP TABLE shop_shipping_methods;
 DROP TABLE shop_states;
 DROP TABLE shop_countries;
