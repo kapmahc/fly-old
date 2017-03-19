@@ -41,21 +41,25 @@ func (p *Engine) createTag(c *gin.Context, lang string, data gin.H) (string, err
 		if err := p.Db.Create(&t).Error; err != nil {
 			return tpl, err
 		}
+		c.Redirect(http.StatusFound, "/forum/tags")
+		return "", nil
 	}
 	return tpl, nil
 }
 
 func (p *Engine) showTag(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "forum.tags.show.title")
+
 	tpl := "forum-tags-show"
 	var tag Tag
 	if err := p.Db.Where("id = ?", c.Param("id")).First(&tag).Error; err != nil {
 		return tpl, err
 	}
+	data["title"] = tag.Name
 
 	if err := p.Db.Model(&tag).Association("Articles").Find(&tag.Articles).Error; err != nil {
 		return tpl, err
 	}
+	data["item"] = tag
 	return tpl, nil
 }
 
@@ -63,23 +67,27 @@ func (p *Engine) updateTag(c *gin.Context, lang string, data gin.H) (string, err
 	data["title"] = p.I18n.T(lang, "buttons.edit")
 	tpl := "forum-tags-edit"
 	id := c.Param("id")
+
+	var tag Tag
+	if err := p.Db.Where("id = ?", id).First(&tag).Error; err != nil {
+		return tpl, err
+	}
+	data["name"] = tag.Name
+
 	switch c.Request.Method {
-	case http.MethodGet:
-		var tag Tag
-		if err := p.Db.Where("id = ?", id).First(&tag).Error; err != nil {
-			return tpl, err
-		}
-		data["name"] = tag.Name
 	case http.MethodPost:
 		var fm fmTag
 		if err := c.Bind(&fm); err != nil {
 			return tpl, err
 		}
+
 		if err := p.Db.Model(&Tag{}).Where("id = ?", id).Update("name", fm.Name).Error; err != nil {
 			return tpl, err
 		}
-		data["name"] = fm.Name
+		c.Redirect(http.StatusFound, "/forum/tags")
+		return "", nil
 	}
+
 	return tpl, nil
 }
 
