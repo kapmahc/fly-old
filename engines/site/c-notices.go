@@ -3,23 +3,22 @@ package site
 import (
 	"net/http"
 
-	"github.com/kapmahc/fly/engines/auth"
-	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
+
+func (p *Engine) indexAdminNotices(c *gin.Context, lang string, data gin.H) (string, error) {
+	var items []Notice
+	err := p.Db.Order("updated_at DESC").Find(&items).Error
+	data["items"] = items
+	data["title"] = p.I18n.T(lang, "site.notices.index.title")
+	return "site-notices-manage", err
+}
 
 func (p *Engine) indexNotices(c *gin.Context, lang string, data gin.H) (string, error) {
 	var items []Notice
 	err := p.Db.Order("updated_at DESC").Find(&items).Error
 	data["items"] = items
 	data["title"] = p.I18n.T(lang, "site.notices.index.title")
-	if c.Request.URL.Query().Get("act") == "manage" {
-		if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
-			return "site-notices-manage", err
-		}
-		c.AbortWithStatus(http.StatusForbidden)
-		return "", nil
-	}
 	return "site-notices-index", err
 }
 
@@ -40,7 +39,8 @@ func (p *Engine) createNotice(c *gin.Context, lang string, data gin.H) (string, 
 		if err := p.Db.Create(&n).Error; err != nil {
 			return tpl, err
 		}
-		data[web.NOTICE] = p.I18n.T(lang, "success")
+		c.Redirect(http.StatusFound, "/admin/notices")
+		return "", nil
 	}
 	return tpl, nil
 }
@@ -70,7 +70,8 @@ func (p *Engine) updateNotice(c *gin.Context, lang string, data gin.H) (string, 
 			}).Error; err != nil {
 			return tpl, err
 		}
-		data[web.NOTICE] = p.I18n.T(lang, "success")
+		c.Redirect(http.StatusFound, "/admin/notices")
+		return "", nil
 	}
 
 	return tpl, nil

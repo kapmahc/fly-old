@@ -8,6 +8,14 @@ import (
 
 // Mount web mount-points
 func (p *Engine) Mount(rt *gin.Engine) {
+	ag := rt.Group("/forum/admin", p.Jwt.MustAdminMiddleware)
+	ag.GET("/tags", auth.HTML(p.indexAdminTags))
+	ag.GET("/tags/new", auth.HTML(p.createTag))
+	ag.POST("/tags/new", auth.HTML(p.createTag))
+	ag.GET("/tags/edit/:id", auth.HTML(p.updateTag))
+	ag.POST("/tags/edit/:id", auth.HTML(p.updateTag))
+	ag.DELETE("/tags/:id", web.JSON(p.destroyTag))
+
 	fg := rt.Group("/forum")
 	fg.GET("/articles", auth.HTML(p.indexArticles))
 	fg.GET("/articles/new", p.Jwt.MustSignInMiddleware, auth.HTML(p.createArticle))
@@ -18,12 +26,7 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	fg.DELETE("/articles/:id", p.Jwt.MustSignInMiddleware, p.canEditArticle, web.JSON(p.destroyArticle))
 
 	fg.GET("/tags", auth.HTML(p.indexTags))
-	fg.GET("/tags/new", p.Jwt.MustAdminMiddleware, auth.HTML(p.createTag))
-	fg.POST("/tags/new", p.Jwt.MustAdminMiddleware, auth.HTML(p.createTag))
 	fg.GET("/tags/show/:id", auth.HTML(p.showTag))
-	fg.GET("/tags/edit/:id", p.Jwt.MustAdminMiddleware, auth.HTML(p.updateTag))
-	fg.POST("/tags/edit/:id", p.Jwt.MustAdminMiddleware, auth.HTML(p.updateTag))
-	fg.DELETE("/tags/:id", p.Jwt.MustAdminMiddleware, web.JSON(p.destroyTag))
 
 	fg.GET("/comments", auth.HTML(p.indexComments))
 	fg.GET("/comments/new", p.Jwt.MustSignInMiddleware, auth.HTML(p.createComment))

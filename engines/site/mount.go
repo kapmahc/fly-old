@@ -36,6 +36,13 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	ag.POST("/pages/edit/:id", auth.HTML(p.updateAdminPage))
 	ag.DELETE("/pages/:id", web.JSON(p.destroyAdminPage))
 
+	ag.GET("/notices", auth.HTML(p.indexAdminNotices))
+	ag.GET("/notices/new", auth.HTML(p.createNotice))
+	ag.POST("/notices/new", auth.HTML(p.createNotice))
+	ag.GET("/notices/edit/:id", auth.HTML(p.updateNotice))
+	ag.POST("/notices/edit/:id", auth.HTML(p.updateNotice))
+	ag.DELETE("/notices/:id", web.JSON(p.destroyNotice))
+
 	asg := ag.Group("/site")
 	asg.GET("/status", auth.HTML(p.getAdminSiteStatus))
 	asg.GET("/info", auth.HTML(p.formAdminSiteInfo))
@@ -48,11 +55,6 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	asg.POST("/smtp", auth.HTML(p.formAdminSiteSMTP))
 
 	rt.GET("/notices", auth.HTML(p.indexNotices))
-	rt.GET("/notices/new", p.Jwt.MustAdminMiddleware, auth.HTML(p.createNotice))
-	rt.POST("/notices/new", p.Jwt.MustAdminMiddleware, auth.HTML(p.createNotice))
-	rt.GET("/notices/edit/:id", p.Jwt.MustAdminMiddleware, auth.HTML(p.updateNotice))
-	rt.POST("/notices/edit/:id", p.Jwt.MustAdminMiddleware, auth.HTML(p.updateNotice))
-	rt.DELETE("/notices/:id", p.Jwt.MustAdminMiddleware, web.JSON(p.destroyNotice))
 
 	rt.GET("/leave-words", p.Jwt.MustAdminMiddleware, auth.HTML(p.indexLeaveWords))
 	rt.GET("/leave-words/new", auth.HTML(p.createLeaveWord))

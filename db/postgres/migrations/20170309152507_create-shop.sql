@@ -39,8 +39,8 @@ CREATE TABLE shop_products (
 );
 
 CREATE TABLE shop_products_catalogs (
-  catalog_id BIGINT REFERENCES shop_catalogs,
-  product_id     BIGINT REFERENCES shop_products,
+  catalog_id BIGINT REFERENCES shop_catalogs ON DELETE CASCADE,
+  product_id     BIGINT REFERENCES shop_products ON DELETE CASCADE,
   PRIMARY KEY (product_id, catalog_id)
 );
 
@@ -209,8 +209,8 @@ CREATE TABLE shop_shipping_methods(
 CREATE INDEX shop_shipping_methods_name ON shop_shipping_methods(name);
 
 CREATE TABLE shop_zones_shipping_methods (
-  shipping_method_id BIGINT REFERENCES shop_shipping_methods,
-  zone_id     BIGINT REFERENCES shop_zones,
+  shipping_method_id BIGINT REFERENCES shop_shipping_methods ON DELETE CASCADE,
+  zone_id     BIGINT REFERENCES shop_zones ON DELETE CASCADE,
   PRIMARY KEY (shipping_method_id, zone_id)
 );
 

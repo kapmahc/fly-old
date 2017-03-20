@@ -3,9 +3,19 @@ package forum
 import (
 	"net/http"
 
-	"github.com/kapmahc/fly/engines/auth"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
+
+func (p *Engine) indexAdminTags(c *gin.Context, lang string, data gin.H) (string, error) {
+	data["title"] = p.I18n.T(lang, "forum.tags.index.title")
+	tpl := "forum-tags-manage"
+	var tags []Tag
+	if err := p.Db.Order("updated_at DESC").Find(&tags).Error; err != nil {
+		return tpl, err
+	}
+	data["items"] = tags
+	return tpl, nil
+}
 
 func (p *Engine) indexTags(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "forum.tags.index.title")
@@ -15,13 +25,6 @@ func (p *Engine) indexTags(c *gin.Context, lang string, data gin.H) (string, err
 		return tpl, err
 	}
 	data["items"] = tags
-	if c.Request.URL.Query().Get("act") == "manage" {
-		if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
-			return "forum-tags-manage", nil
-		}
-		c.AbortWithStatus(http.StatusForbidden)
-		return "", nil
-	}
 	return tpl, nil
 }
 
@@ -41,7 +44,7 @@ func (p *Engine) createTag(c *gin.Context, lang string, data gin.H) (string, err
 		if err := p.Db.Create(&t).Error; err != nil {
 			return tpl, err
 		}
-		c.Redirect(http.StatusFound, "/forum/tags")
+		c.Redirect(http.StatusFound, "/forum/admin/tags")
 		return "", nil
 	}
 	return tpl, nil
@@ -84,7 +87,7 @@ func (p *Engine) updateTag(c *gin.Context, lang string, data gin.H) (string, err
 		if err := p.Db.Model(&Tag{}).Where("id = ?", id).Update("name", fm.Name).Error; err != nil {
 			return tpl, err
 		}
-		c.Redirect(http.StatusFound, "/forum/tags")
+		c.Redirect(http.StatusFound, "/forum/admin/tags")
 		return "", nil
 	}
 

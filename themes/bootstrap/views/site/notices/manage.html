@@ -9,7 +9,7 @@
       <th>{{t $l "attributes.body"}}</th>
       <th>
         {{t $l "buttons.manage"}}
-        <a href="/notices/new">{{t $l "buttons.new"}}</a>
+        <a href="/admin/notices/new">{{t $l "buttons.new"}}</a>
       </th>
     </tr>
   </thead>
@@ -22,8 +22,8 @@
       </td>
       <td>
         <div class="btn-group btn-group-sm" role="group">
-          <a class="btn btn-warning" href="/notices/edit/{{.ID}}">{{t $.l "buttons.edit"}}</a>
-          <a class="btn btn-danger" data-method="delete" data-next="/notices?act=manage" data-confirm="{{t $l "are-you-sure"}}" href="/notices/{{.ID}}">{{t $.l "buttons.remove"}}</a>
+          <a class="btn btn-warning" href="/admin/notices/edit/{{.ID}}">{{t $.l "buttons.edit"}}</a>
+          <a class="btn btn-danger" data-method="delete" data-next="/admin/notices" data-confirm="{{t $l "are-you-sure"}}" href="/admin/notices/{{.ID}}">{{t $.l "buttons.remove"}}</a>
         </div>
       </td>
     </tr>

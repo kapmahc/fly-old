@@ -25,8 +25,8 @@ CREATE UNIQUE INDEX idx_forum_tags_name
   ON forum_tags (name);
 
 CREATE TABLE forum_articles_tags (
-  article_id BIGINT REFERENCES forum_articles,
-  tag_id     BIGINT REFERENCES forum_tags,
+  article_id BIGINT REFERENCES forum_articles ON DELETE CASCADE,
+  tag_id     BIGINT REFERENCES forum_tags ON DELETE CASCADE,
   PRIMARY KEY (article_id, tag_id)
 );
 

@@ -98,7 +98,7 @@ func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
 		dd.Links = append(
 			dd.Links,
 			nil,
-			&web.Link{Href: "/forum/tags?act=manage", Label: "forum.tags.index.title"},
+			&web.Link{Href: "/forum/admin/tags", Label: "forum.tags.index.title"},
 		)
 	}
 	return &dd

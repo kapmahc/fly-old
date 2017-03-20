@@ -9,7 +9,7 @@
       <th>{{t $l "attributes.name"}}</th>
       <th>
         {{t $l "buttons.manage"}}
-        <a href="/forum/tags/new">{{t $l "buttons.new"}}</a>
+        <a href="/forum/admin/tags/new">{{t $l "buttons.new"}}</a>
       </th>
     </tr>
   </thead>
@@ -23,8 +23,8 @@
       <td>
         <div class="btn-group btn-group-sm" role="group">
           <a target="_blank" class="btn btn-info" href="/forum/tags/show/{{.ID}}">{{t $l "buttons.view"}}</a>
-          <a class="btn btn-warning" href="/forum/tags/edit/{{.ID}}">{{t $l "buttons.edit"}}</a>
-          <a class="btn btn-danger" data-method="delete" data-next="/forum/tags?act=manage" data-confirm="{{t $l "are-you-sure"}}" href="/forum/tags/{{.ID}}">{{t $.l "buttons.remove"}}</a>
+          <a class="btn btn-warning" href="/forum/admin/tags/edit/{{.ID}}">{{t $l "buttons.edit"}}</a>
+          <a class="btn btn-danger" data-method="delete" data-next="/forum/admin/tags" data-confirm="{{t $l "are-you-sure"}}" href="/forum/admin/tags/{{.ID}}">{{t $.l "buttons.remove"}}</a>
         </div>
       </td>
     </tr>
