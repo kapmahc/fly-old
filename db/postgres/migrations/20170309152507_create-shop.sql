@@ -171,6 +171,7 @@ CREATE INDEX idx_shop_payments_state ON shop_payments(state);
 CREATE TABLE shop_zones(
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  active BOOLEAN NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
@@ -189,7 +190,6 @@ CREATE TABLE shop_states(
   name VARCHAR(255) NOT NULL,
   country_id BIGINT NOT NULL,
   zone_id BIGINT NOT NULL,
-  active BOOLEAN NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

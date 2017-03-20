@@ -1,0 +1,18 @@
+{{define "erp-zones-edit"}}
+{{template "dashboard-header" .}}
+{{template "form-header" .}}
+<form method="post">
+  <div class="form-group">
+    <label for="name">{{t .l "attributes.name"}}</label>
+    <input type="text" class="form-control" value="{{.item.Name}}" id="name" name="name">
+  </div>  
+  <div class="form-check">
+    <label class="form-check-label">
+      <input value="true" name="active" id="active" type="checkbox" class="form-check-input"{{if .item.Active}}checked{{end}}>
+      {{t .l "attributes.active"}}
+    </label>
+  </div>
+  {{template "form-buttons" .}}
+</form>
+{{template "application-footer" .}}
+{{end}}

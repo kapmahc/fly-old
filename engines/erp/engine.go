@@ -15,6 +15,7 @@ type Engine struct {
 	Db   *gorm.DB  `inject:""`
 	I18n *web.I18n `inject:""`
 	Jwt  *auth.Jwt `inject:""`
+	Dao  *Dao      `inject:""`
 }
 
 // RegisterWorker register worker
@@ -47,7 +48,7 @@ func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
 		Links: []*web.Link{
 			&web.Link{Href: "/erp/shipping-methods", Label: "erp.shipping-methods.index.title"},
 			&web.Link{Href: "/erp/payment-methods", Label: "erp.payment-methods.index.title"},
-			&web.Link{Href: "/erp/zones", Label: "erp.zones.index.title"},
+			&web.Link{Href: "/erp/states", Label: "erp.zones.index.title"},
 			nil,
 			&web.Link{Href: "/erp/products", Label: "erp.products.index.title"},
 			nil,

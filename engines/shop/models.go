@@ -240,7 +240,8 @@ func (Address) TableName() string {
 // Zone zone
 type Zone struct {
 	web.Model
-	Name            string           `json:"name"`
+	Name            string `json:"name"`
+	Active          bool
 	States          []State          `json:"states"`
 	ShippingMethods []ShippingMethod `json:"shippingMethods" gorm:"many2many:shop_zones_shipping_methods;"`
 }
@@ -265,8 +266,7 @@ func (Country) TableName() string {
 // State state
 type State struct {
 	web.Model
-	Name      string `json:"name"`
-	Active    bool
+	Name      string  `json:"name"`
 	CountryID uint    `json:"countryId"`
 	Country   Country `json:"country"`
 	ZoneID    uint    `json:"zoneID"`

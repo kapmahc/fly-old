@@ -42,7 +42,8 @@ func (p *Engine) initStates() error {
 		return err
 	}
 	na := Zone{
-		Name: "North America",
+		Name:   "North America",
+		Active: true,
 	}
 	if err := p.Db.Create(&na).Error; err != nil {
 		return err
@@ -71,7 +72,6 @@ func (p *Engine) initStates() error {
 			Name:      s,
 			CountryID: usa.ID,
 			ZoneID:    na.ID,
-			Active:    true,
 		}).Error; err != nil {
 			return err
 		}
