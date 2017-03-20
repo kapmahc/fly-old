@@ -16,4 +16,11 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	ag.GET("/payment-methods/edit/:id", auth.HTML(p.updatePaymentMethod))
 	ag.POST("/payment-methods/edit/:id", auth.HTML(p.updatePaymentMethod))
 	ag.DELETE("/payment-methods/:id", web.JSON(p.destroyPaymentMethod))
+
+	ag.GET("/shipping-methods", auth.HTML(p.indexShippingMethods))
+	ag.GET("/shipping-methods/new", auth.HTML(p.createShippingMethod))
+	ag.POST("/shipping-methods/new", auth.HTML(p.createShippingMethod))
+	ag.GET("/shipping-methods/edit/:id", auth.HTML(p.updateShippingMethod))
+	ag.POST("/shipping-methods/edit/:id", auth.HTML(p.updateShippingMethod))
+	ag.DELETE("/shipping-methods/:id", web.JSON(p.destroyShippingMethod))
 }
