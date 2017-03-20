@@ -1,7 +1,7 @@
 -- +goose Up
 -- SQL in section 'Up' is executed when this migration is applied
 CREATE TABLE locales (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   code VARCHAR(255) NOT NULL,
   lang VARCHAR(8) NOT NULL DEFAULT 'en-US',
   message TEXT NOT NULL,

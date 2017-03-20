@@ -1,7 +1,7 @@
 -- +goose Up
 -- SQL in section 'Up' is executed when this migration is applied
 CREATE TABLE users (
-  id                 SERIAL PRIMARY KEY,
+  id                 BIGSERIAL PRIMARY KEY,
   name               VARCHAR(32)                 NOT NULL,
   email              VARCHAR(255)                NOT NULL,
   uid                VARCHAR(36)                 NOT NULL,
@@ -35,7 +35,7 @@ CREATE INDEX idx_users_provider_type
 
 
 CREATE TABLE logs (
-  id         SERIAL PRIMARY KEY,
+  id         BIGSERIAL PRIMARY KEY,
   user_id    BIGINT                      NOT NULL,
   type       VARCHAR(8)                  NOT NULL DEFAULT 'info',
   ip         INET                        NOT NULL,
@@ -46,7 +46,7 @@ CREATE INDEX idx_logs_type
   ON logs (type);
 
 CREATE TABLE roles (
-  id            SERIAL PRIMARY KEY,
+  id            BIGSERIAL PRIMARY KEY,
   name          VARCHAR(32)                 NOT NULL,
   resource_id   BIGINT,
   resource_type VARCHAR(255),
@@ -61,7 +61,7 @@ CREATE INDEX idx_roles_resource_type
   ON roles (resource_type);
 
 CREATE TABLE policies (
-  id         SERIAL PRIMARY KEY,
+  id         BIGSERIAL PRIMARY KEY,
   user_id    BIGINT                      NOT NULL,
   role_id    BIGINT                      NOT NULL,
   start_up   DATE                        NOT NULL DEFAULT current_date,
@@ -74,7 +74,7 @@ CREATE UNIQUE INDEX idx_policies
 
 
 CREATE TABLE votes (
-  id            SERIAL PRIMARY KEY,
+  id            BIGSERIAL PRIMARY KEY,
   resource_type VARCHAR(255)                NOT NULL,
   resource_id   BIGINT                      NOT NULL,
   point         INT                         NOT NULL DEFAULT 0,
@@ -88,7 +88,7 @@ CREATE INDEX idx_votes_resource_type
 
 
 CREATE TABLE attachments (
-  id            SERIAL PRIMARY KEY,
+  id            BIGSERIAL PRIMARY KEY,
   title         VARCHAR(255)                NOT NULL,
   url           VARCHAR(255)                NOT NULL,
   length        INT                         NOT NULL,

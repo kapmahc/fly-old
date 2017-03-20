@@ -2,14 +2,14 @@
 -- SQL in section 'Up' is executed when this migration is applied
 
 CREATE TABLE leave_words (
-  id         SERIAL PRIMARY KEY,
+  id         BIGSERIAL PRIMARY KEY,
   body       TEXT                        NOT NULL,
   type       VARCHAR(8)                  NOT NULL DEFAULT 'markdown',
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now()
 );
 
 CREATE TABLE notices (
-  id         SERIAL PRIMARY KEY,
+  id         BIGSERIAL PRIMARY KEY,
   body       TEXT                        NOT NULL,
   type       VARCHAR(8)                  NOT NULL DEFAULT 'markdown',
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
@@ -17,7 +17,7 @@ CREATE TABLE notices (
 );
 
 CREATE TABLE links (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   href VARCHAR(255) NOT NULL,
   label VARCHAR(255) NOT NULL,
   loc VARCHAR(16) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE links (
 CREATE INDEX idx_links_loc ON links (loc);
 
 CREATE TABLE pages (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   summary VARCHAR(2048) NOT NULL,
   action VARCHAR(32) NOT NULL,

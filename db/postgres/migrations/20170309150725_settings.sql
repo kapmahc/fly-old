@@ -1,7 +1,7 @@
 -- +goose Up
 -- SQL in section 'Up' is executed when this migration is applied
 CREATE TABLE settings (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   key VARCHAR(255) NOT NULL,
   val BYTEA NOT NULL,
   encode BOOLEAN NOT NULL DEFAULT FALSE,

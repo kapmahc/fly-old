@@ -1,7 +1,7 @@
 -- +goose Up
 -- SQL in section 'Up' is executed when this migration is applied
 CREATE TABLE shop_stores (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   address VARCHAR(255) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE shop_stores (
 );
 
 CREATE TABLE shop_journals (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   action VARCHAR(255) NOT NULL,
   quantity BIGINT NOT NULL,
   store_id BIGINT NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE shop_journals (
 );
 
 CREATE TABLE shop_stocks (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   quantity BIGINT NOT NULL,
   store_id BIGINT NOT NULL,
   variant_id  BIGINT NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE shop_stocks (
 );
 
 CREATE TABLE shop_catalogs (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   parent_id BIGINT,
@@ -41,7 +41,7 @@ CREATE TABLE shop_catalogs (
 );
 
 CREATE TABLE shop_vendors (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
@@ -49,7 +49,7 @@ CREATE TABLE shop_vendors (
 );
 
 CREATE TABLE shop_products (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   vendor_id BIGINT NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE shop_products_catalogs (
 );
 
 CREATE TABLE shop_variants(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   sku VARCHAR(64) NOT NULL,
   product_id BIGINT NOT NULL,
   price NUMERIC(12,2) NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE shop_variants(
 CREATE UNIQUE INDEX idx_shop_variants_sku ON shop_variants (sku);
 
 CREATE TABLE shop_properties (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   key VARCHAR(255) NOT NULL,
   val VARCHAR(2048) NOT NULL,
   variant_id BIGINT NOT NULL,
@@ -91,7 +91,7 @@ CREATE INDEX idx_shop_properties_key ON shop_properties (key);
 
 
 CREATE TABLE shop_addresses (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   first_name VARCHAR(32) NOT NULL,
   middle_name VARCHAR(32) NOT NULL,
   last_name VARCHAR(32) NOT NULL,
@@ -115,7 +115,7 @@ CREATE INDEX idx_shop_addresses_country ON shop_addresses(country);
 CREATE INDEX idx_shop_addresses_phone ON shop_addresses(phone);
 
 CREATE TABLE shop_orders(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   number VARCHAR(128) NOT NULL,
   item_total NUMERIC(12,2) NOT NULL,
   adjustment_total NUMERIC(12,2) NOT NULL,
@@ -134,7 +134,7 @@ CREATE INDEX idx_shop_orders_payment_state ON shop_orders (payment_state);
 CREATE INDEX idx_shop_orders_shipment_state ON shop_orders (shipment_state);
 
 CREATE TABLE shop_line_items(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   price NUMERIC(12,2) NOT NULL,
   quantity INT NOT NULL,
   variant_id BIGINT NOT NULL,
@@ -144,7 +144,7 @@ CREATE TABLE shop_line_items(
 );
 
 CREATE TABLE shop_payment_methods(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   type VARCHAR(16) NOT NULL,
   name VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
@@ -156,7 +156,7 @@ CREATE INDEX idx_shop_payment_methods_type ON shop_payment_methods (type);
 CREATE INDEX idx_shop_payment_methods_name ON shop_payment_methods (name);
 
 CREATE TABLE shop_payments(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   amount NUMERIC(12,2) NOT NULL,
   order_id BIGINT NOT NULL,
   payment_method_id BIGINT NOT NULL,
@@ -169,7 +169,7 @@ CREATE TABLE shop_payments(
 CREATE INDEX idx_shop_payments_state ON shop_payments(state);
 
 CREATE TABLE shop_zones(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   active BOOLEAN NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
@@ -178,7 +178,7 @@ CREATE TABLE shop_zones(
 CREATE UNIQUE INDEX idx_shop_zones_name ON shop_zones(name);
 
 CREATE TABLE shop_countries(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
@@ -186,7 +186,7 @@ CREATE TABLE shop_countries(
 CREATE UNIQUE INDEX idx_shop_countries_name ON shop_countries(name);
 
 CREATE TABLE shop_states(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   country_id BIGINT NOT NULL,
   zone_id BIGINT NOT NULL,
@@ -196,7 +196,7 @@ CREATE TABLE shop_states(
 CREATE UNIQUE INDEX idx_shop_states_country_name ON shop_states(country_id, name);
 
 CREATE TABLE shop_shipping_methods(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   tracking VARCHAR(255) NOT NULL,
   logo VARCHAR(255) NOT NULL,
@@ -214,7 +214,7 @@ CREATE TABLE shop_zones_shipping_methods (
 );
 
 CREATE TABLE shop_shipments(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   number VARCHAR(255) NOT NULL,
   tracking VARCHAR(255) NOT NULL,
   cost NUMERIC(12,2) NOT NULL,
@@ -230,7 +230,7 @@ CREATE UNIQUE INDEX shop_shipments_number ON shop_shipments(number);
 CREATE INDEX shop_shipments_state ON shop_shipments(state);
 
 CREATE TABLE shop_return_authorizations(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   number VARCHAR(255) NOT NULL,
   state VARCHAR(16) NOT NULL,
   amount NUMERIC(12,2) NOT NULL,
@@ -245,7 +245,7 @@ CREATE UNIQUE INDEX shop_return_authorizations_number ON shop_return_authorizati
 CREATE INDEX shop_return_authorizations_state ON shop_return_authorizations(state);
 
 CREATE TABLE shop_return_inventory_units(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   state VARCHAR(16) NOT NULL,
   quantity INT NOT NULL,
   variant_id BIGINT NOT NULL,
@@ -258,7 +258,7 @@ CREATE TABLE shop_return_inventory_units(
 CREATE INDEX shop_return_inventory_units_state ON shop_return_inventory_units(state);
 
 CREATE TABLE shop_chargebacks(
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   state VARCHAR(16) NOT NULL,
   amount NUMERIC(12,2) NOT NULL,
   order_id BIGINT NOT NULL,

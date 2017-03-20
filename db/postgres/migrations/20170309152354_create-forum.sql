@@ -1,7 +1,7 @@
 -- +goose Up
 -- SQL in section 'Up' is executed when this migration is applied
 CREATE TABLE forum_articles (
-  id         SERIAL PRIMARY KEY,
+  id         BIGSERIAL PRIMARY KEY,
   user_id    BIGINT                      NOT NULL,
   title      VARCHAR(255)                NOT NULL,
   summary    VARCHAR(800)                NOT NULL,
@@ -16,7 +16,7 @@ CREATE INDEX idx_forum_type
   ON forum_articles (type);
 
 CREATE TABLE forum_tags (
-  id         SERIAL PRIMARY KEY,
+  id         BIGSERIAL PRIMARY KEY,
   name       VARCHAR(255)                NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
@@ -31,7 +31,7 @@ CREATE TABLE forum_articles_tags (
 );
 
 CREATE TABLE forum_comments (
-  id         SERIAL PRIMARY KEY,
+  id         BIGSERIAL PRIMARY KEY,
   article_id BIGINT                      NOT NULL,
   user_id    BIGINT                      NOT NULL,
   body       TEXT                        NOT NULL,
