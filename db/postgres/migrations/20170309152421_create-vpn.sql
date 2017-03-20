@@ -20,7 +20,7 @@ CREATE INDEX idx_vpn_users_full_name
 
 CREATE TABLE vpn_logs (
   id           BIGSERIAL PRIMARY KEY,
-  user_id      BIGINT                      NOT NULL,
+  user_id      BIGINT                      REFERENCES vpn_users,
   trusted_ip   INET,
   trusted_port SMALLINT,
   remote_ip    INET,

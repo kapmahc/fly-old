@@ -36,7 +36,7 @@ CREATE INDEX idx_users_provider_type
 
 CREATE TABLE logs (
   id         BIGSERIAL PRIMARY KEY,
-  user_id    BIGINT                      NOT NULL,
+  user_id    BIGINT                      REFERENCES users,
   type       VARCHAR(8)                  NOT NULL DEFAULT 'info',
   ip         INET                        NOT NULL,
   message    VARCHAR(255)                NOT NULL,
@@ -62,8 +62,8 @@ CREATE INDEX idx_roles_resource_type
 
 CREATE TABLE policies (
   id         BIGSERIAL PRIMARY KEY,
-  user_id    BIGINT                      NOT NULL,
-  role_id    BIGINT                      NOT NULL,
+  user_id    BIGINT                      REFERENCES users,
+  role_id    BIGINT                      REFERENCES roles,
   start_up   DATE                        NOT NULL DEFAULT current_date,
   shut_down  DATE                        NOT NULL DEFAULT '2016-12-13',
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
@@ -93,7 +93,7 @@ CREATE TABLE attachments (
   url           VARCHAR(255)                NOT NULL,
   length        INT                         NOT NULL,
   media_type    VARCHAR(32)                 NOT NULL,
-  user_id       BIGINT                      NOT NULL,
+  user_id       BIGINT                      REFERENCES users,
   created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
@@ -104,8 +104,18 @@ CREATE INDEX idx_attachments_title
 CREATE INDEX idx_attachments_media_type
   ON attachments (media_type);
 
+CREATE TABLE resources (
+  type          VARCHAR(255)                NOT NULL,
+  id            BIGINT                      NOT NULL,
+  attachment_id BIGINT                      REFERENCES attachments,
+  created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  PRIMARY KEY (type, id, attachment_id)
+);
+CREATE INDEX idx_resources_type on resources(type);
+
 -- +goose Down
 -- SQL section 'Down' is executed when this migration is rolled back
+DROP TABLE resources;
 DROP TABLE attachments;
 DROP TABLE votes;
 DROP TABLE policies;
