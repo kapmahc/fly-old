@@ -1,0 +1,39 @@
+{{define "erp-zones-index"}}
+{{template "dashboard-header" .}}
+{{template "form-header" .}}
+{{$l := .l}}
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>
+        {{t $l "shop.models.state"}}
+        <a href="/erp/states">{{t $l "buttons.more"}}</a>
+      </th>
+      <th>
+        {{t $l "shop.models.country"}}
+        <a href="/erp/countries">{{t $l "buttons.more"}}</a>
+      </th>
+      <th>
+        {{t $l "shop.models.zone"}}
+        <a href="/erp/zones">{{t $l "buttons.more"}}</a>
+      </th>
+      <th>
+        {{t $l "shop.models.shipping-methods"}}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .states}}
+    <tr>
+      <th scope="row">{{.Name}}</th>
+      <td>{{.Country.Name}}</td>
+      <td>{{.Zone.Name}}</td>
+      <td>
+        
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+{{template "application-footer" .}}
+{{end}}

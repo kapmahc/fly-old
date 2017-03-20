@@ -71,6 +71,7 @@ func (p *Engine) initStates() error {
 			Name:      s,
 			CountryID: usa.ID,
 			ZoneID:    na.ID,
+			Active:    true,
 		}).Error; err != nil {
 			return err
 		}

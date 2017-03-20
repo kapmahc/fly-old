@@ -265,7 +265,8 @@ func (Country) TableName() string {
 // State state
 type State struct {
 	web.Model
-	Name      string  `json:"name"`
+	Name      string `json:"name"`
+	Active    bool
 	CountryID uint    `json:"countryId"`
 	Country   Country `json:"country"`
 	ZoneID    uint    `json:"zoneID"`
