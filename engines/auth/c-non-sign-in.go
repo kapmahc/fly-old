@@ -109,9 +109,10 @@ func (p *Engine) formUsersSignIn(c *gin.Context, lang string, data gin.H) (strin
 			return tpl, err
 		}
 		http.SetCookie(c.Writer, &http.Cookie{
-			Name:  TOKEN,
-			Value: string(tkn),
-			Path:  "/",
+			Name:     TOKEN,
+			Value:    string(tkn),
+			Path:     "/",
+			HttpOnly: true,
 		})
 		c.Redirect(http.StatusFound, "/dashboard")
 		return "", nil

@@ -88,7 +88,7 @@ func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
 	if _, ok := c.Get(auth.CurrentUser); !ok {
 		return nil
 	}
-	dd := web.Dropdown{
+	return &web.Dropdown{
 		Label: "shop.dashboard.title",
 		Links: []*web.Link{
 			&web.Link{Href: "/shop/addresses", Label: "shop.addresses.index.title"},
@@ -98,10 +98,6 @@ func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
 			&web.Link{Href: "/shop/return-authorizations/new", Label: "shop.return-authorizations.new.title"},
 		},
 	}
-	if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
-
-	}
-	return &dd
 }
 
 func init() {
