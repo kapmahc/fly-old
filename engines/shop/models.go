@@ -4,31 +4,141 @@ import (
 	"time"
 
 	"github.com/kapmahc/fly/engines/auth"
-	"github.com/kapmahc/fly/engines/erp"
 	"github.com/kapmahc/fly/web"
 )
 
-// Address address
-type Address struct {
+// Store store
+type Store struct {
 	web.Model
-
-	FirstName  string    `json:"firstName"`
-	MiddleName string    `json:"middleName"`
-	LastName   string    `json:"lastName"`
-	Zip        string    `json:"zip"`
-	Apt        string    `json:"apt"`
-	Street     string    `json:"street"`
-	City       string    `json:"city"`
-	State      string    `json:"state"`
-	Country    string    `json:"country"`
-	Phone      string    `json:"phone"`
-	UserID     uint      `json:"userId"`
-	User       auth.User `json:"user"`
+	Name        string
+	Description string
+	Address     string
+	Manager     string
+	Tel         string
+	Email       string
+	Stocks      []Stock
 }
 
 // TableName table name
-func (Address) TableName() string {
-	return "shop_addresses"
+func (Store) TableName() string {
+	return "shop_stores"
+}
+
+// Journal journal
+type Journal struct {
+	ID        uint `json:"id"`
+	Action    string
+	Quantity  uint
+	CreatedAt time.Time `json:"createdAt"`
+	StoreID   uint
+	Store     Store
+	VariantID uint
+	Variant   Variant
+	UserID    uint
+	User      auth.User
+}
+
+// TableName table name
+func (Journal) TableName() string {
+	return "shop_journals"
+}
+
+// Stock stock
+type Stock struct {
+	web.Model
+	VariantID uint
+	Variant   Variant
+	Quantity  uint
+	StoreID   uint
+	Store     Store
+}
+
+// TableName table name
+func (Stock) TableName() string {
+	return "shop_stocks"
+}
+
+// Catalog catalog
+type Catalog struct {
+	web.Model
+
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	ParentID    uint      `json:"parentId"`
+	Products    []Product `json:"products" gorm:"many2many:shop_products_catalogs;"`
+}
+
+// TableName table name
+func (Catalog) TableName() string {
+	return "shop_catalogs"
+}
+
+// Vendor vendor
+type Vendor struct {
+	web.Model
+
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Products    []Product `json:"products"`
+}
+
+// TableName table name
+func (Vendor) TableName() string {
+	return "shop_vendors"
+}
+
+// Product product
+type Product struct {
+	web.Model
+
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	VendorID    uint      `json:"vendorId"`
+	Vendor      Vendor    `json:"vendor"`
+	Variants    []Variant `json:"variants"`
+	Catalogs    []Catalog `json:"catalogs" gorm:"many2many:shop_products_catalogs;"`
+}
+
+// TableName table name
+func (Product) TableName() string {
+	return "shop_products"
+}
+
+// Variant variant
+type Variant struct {
+	web.Model
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	Price       float64    `json:"price"`
+	Cost        float64    `json:"cost"`
+	Sku         string     `json:"sku"`
+	Weight      float64    `json:"weight"`
+	Height      float64    `json:"height"`
+	Length      float64    `json:"length"`
+	Width       float64    `json:"width"`
+	ProductID   uint       `json:"productId"`
+	Product     Product    `json:"product"`
+	Properties  []Property `json:"properties"`
+}
+
+// TableName table name
+func (Variant) TableName() string {
+	return "shop_variants"
+}
+
+// Property property
+type Property struct {
+	web.Model
+
+	Key       string  `json:"key"`
+	Val       string  `json:"val"`
+	VariantID uint    `json:"variantId"`
+	Variant   Variant `json:"variant"`
+}
+
+// TableName table name
+func (Property) TableName() string {
+	return "shop_properties"
 }
 
 // Order order
@@ -57,12 +167,12 @@ func (Order) TableName() string {
 type LineItem struct {
 	web.Model
 
-	Price     float64     `json:"price"`
-	Quantity  uint        `json:"quantity"`
-	VariantID uint        `json:"variantId"`
-	Variant   erp.Variant `json:"variant"`
-	OrderID   uint        `json:"orderId"`
-	Order     Order       `json:"order"`
+	Price     float64 `json:"price"`
+	Quantity  uint    `json:"quantity"`
+	VariantID uint    `json:"variantId"`
+	Variant   Variant `json:"variant"`
+	OrderID   uint    `json:"orderId"`
+	Order     Order   `json:"order"`
 }
 
 // TableName table name
@@ -102,6 +212,29 @@ type Payment struct {
 // TableName table name
 func (Payment) TableName() string {
 	return "shop_payments"
+}
+
+// Address address
+type Address struct {
+	web.Model
+
+	FirstName  string    `json:"firstName"`
+	MiddleName string    `json:"middleName"`
+	LastName   string    `json:"lastName"`
+	Zip        string    `json:"zip"`
+	Apt        string    `json:"apt"`
+	Street     string    `json:"street"`
+	City       string    `json:"city"`
+	State      string    `json:"state"`
+	Country    string    `json:"country"`
+	Phone      string    `json:"phone"`
+	UserID     uint      `json:"userId"`
+	User       auth.User `json:"user"`
+}
+
+// TableName table name
+func (Address) TableName() string {
+	return "shop_addresses"
 }
 
 // Zone zone
@@ -206,7 +339,7 @@ type InventoryUnit struct {
 	State                 string              `json:"state"`
 	Quantity              uint                `json:"quantity"`
 	VariantID             uint                `json:"variantID"`
-	Variant               erp.Variant         `json:"variant"`
+	Variant               Variant             `json:"variant"`
 	OrderID               uint                `json:"orderID"`
 	Order                 Order               `json:"order"`
 	ShipmentID            uint                `json:"shipmentID"`
