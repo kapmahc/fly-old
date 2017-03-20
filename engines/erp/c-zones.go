@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/kapmahc/fly/engines/shop"
+	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -77,8 +78,18 @@ func (p *Engine) updateZone(c *gin.Context, lang string, data gin.H) (string, er
 }
 
 func (p *Engine) destroyZone(c *gin.Context) (interface{}, error) {
+	id := c.Param("id")
+	var count int
+	if err := p.Db.Model(&shop.State{}).
+		Where("zone_id = ?", id).
+		Count(&count).Error; err != nil {
+		return nil, err
+	}
+	if count > 0 {
+		return nil, p.I18n.E(c.MustGet(web.LOCALE).(string), "errors.in-use")
+	}
 	err := p.Db.
-		Where("id = ?", c.Param("id")).
+		Where("id = ?", id).
 		Delete(shop.Zone{}).Error
 	return gin.H{}, err
 }
