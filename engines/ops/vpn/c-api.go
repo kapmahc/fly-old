@@ -26,7 +26,7 @@ func (p *Engine) apiAuth(c *gin.Context) (interface{}, error) {
 	if user.Enable && user.StartUp.Before(now) && user.ShutDown.After(now) {
 		return gin.H{}, nil
 	}
-	return nil, p.I18n.E(lang, "vpn.errors.user-is-not-available")
+	return nil, p.I18n.E(lang, "ops.vpn.errors.user-is-not-available")
 }
 
 type fmStatus struct {

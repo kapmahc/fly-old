@@ -33,11 +33,24 @@ func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
 
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
-	return []stm.URL{}, nil
+	urls := []stm.URL{
+		{"loc": "/vpn/users/change-password"},
+	}
+	return urls, nil
 }
 
 // Dashboard dashboard
-func (p *Engine) Dashboard(*gin.Context) *web.Dropdown {
+func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
+	if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
+		return &web.Dropdown{
+			Label: "ops.vpn.dashboard.title",
+			Links: []*web.Link{
+				&web.Link{Href: "/vpn/users", Label: "ops.vpn.users.index.title"},
+				&web.Link{Href: "/vpn/logs", Label: "ops.vpn.logs.index.title"},
+				&web.Link{Href: "/vpn/readme", Label: "ops.vpn.readme.title"},
+			},
+		}
+	}
 	return nil
 }
 

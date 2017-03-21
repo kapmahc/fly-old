@@ -6,8 +6,8 @@ import (
 )
 
 func (p *Engine) indexLogs(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "vpn.logs.index.title")
-	tpl := "vpn-logs-index"
+	data["title"] = p.I18n.T(lang, "ops.vpn.logs.index.title")
+	tpl := "ops-vpn-logs-index"
 	var total int64
 	if err := p.Db.Model(&Log{}).Count(&total).Error; err != nil {
 		return tpl, err

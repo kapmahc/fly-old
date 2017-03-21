@@ -5,13 +5,12 @@ import (
 	"time"
 
 	"github.com/kapmahc/fly/web"
-
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 func (p *Engine) indexUsers(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "vpn.users.index.title")
-	tpl := "vpn-users-index"
+	data["title"] = p.I18n.T(lang, "ops.vpn.users.index.title")
+	tpl := "ops-vpn-users-index"
 	var items []User
 	if err := p.Db.Order("updated_at DESC").Find(&items).Error; err != nil {
 		return tpl, err
@@ -21,22 +20,35 @@ func (p *Engine) indexUsers(c *gin.Context, lang string, data gin.H) (string, er
 }
 
 type fmUserNew struct {
-	FullName             string    `form:"full_name" binding:"required,max=255"`
-	Email                string    `form:"email" binding:"required,email"`
-	Password             string    `form:"password" binding:"min=6,max=32"`
-	PasswordConfirmation string    `form:"passwordConfirmation" binding:"eqfield=Password"`
-	Details              string    `form:"details"`
-	Enable               bool      `form:"enable"`
-	StartUp              time.Time `form:"startUp"`
-	ShutDown             time.Time `form:"shutDown"`
+	FullName             string `form:"fullName" binding:"required,max=255"`
+	Email                string `form:"email" binding:"required,email"`
+	Password             string `form:"password" binding:"min=6,max=32"`
+	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=Password"`
+	Details              string `form:"details"`
+	Enable               bool   `form:"enable"`
+	StartUp              string `form:"startUp"`
+	ShutDown             string `form:"shutDown"`
 }
 
 func (p *Engine) createUser(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "buttons.new")
-	tpl := "vpn-users-new"
+	tpl := "ops-vpn-users-new"
+
+	now := time.Now()
+	data["startUp"] = now.Format(web.FormatDateInput)
+	data["shutDown"] = now.AddDate(1, 0, 0).Format(web.FormatDateInput)
+
 	if c.Request.Method == http.MethodPost {
 		var fm fmUserNew
 		if err := c.Bind(&fm); err != nil {
+			return tpl, err
+		}
+		startUp, err := time.Parse(web.FormatDateInput, fm.StartUp)
+		if err != nil {
+			return tpl, err
+		}
+		shutDown, err := time.Parse(web.FormatDateInput, fm.ShutDown)
+		if err != nil {
 			return tpl, err
 		}
 		if err := p.Db.Create(&User{
@@ -45,28 +57,28 @@ func (p *Engine) createUser(c *gin.Context, lang string, data gin.H) (string, er
 			Password: p.Security.Sum([]byte(fm.Password)),
 			Details:  fm.Details,
 			Enable:   fm.Enable,
-			StartUp:  fm.StartUp,
-			ShutDown: fm.ShutDown,
+			StartUp:  startUp,
+			ShutDown: shutDown,
 		}).Error; err != nil {
 			return tpl, err
 		}
-		c.Redirect(http.StatusFound, "/vpn/admin/users")
+		c.Redirect(http.StatusFound, "/vpn/users")
 		return "", nil
 	}
 	return tpl, nil
 }
 
 type fmUserEdit struct {
-	FullName string    `form:"full_name" binding:"required,max=255"`
-	Details  string    `form:"details"`
-	Enable   bool      `form:"enable"`
-	StartUp  time.Time `form:"startUp"`
-	ShutDown time.Time `form:"shutDown"`
+	FullName string `form:"fullName" binding:"required,max=255"`
+	Details  string `form:"details"`
+	Enable   bool   `form:"enable"`
+	StartUp  string `form:"startUp"`
+	ShutDown string `form:"shutDown"`
 }
 
 func (p *Engine) updateUser(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "buttons.edit")
-	tpl := "vpn-users-edit"
+	data["title"] = p.I18n.T(lang, "ops.vpn.users.edit.title")
+	tpl := "ops-vpn-users-edit"
 	id := c.Param("id")
 
 	var item User
@@ -74,25 +86,34 @@ func (p *Engine) updateUser(c *gin.Context, lang string, data gin.H) (string, er
 		return tpl, err
 	}
 	data["item"] = item
+	data["startUp"] = item.StartUp.Format(web.FormatDateInput)
+	data["shutDown"] = item.ShutDown.Format(web.FormatDateInput)
 
 	if c.Request.Method == http.MethodPost {
 		var fm fmUserEdit
 		if err := c.Bind(&fm); err != nil {
 			return tpl, err
 		}
-
+		startUp, err := time.Parse(web.FormatDateInput, fm.StartUp)
+		if err != nil {
+			return tpl, err
+		}
+		shutDown, err := time.Parse(web.FormatDateInput, fm.ShutDown)
+		if err != nil {
+			return tpl, err
+		}
 		if err := p.Db.Model(&User{}).
 			Where("id = ?", id).
 			Updates(map[string]interface{}{
 				"full_name": fm.FullName,
 				"enable":    fm.Enable,
-				"start_up":  fm.StartUp,
-				"shut_down": fm.ShutDown,
+				"start_up":  startUp,
+				"shut_down": shutDown,
 				"details":   fm.Details,
 			}).Error; err != nil {
 			return tpl, err
 		}
-		c.Redirect(http.StatusFound, "/vpn/admin/users")
+		c.Redirect(http.StatusFound, "/vpn/users")
 		return "", nil
 	}
 
@@ -105,8 +126,8 @@ type fmUserResetPassword struct {
 }
 
 func (p *Engine) resetUserPassword(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "buttons.edit")
-	tpl := "vpn-users-reset-password"
+	data["title"] = p.I18n.T(lang, "ops.vpn.users.reset-password.title")
+	tpl := "ops-vpn-users-reset-password"
 	id := c.Param("id")
 
 	var item User
@@ -128,7 +149,7 @@ func (p *Engine) resetUserPassword(c *gin.Context, lang string, data gin.H) (str
 			}).Error; err != nil {
 			return tpl, err
 		}
-		c.Redirect(http.StatusFound, "/vpn/admin/users")
+		c.Redirect(http.StatusFound, "/vpn/users")
 		return "", nil
 	}
 
@@ -143,15 +164,8 @@ type fmUserChangePassword struct {
 }
 
 func (p *Engine) changeUserPassword(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "vpn.users.change-password.title")
-	tpl := "vpn-users-change-password"
-	id := c.Param("id")
-
-	var item User
-	if err := p.Db.Where("id = ?", id).First(&item).Error; err != nil {
-		return tpl, err
-	}
-	data["item"] = item
+	data["title"] = p.I18n.T(lang, "ops.vpn.users.change-password.title")
+	tpl := "ops-vpn-users-change-password"
 
 	if c.Request.Method == http.MethodPost {
 		var fm fmUserChangePassword
@@ -159,15 +173,14 @@ func (p *Engine) changeUserPassword(c *gin.Context, lang string, data gin.H) (st
 			return tpl, err
 		}
 		var user User
-		if err := p.Db.Where("email = ?", fm.Email).Error; err != nil {
+		if err := p.Db.Where("email = ?", fm.Email).First(&user).Error; err != nil {
 			return tpl, err
 		}
 		if !p.Security.Chk([]byte(fm.CurrentPassword), user.Password) {
-			return tpl, p.I18n.E(lang, "vpn.users.email-password-not-match")
+			return tpl, p.I18n.E(lang, "ops.vpn.users.email-password-not-match")
 		}
 
-		if err := p.Db.Model(&User{}).
-			Where("id = ?", id).
+		if err := p.Db.Model(user).
 			Updates(map[string]interface{}{
 				"password": p.Security.Sum([]byte(fm.NewPassword)),
 			}).Error; err != nil {
@@ -177,4 +190,11 @@ func (p *Engine) changeUserPassword(c *gin.Context, lang string, data gin.H) (st
 	}
 
 	return tpl, nil
+}
+
+func (p *Engine) destroyUser(c *gin.Context) (interface{}, error) {
+	err := p.Db.
+		Where("id = ?", c.Param("id")).
+		Delete(User{}).Error
+	return gin.H{}, err
 }

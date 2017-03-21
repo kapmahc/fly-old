@@ -2,13 +2,24 @@ package vpn
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/SermoDigital/jose/jws"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-// TokenMiddleware token-middleware
-func (p *Engine) TokenMiddleware(c *gin.Context) {
+func (p *Engine) generateToken(years int) ([]byte, error) {
+	now := time.Now()
+	cm := jws.Claims{}
+	cm.SetNotBefore(now)
+	cm.SetExpiration(now.AddDate(years, 0, 0))
+	cm.Set("act", "vpn")
+
+	jt := jws.NewJWT(cm, p.Method)
+	return jt.Serialize(p.Key)
+}
+
+func (p *Engine) tokenMiddleware(c *gin.Context) {
 	tk, err := jws.ParseJWTFromRequest(c.Request)
 	if err == nil {
 		err = tk.Validate(p.Key, p.Method)
