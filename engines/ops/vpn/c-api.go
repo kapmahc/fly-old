@@ -18,17 +18,12 @@ func (p *Engine) apiAuth(c *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 	lang := c.MustGet(web.LOCALE).(string)
-	ip := c.ClientIP()
-	user, err := p.Dao.SignIn(fm.Email, fm.Password, lang, ip)
-	if err != nil {
-		return nil, err
-	}
-	var vu User
-	if err := p.Db.Where("id = ?", user.ID).First(&vu).Error; err != nil {
+	var user User
+	if err := p.Db.Where("email = ?", fm.Email).First(&user).Error; err != nil {
 		return nil, err
 	}
 	now := time.Now()
-	if vu.Enable && vu.StartUp.Before(now) && vu.ShutDown.After(now) {
+	if user.Enable && user.StartUp.Before(now) && user.ShutDown.After(now) {
 		return gin.H{}, nil
 	}
 	return nil, p.I18n.E(lang, "vpn.errors.user-is-not-available")
@@ -49,8 +44,8 @@ func (p *Engine) apiConnect(c *gin.Context) (interface{}, error) {
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
 	}
-	user, err := p.Dao.GetByEmail(fm.Email)
-	if err != nil {
+	var user User
+	if err := p.Db.Where("email = ?", fm.Email).First(&user).Error; err != nil {
 		return nil, err
 	}
 	if err := p.Db.Create(&Log{
@@ -70,7 +65,7 @@ func (p *Engine) apiConnect(c *gin.Context) (interface{}, error) {
 		UpdateColumn("online", true).Error; err != nil {
 		return nil, err
 	}
-	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(c.MustGet(web.LOCALE).(string), "vpn.logs.connect"))
+
 	return gin.H{}, nil
 }
 
@@ -79,8 +74,8 @@ func (p *Engine) apiDisconnect(c *gin.Context) (interface{}, error) {
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
 	}
-	user, err := p.Dao.GetByEmail(fm.Email)
-	if err != nil {
+	var user User
+	if err := p.Db.Where("email = ?", fm.Email).First(&user).Error; err != nil {
 		return nil, err
 	}
 	if err := p.Db.Model(&User{}).
@@ -88,7 +83,7 @@ func (p *Engine) apiDisconnect(c *gin.Context) (interface{}, error) {
 		UpdateColumn("online", false).Error; err != nil {
 		return nil, err
 	}
-	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(c.MustGet(web.LOCALE).(string), "vpn.logs.disconnect"))
+
 	if err := p.Db.
 		Model(&Log{}).
 		Where(

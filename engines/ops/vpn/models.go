@@ -3,7 +3,6 @@ package vpn
 import (
 	"time"
 
-	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 )
 
@@ -12,11 +11,14 @@ import (
 // User user
 type User struct {
 	web.Model
-	Online      bool
-	Enable      bool
-	StartUp     time.Time
-	ShutDown    time.Time
-	Description string
+	FullName string
+	Email    string
+	Details  string
+	Password []byte
+	Online   bool
+	Enable   bool
+	StartUp  time.Time
+	ShutDown time.Time
 }
 
 // TableName table name
@@ -37,7 +39,7 @@ type Log struct {
 	Send        float64
 
 	UserID uint
-	User   auth.User
+	User   User
 }
 
 // TableName table name

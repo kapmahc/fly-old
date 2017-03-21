@@ -1,20 +1,24 @@
 package vpn
 
 import (
+	"github.com/SermoDigital/jose/crypto"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
+	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Engine engine
 type Engine struct {
-	Db   *gorm.DB  `inject:""`
-	Dao  *auth.Dao `inject:""`
-	I18n *web.I18n `inject:""`
-	Jwt  *Jwt      `inject:""`
+	Db       *gorm.DB             `inject:""`
+	I18n     *web.I18n            `inject:""`
+	Jwt      *auth.Jwt            `inject:""`
+	Security *web.Security        `inject:""`
+	Key      []byte               `inject:"jwt.key"`
+	Method   crypto.SigningMethod `inject:"jwt.method"`
 }
 
 // RegisterWorker register worker
@@ -35,6 +39,11 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 // Dashboard dashboard
 func (p *Engine) Dashboard(*gin.Context) *web.Dropdown {
 	return nil
+}
+
+// Shell shell commands
+func (p *Engine) Shell() []cli.Command {
+	return []cli.Command{}
 }
 
 func init() {
