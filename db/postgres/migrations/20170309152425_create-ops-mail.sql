@@ -15,6 +15,7 @@ CREATE TABLE mail_users (
   email      VARCHAR(255)                NOT NULL,
   full_name  VARCHAR(128)                NOT NULL,
   password   VARCHAR(255)                NOT NULL,
+  enable     BOOLEAN  NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

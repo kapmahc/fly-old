@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/kapmahc/fly/web"
-
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -14,6 +13,19 @@ func (p *Engine) indexUsers(c *gin.Context, lang string, data gin.H) (string, er
 	var items []User
 	if err := p.Db.Order("updated_at DESC").Find(&items).Error; err != nil {
 		return tpl, err
+	}
+	var domains []Domain
+	if err := p.Db.Select([]string{"id", "name"}).Find(&domains).Error; err != nil {
+		return tpl, err
+	}
+	for i := range items {
+		u := &items[i]
+		for _, d := range domains {
+			if d.ID == u.DomainID {
+				u.Domain = d
+				break
+			}
+		}
 	}
 	data["items"] = items
 	return tpl, nil
@@ -31,6 +43,11 @@ type fmUserNew struct {
 func (p *Engine) createUser(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "buttons.new")
 	tpl := "ops-mail-users-new"
+	var domains []Domain
+	if err := p.Db.Select([]string{"id", "name"}).Find(&domains).Error; err != nil {
+		return tpl, err
+	}
+	data["domains"] = domains
 	if c.Request.Method == http.MethodPost {
 		var fm fmUserNew
 		if err := c.Bind(&fm); err != nil {
