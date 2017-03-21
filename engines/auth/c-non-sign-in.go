@@ -64,39 +64,9 @@ func (p *Engine) formUsersSignIn(c *gin.Context, lang string, data gin.H) (strin
 		if err := c.Bind(&fm); err != nil {
 			return tpl, err
 		}
-		ip := c.ClientIP()
 
-		user, err := p.Dao.GetByEmail(fm.Email)
+		user, err := p.Dao.SignIn(fm.Email, fm.Password, lang, c.ClientIP())
 		if err != nil {
-			return tpl, err
-		}
-		if !p.Security.Chk([]byte(fm.Password), user.Password) {
-			p.Dao.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-failed"))
-			return tpl, p.I18n.E(lang, "auth.errors.email-password-not-match")
-		}
-
-		if !user.IsConfirm() {
-			return tpl, p.I18n.E(lang, "auth.errors.user-not-confirm")
-		}
-
-		if user.IsLock() {
-			return tpl, p.I18n.E(lang, "auth.errors.user-is-lock")
-		}
-
-		p.Dao.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-success"))
-		user.SignInCount++
-		user.LastSignInAt = user.CurrentSignInAt
-		user.LastSignInIP = user.CurrentSignInIP
-		now := time.Now()
-		user.CurrentSignInAt = &now
-		user.CurrentSignInIP = ip
-		if err = p.Db.Model(user).Updates(map[string]interface{}{
-			"last_sign_in_at":    user.LastSignInAt,
-			"last_sign_in_ip":    user.LastSignInIP,
-			"current_sign_in_at": user.CurrentSignInAt,
-			"current_sign_in_ip": user.CurrentSignInIP,
-			"sign_in_count":      user.SignInCount,
-		}).Error; err != nil {
 			return tpl, err
 		}
 

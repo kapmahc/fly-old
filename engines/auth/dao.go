@@ -13,24 +13,45 @@ import (
 type Dao struct {
 	Db       *gorm.DB      `inject:""`
 	Security *web.Security `inject:""`
+	I18n     *web.I18n     `inject:""`
 }
 
-// signIn set sign-in info
-func (p *Dao) signIn(user uint, ip string) {
-	var u User
-	if err := p.Db.Where("id = ?", user).First(&u).Error; err != nil {
-		log.Error(err)
-		return
+// SignIn set sign-in info
+func (p *Dao) SignIn(email, password, lang, ip string) (*User, error) {
+	user, err := p.GetByEmail(email)
+	if err != nil {
+		return nil, err
 	}
-	if err := p.Db.Model(&u).Updates(map[string]interface{}{
-		"sign_in_count":      u.SignInCount + 1,
-		"last_sign_in_at":    u.CurrentSignInAt,
-		"last_sign_in_ip":    u.CurrentSignInIP,
-		"current_sign_in_ip": ip,
-		"current_sign_in_at": time.Now(),
+	if !p.Security.Chk([]byte(password), user.Password) {
+		p.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-failed"))
+		return nil, p.I18n.E(lang, "auth.errors.email-password-not-match")
+	}
+
+	if !user.IsConfirm() {
+		return nil, p.I18n.E(lang, "auth.errors.user-not-confirm")
+	}
+
+	if user.IsLock() {
+		return nil, p.I18n.E(lang, "auth.errors.user-is-lock")
+	}
+
+	p.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-success"))
+	user.SignInCount++
+	user.LastSignInAt = user.CurrentSignInAt
+	user.LastSignInIP = user.CurrentSignInIP
+	now := time.Now()
+	user.CurrentSignInAt = &now
+	user.CurrentSignInIP = ip
+	if err = p.Db.Model(user).Updates(map[string]interface{}{
+		"last_sign_in_at":    user.LastSignInAt,
+		"last_sign_in_ip":    user.LastSignInIP,
+		"current_sign_in_at": user.CurrentSignInAt,
+		"current_sign_in_ip": user.CurrentSignInIP,
+		"sign_in_count":      user.SignInCount,
 	}).Error; err != nil {
-		log.Error(err)
+		return nil, err
 	}
+	return user, nil
 }
 
 // GetUserByUID get user by uid

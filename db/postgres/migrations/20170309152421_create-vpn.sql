@@ -1,26 +1,20 @@
 -- +goose Up
 -- SQL in section 'Up' is executed when this migration is applied
 CREATE TABLE vpn_users (
-  id         BIGSERIAL PRIMARY KEY,
-  full_name  VARCHAR(255)                NOT NULL,
-  email      VARCHAR(255)                NOT NULL,
-  password   VARCHAR(255)                NOT NULL,
-  details    TEXT,
-  online     BOOL                        NOT NULL DEFAULT FALSE,
-  enable     BOOL                        NOT NULL DEFAULT FALSE,
+  id         BIGINT                      REFERENCES users,
+  description TEXT NOT NULL,
+  online     BOOLEAN                     NOT NULL DEFAULT FALSE,
+  enable     BOOLEAN                     NOT NULL DEFAULT FALSE,
   start_up   DATE                        NOT NULL DEFAULT '2016-12-13',
   shut_down  DATE                        NOT NULL DEFAULT current_date,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
-  updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+  updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  PRIMARY KEY(id)
 );
-CREATE UNIQUE INDEX idx_vpn_users_email
-  ON vpn_users (email);
-CREATE INDEX idx_vpn_users_full_name
-  ON vpn_users (full_name);
 
 CREATE TABLE vpn_logs (
   id           BIGSERIAL PRIMARY KEY,
-  user_id      BIGINT                      REFERENCES vpn_users,
+  user_id      BIGINT REFERENCES users,
   trusted_ip   INET,
   trusted_port SMALLINT,
   remote_ip    INET,
@@ -30,7 +24,6 @@ CREATE TABLE vpn_logs (
   received     FLOAT                       NOT NULL DEFAULT '0.0',
   send         FLOAT                       NOT NULL DEFAULT '0.0'
 );
-
 
 -- +goose Down
 -- SQL section 'Down' is executed when this migration is rolled back

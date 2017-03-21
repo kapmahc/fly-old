@@ -81,7 +81,7 @@ func (p *Engine) parseToken(lng, tkn, act string) (*User, error) {
 		return nil, err
 	}
 	if act != cm.Get("act").(string) {
-		return nil, p.I18n.E(lng, "auth.errors.bad-action")
+		return nil, p.I18n.E(lng, "errors.bad-action")
 	}
 	return p.Dao.GetUserByUID(cm.Get("uid").(string))
 }
