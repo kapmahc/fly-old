@@ -65,7 +65,7 @@ func (p *Engine) createUser(c *gin.Context, lang string, data gin.H) (string, er
 		if err := p.Db.Create(&user).Error; err != nil {
 			return tpl, err
 		}
-		c.Redirect(http.StatusFound, "/vpn/users")
+		c.Redirect(http.StatusFound, "/ops/vpn/users")
 		return "", nil
 	}
 	return tpl, nil
@@ -116,7 +116,7 @@ func (p *Engine) updateUser(c *gin.Context, lang string, data gin.H) (string, er
 			}).Error; err != nil {
 			return tpl, err
 		}
-		c.Redirect(http.StatusFound, "/vpn/users")
+		c.Redirect(http.StatusFound, "/ops/vpn/users")
 		return "", nil
 	}
 
@@ -154,7 +154,7 @@ func (p *Engine) resetUserPassword(c *gin.Context, lang string, data gin.H) (str
 			}).Error; err != nil {
 			return tpl, err
 		}
-		c.Redirect(http.StatusFound, "/vpn/users")
+		c.Redirect(http.StatusFound, "/ops/vpn/users")
 		return "", nil
 	}
 

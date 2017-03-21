@@ -2,6 +2,8 @@ package mail
 
 import (
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
+	"github.com/jinzhu/gorm"
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
@@ -10,6 +12,9 @@ import (
 
 // Engine engine
 type Engine struct {
+	Db   *gorm.DB  `inject:""`
+	I18n *web.I18n `inject:""`
+	Jwt  *auth.Jwt `inject:""`
 }
 
 // Mount web mount-points

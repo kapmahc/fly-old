@@ -8,7 +8,7 @@ import (
 
 // Mount web mount-points
 func (p *Engine) Mount(rt *gin.Engine) {
-	ag := rt.Group("/vpn", p.Jwt.MustAdminMiddleware)
+	ag := rt.Group("/ops/vpn", p.Jwt.MustAdminMiddleware)
 	ag.GET("/users", auth.HTML(p.indexUsers))
 	ag.GET("/users/new", auth.HTML(p.createUser))
 	ag.POST("/users/new", auth.HTML(p.createUser))

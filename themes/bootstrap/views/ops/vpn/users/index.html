@@ -10,7 +10,7 @@
       <th>{{t $l "attributes.validity"}}</th>
       <th>
         {{t $l "buttons.manage"}}
-        <a href="/vpn/users/new">{{t $l "buttons.new"}}</a>
+        <a href="/ops/vpn/users/new">{{t $l "buttons.new"}}</a>
       </th>
     </tr>
   </thead>
@@ -22,9 +22,9 @@
       <td>{{df .StartUp}} - {{df .ShutDown}}</td>
       <td>
         <div class="btn-group btn-group-sm" role="group">
-          <a class="btn btn-info" href="/vpn/users/edit/{{.ID}}">{{t $.l "ops.vpn.users.edit.title"}}</a>
-          <a class="btn btn-warning" href="/vpn/users/reset-password/{{.ID}}">{{t $.l "ops.vpn.users.reset-password.title"}}</a>
-          <a class="btn btn-danger" data-method="delete" data-next="/vpn/users" data-confirm="{{t $l "are-you-sure"}}" href="/vpn/users/{{.ID}}">{{t $.l "buttons.remove"}}</a>
+          <a class="btn btn-info" href="/ops/vpn/users/edit/{{.ID}}">{{t $.l "ops.vpn.users.edit.title"}}</a>
+          <a class="btn btn-warning" href="/ops/vpn/users/reset-password/{{.ID}}">{{t $.l "ops.vpn.users.reset-password.title"}}</a>
+          <a class="btn btn-danger" data-method="delete" data-next="/ops/vpn/users" data-confirm="{{t $l "are-you-sure"}}" href="/ops/vpn/users/{{.ID}}">{{t $.l "buttons.remove"}}</a>
         </div>
       </td>
     </tr>

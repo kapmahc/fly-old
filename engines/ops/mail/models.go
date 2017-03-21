@@ -30,6 +30,7 @@ type User struct {
 	Email    string
 	Password string
 	DomainID uint
+	Enable   bool
 	Domain   Domain
 }
 

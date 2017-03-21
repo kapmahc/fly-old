@@ -33,7 +33,7 @@ func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	urls := []stm.URL{
-		{"loc": "/vpn/users/change-password"},
+		{"loc": "/ops/vpn/users/change-password"},
 	}
 	return urls, nil
 }
@@ -44,9 +44,9 @@ func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
 		return &web.Dropdown{
 			Label: "ops.vpn.dashboard.title",
 			Links: []*web.Link{
-				&web.Link{Href: "/vpn/users", Label: "ops.vpn.users.index.title"},
-				&web.Link{Href: "/vpn/logs", Label: "ops.vpn.logs.index.title"},
-				&web.Link{Href: "/vpn/readme", Label: "ops.vpn.readme.title"},
+				&web.Link{Href: "/ops/vpn/users", Label: "ops.vpn.users.index.title"},
+				&web.Link{Href: "/ops/vpn/logs", Label: "ops.vpn.logs.index.title"},
+				&web.Link{Href: "/ops/vpn/readme", Label: "ops.vpn.readme.title"},
 			},
 		}
 	}
