@@ -9,10 +9,10 @@ import (
 )
 
 func (p *Engine) indexUsers(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "erp.users.index.title")
+	data["title"] = p.I18n.T(lang, "ops.mail.users.index.title")
 	tpl := "ops-mail-users-index"
 	var items []User
-	if err := p.Db.Select([]string{"id", "name", "active"}).Order("updated_at DESC").Find(&items).Error; err != nil {
+	if err := p.Db.Order("updated_at DESC").Find(&items).Error; err != nil {
 		return tpl, err
 	}
 	data["items"] = items

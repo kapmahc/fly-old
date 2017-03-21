@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Engine) indexAliases(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "erp.aliases.index.title")
+	data["title"] = p.I18n.T(lang, "ops.mail.aliases.index.title")
 	tpl := "ops-mail-aliases-index"
 	var items []Alias
 	if err := p.Db.Order("updated_at DESC").Find(&items).Error; err != nil {

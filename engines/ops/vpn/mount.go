@@ -22,10 +22,10 @@ func (p *Engine) Mount(rt *gin.Engine) {
 
 	ag.GET("/readme", auth.HTML(p.getReadme))
 
-	rt.GET("/vpn/users/change-password", auth.HTML(p.changeUserPassword))
-	rt.POST("/vpn/users/change-password", auth.HTML(p.changeUserPassword))
+	rt.GET("/ops/vpn/users/change-password", auth.HTML(p.changeUserPassword))
+	rt.POST("/ops/vpn/users/change-password", auth.HTML(p.changeUserPassword))
 
-	api := rt.Group("/vpn/api", p.tokenMiddleware)
+	api := rt.Group("/ops/vpn/api", p.tokenMiddleware)
 	api.POST("/auth", web.JSON(p.apiAuth))
 	api.POST("/connect", web.JSON(p.apiConnect))
 	api.POST("/disconnect", web.JSON(p.apiDisconnect))

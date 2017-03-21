@@ -17,9 +17,6 @@ type Engine struct {
 	Jwt  *auth.Jwt `inject:""`
 }
 
-// Mount web mount-points
-func (p *Engine) Mount(*gin.Engine) {}
-
 // RegisterWorker register worker
 func (p *Engine) RegisterWorker() {
 
@@ -37,11 +34,26 @@ func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
 
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
-	return []stm.URL{}, nil
+	urls := []stm.URL{
+		{"loc": "/ops/mail/users/change-password"},
+	}
+	return urls, nil
 }
 
 // Dashboard dashboard
-func (p *Engine) Dashboard(*gin.Context) *web.Dropdown {
+func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
+	if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
+		return &web.Dropdown{
+			Label: "ops.mail.dashboard.title",
+			Links: []*web.Link{
+				&web.Link{Href: "/ops/mail/domains", Label: "ops.mail.domains.index.title"},
+				&web.Link{Href: "/ops/mail/users", Label: "ops.mail.users.index.title"},
+				&web.Link{Href: "/ops/mail/aliases", Label: "ops.mail.aliases.index.title"},
+				nil,
+				&web.Link{Href: "/ops/mail/readme", Label: "ops.mail.readme.title"},
+			},
+		}
+	}
 	return nil
 }
 

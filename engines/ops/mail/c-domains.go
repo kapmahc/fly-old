@@ -7,10 +7,10 @@ import (
 )
 
 func (p *Engine) indexDomains(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "erp.domains.index.title")
+	data["title"] = p.I18n.T(lang, "ops.mail.domains.index.title")
 	tpl := "ops-mail-domains-index"
 	var items []Domain
-	if err := p.Db.Select([]string{"id", "name", "active"}).Order("updated_at DESC").Find(&items).Error; err != nil {
+	if err := p.Db.Order("updated_at DESC").Find(&items).Error; err != nil {
 		return tpl, err
 	}
 	data["items"] = items

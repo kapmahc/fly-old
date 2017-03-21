@@ -46,6 +46,7 @@ func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
 			Links: []*web.Link{
 				&web.Link{Href: "/ops/vpn/users", Label: "ops.vpn.users.index.title"},
 				&web.Link{Href: "/ops/vpn/logs", Label: "ops.vpn.logs.index.title"},
+				nil,
 				&web.Link{Href: "/ops/vpn/readme", Label: "ops.vpn.readme.title"},
 			},
 		}
