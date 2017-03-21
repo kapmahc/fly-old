@@ -13,12 +13,11 @@ import (
 
 // Engine engine
 type Engine struct {
-	Db       *gorm.DB             `inject:""`
-	I18n     *web.I18n            `inject:""`
-	Jwt      *auth.Jwt            `inject:""`
-	Security *web.Security        `inject:""`
-	Key      []byte               `inject:"jwt.key"`
-	Method   crypto.SigningMethod `inject:"jwt.method"`
+	Db     *gorm.DB             `inject:""`
+	I18n   *web.I18n            `inject:""`
+	Jwt    *auth.Jwt            `inject:""`
+	Key    []byte               `inject:"jwt.key"`
+	Method crypto.SigningMethod `inject:"jwt.method"`
 }
 
 // RegisterWorker register worker

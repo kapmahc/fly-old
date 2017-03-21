@@ -1,6 +1,9 @@
 package vpn
 
 import (
+	"crypto/md5"
+	"crypto/rand"
+	"encoding/base64"
 	"time"
 
 	"github.com/kapmahc/fly/web"
@@ -14,7 +17,7 @@ type User struct {
 	FullName string
 	Email    string
 	Details  string
-	Password []byte
+	Password string
 	Online   bool
 	Enable   bool
 	StartUp  time.Time
@@ -24,6 +27,32 @@ type User struct {
 // TableName table name
 func (User) TableName() string {
 	return "vpn_users"
+}
+
+func (p *User) sum(password string, salt []byte) string {
+	buf := md5.Sum(append([]byte(password), salt...))
+	return base64.StdEncoding.EncodeToString(append(buf[:], salt...))
+}
+
+// SetPassword set  password (md5 with salt)
+func (p *User) SetPassword(password string) error {
+	salt := make([]byte, 16)
+	_, err := rand.Read(salt)
+	if err != nil {
+		return err
+	}
+	p.Password = p.sum(password, salt)
+	return nil
+}
+
+// ChkPassword check password
+func (p *User) ChkPassword(password string) bool {
+	buf, err := base64.StdEncoding.DecodeString(p.Password)
+	if err != nil {
+		return false
+	}
+
+	return len(buf) > md5.Size && p.Password == p.sum(password, buf[md5.Size:])
 }
 
 // Log log

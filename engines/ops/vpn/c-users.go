@@ -51,15 +51,18 @@ func (p *Engine) createUser(c *gin.Context, lang string, data gin.H) (string, er
 		if err != nil {
 			return tpl, err
 		}
-		if err := p.Db.Create(&User{
+		user := User{
 			FullName: fm.FullName,
 			Email:    fm.Email,
-			Password: p.Security.Sum([]byte(fm.Password)),
 			Details:  fm.Details,
 			Enable:   fm.Enable,
 			StartUp:  startUp,
 			ShutDown: shutDown,
-		}).Error; err != nil {
+		}
+		if err := user.SetPassword(fm.Password); err != nil {
+			return tpl, err
+		}
+		if err := p.Db.Create(&user).Error; err != nil {
 			return tpl, err
 		}
 		c.Redirect(http.StatusFound, "/vpn/users")
@@ -142,10 +145,12 @@ func (p *Engine) resetUserPassword(c *gin.Context, lang string, data gin.H) (str
 			return tpl, err
 		}
 
-		if err := p.Db.Model(&User{}).
-			Where("id = ?", id).
+		if err := item.SetPassword(fm.Password); err != nil {
+			return tpl, err
+		}
+		if err := p.Db.Model(&item).
 			Updates(map[string]interface{}{
-				"password": p.Security.Sum([]byte(fm.Password)),
+				"password": item.Password,
 			}).Error; err != nil {
 			return tpl, err
 		}
@@ -176,13 +181,16 @@ func (p *Engine) changeUserPassword(c *gin.Context, lang string, data gin.H) (st
 		if err := p.Db.Where("email = ?", fm.Email).First(&user).Error; err != nil {
 			return tpl, err
 		}
-		if !p.Security.Chk([]byte(fm.CurrentPassword), user.Password) {
+		if !user.ChkPassword(fm.CurrentPassword) {
 			return tpl, p.I18n.E(lang, "ops.vpn.users.email-password-not-match")
+		}
+		if err := user.SetPassword(fm.NewPassword); err != nil {
+			return tpl, err
 		}
 
 		if err := p.Db.Model(user).
 			Updates(map[string]interface{}{
-				"password": p.Security.Sum([]byte(fm.NewPassword)),
+				"password": user.Password,
 			}).Error; err != nil {
 			return tpl, err
 		}
