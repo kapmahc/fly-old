@@ -705,6 +705,12 @@
 			"revisionTime": "2017-03-08T22:01:44Z"
 		},
 		{
+			"checksumSHA1": "6IzzHO9p32aHJhMYMwijccDUIVA=",
+			"path": "gopkg.in/alexcesaro/quotedprintable.v3",
+			"revision": "2caba252f4dc53eaf6b553000885530023f54623",
+			"revisionTime": "2015-07-16T17:19:45Z"
+		},
+		{
 			"checksumSHA1": "2NA4aSa/A7FnIlI9SrZkqZc5A38=",
 			"path": "gopkg.in/gin-contrib/cors.v1",
 			"revision": "fb918bcd825b9e20f0c3c365981baf9454029b6c",
@@ -727,6 +733,12 @@
 			"path": "gopkg.in/go-playground/validator.v9",
 			"revision": "4bd19358521c53f09639f21e2a9d6883d6890f24",
 			"revisionTime": "2017-02-24T17:48:26Z"
+		},
+		{
+			"checksumSHA1": "iq5WdjScmTU+LfNoerLuwcnXpdM=",
+			"path": "gopkg.in/gomail.v2",
+			"revision": "81ebce5c23dfd25c6c67194b37d3dd3f338c98b1",
+			"revisionTime": "2016-04-11T21:29:32Z"
 		},
 		{
 			"checksumSHA1": "1D8GzeoFGUs5FZOoyC2DpQg8c5Y=",

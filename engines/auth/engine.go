@@ -18,6 +18,7 @@ type Engine struct {
 	Jwt      *Jwt              `inject:""`
 	Server   *machinery.Server `inject:""`
 	Uploader web.Uploader      `inject:""`
+	Settings *web.Settings     `inject:""`
 }
 
 // Atom rss.atom

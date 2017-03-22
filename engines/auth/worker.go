@@ -8,6 +8,7 @@ import (
 	"github.com/SermoDigital/jose/jws"
 	log "github.com/Sirupsen/logrus"
 	"github.com/kapmahc/fly/web"
+	gomail "gopkg.in/gomail.v2"
 )
 
 const (
@@ -87,10 +88,32 @@ func (p *Engine) parseToken(lng, tkn, act string) (*User, error) {
 }
 
 func (p *Engine) doSendEmail(to, subject, body string) (interface{}, error) {
-	if !web.IsProduction() {
-		log.Infof("to %s\n%s\n%s", to, subject, body)
+	if !(web.IsProduction()) {
+		log.Debugf("send to %s: %s\n%s", to, subject, body)
 		return "done", nil
 	}
-	// TODO
+	smtp := make(map[string]interface{})
+	if err := p.Settings.Get("site.smtp", &smtp); err != nil {
+		return nil, err
+	}
+
+	sender := smtp["username"].(string)
+	msg := gomail.NewMessage()
+	msg.SetHeader("From", sender)
+	msg.SetHeader("To", to)
+	msg.SetHeader("Subject", subject)
+	msg.SetBody("text/html", body)
+
+	dia := gomail.NewDialer(
+		smtp["host"].(string),
+		smtp["port"].(int),
+		sender,
+		smtp["password"].(string),
+	)
+
+	if err := dia.DialAndSend(msg); err != nil {
+		return nil, err
+	}
+
 	return "done", nil
 }
