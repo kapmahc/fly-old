@@ -735,6 +735,18 @@
 			"revisionTime": "2017-02-24T17:48:26Z"
 		},
 		{
+			"checksumSHA1": "S8O+7IIU7z5JxqVHOkOzA818FQk=",
+			"path": "gopkg.in/gographics/imagick.v2/imagick",
+			"revision": "cefdee1a499e62f16e2f80aee5bc8f605ceea87b",
+			"revisionTime": "2016-11-28T19:23:04Z"
+		},
+		{
+			"checksumSHA1": "p7P9LxMill4wwy1lFJZ2odCLOh4=",
+			"path": "gopkg.in/gographics/imagick.v2/imagick/types",
+			"revision": "cefdee1a499e62f16e2f80aee5bc8f605ceea87b",
+			"revisionTime": "2016-11-28T19:23:04Z"
+		},
+		{
 			"checksumSHA1": "iq5WdjScmTU+LfNoerLuwcnXpdM=",
 			"path": "gopkg.in/gomail.v2",
 			"revision": "81ebce5c23dfd25c6c67194b37d3dd3f338c98b1",

@@ -96,6 +96,11 @@ func (Attachment) TableName() string {
 	return "attachments"
 }
 
+// IsPicture is picture?
+func (p *Attachment) IsPicture() bool {
+	return strings.HasPrefix(p.MediaType, "image/")
+}
+
 // Log log
 type Log struct {
 	ID        uint      `json:"id"`

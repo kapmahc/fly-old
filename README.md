@@ -2,6 +2,11 @@
 
 A complete open source e-commerce solution for the Go language.
 
+## Some packages
+```bash
+sudo apt-get install libmagickwand-dev
+```
+
 ## Install go
 
 ```bash
