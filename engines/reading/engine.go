@@ -53,6 +53,7 @@ func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
 			Label: "reading.dashboard.title",
 			Links: []*web.Link{
 				&web.Link{Href: "/reading/admin/books", Label: "reading.admin.books.index.title"},
+				&web.Link{Href: "/reading/admin/status", Label: "reading.admin.status.title"},
 			},
 		}
 	}

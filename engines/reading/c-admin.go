@@ -5,6 +5,25 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
+func (p *Engine) getAdminStatus(c *gin.Context, lang string, data gin.H) (string, error) {
+	data["title"] = p.I18n.T(lang, "reading.admin.status.title")
+	tpl := "reading-admin-status"
+	var bc int
+	if err := p.Db.Model(&Book{}).Count(&bc).Error; err != nil {
+		return tpl, err
+	}
+	data["book"] = gin.H{
+		p.I18n.T(lang, "reading.admin.status.book-count"): bc,
+	}
+
+	dict := gin.H{}
+	for _, dic := range dictionaries {
+		dict[dic.GetBookName()] = dic.GetWordCount()
+	}
+	data["dict"] = dict
+	return tpl, nil
+}
+
 func (p *Engine) indexAdminBooks(c *gin.Context, lang string, data gin.H) (string, error) {
 	data["title"] = p.I18n.T(lang, "reading.admin.books.index.title")
 	tpl := "reading-admin-books-index"
