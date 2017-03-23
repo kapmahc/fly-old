@@ -46,7 +46,11 @@ func (p *Engine) showBook(c *gin.Context, lang string, data gin.H) (string, erro
 	if err != nil {
 		return tpl, err
 	}
-
+	var notes []Note
+	if err := p.Db.Order("updated_at DESC").Find(&notes).Error; err != nil {
+		return tpl, err
+	}
+	data["notes"] = notes
 	// c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")
 	p.writePoints(
 		&buf,

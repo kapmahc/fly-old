@@ -3,6 +3,7 @@ package reading
 import (
 	"time"
 
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 )
 
@@ -25,4 +26,20 @@ type Book struct {
 // TableName table name
 func (Book) TableName() string {
 	return "reading_books"
+}
+
+// Note note
+type Note struct {
+	web.Model
+	Type   string
+	Body   string
+	UserID uint
+	User   auth.User
+	BookID uint
+	Book   Book
+}
+
+// TableName table name
+func (Note) TableName() string {
+	return "reading_notes"
 }
