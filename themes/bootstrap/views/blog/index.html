@@ -1,24 +1,10 @@
 {{define "blog-index"}}
 {{template "application-header" .}}
-{{$l := .l}}
-<br/>
-<div class="row">
-  <div class="col-md-9">
-    {{range .items}}
-    <h2>{{.Title}}</h2>
-    <hr/>
-    <p class="markdown">{{.Body}}</p>
-    {{end}}
-  </div>
-  <div class="col-md-3">
-    <h4>{{t $l "blog.sidebar.title"}}</h4>
-    <hr/>
-    <ul>
-      {{range .items}}
-        <li><a target="_blank" href="/blog/{{.Href}}">{{.Title}}</a></li>
-      {{end}}
-    </ul>
-  </div>
+{{template "form-header" .}}
+<div class="list-group">
+  {{range .items}}
+    <a class="list-group-item list-group-item-action" target="_blank" href="/blog/{{.Href}}">{{.Title}}</a>
+  {{end}}
 </div>
 {{template "application-footer" .}}
 {{end}}

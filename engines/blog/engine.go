@@ -11,7 +11,8 @@ import (
 
 // Engine engine
 type Engine struct {
-	I18n *web.I18n `inject:""`
+	I18n  *web.I18n  `inject:""`
+	Cache *web.Cache `inject:""`
 }
 
 // RegisterWorker register worker

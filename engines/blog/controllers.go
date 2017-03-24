@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"time"
 
 	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
@@ -30,10 +31,11 @@ func (p *Engine) showPost(c *gin.Context, lang string, data gin.H) (string, erro
 	if err != nil {
 		return tpl, err
 	}
+	data["items"] = posts
 	for _, i := range posts {
 		if i.Href == href {
-			data["body"] = i.Body
 			data["title"] = i.Title
+			data["item"] = i
 			return tpl, nil
 		}
 	}
@@ -45,7 +47,11 @@ func (p *Engine) showPost(c *gin.Context, lang string, data gin.H) (string, erro
 // -------------
 
 func (p *Engine) getPosts(lang string) ([]Post, error) {
+	key := "blogs://" + lang
 	var items []Post
+	if err := p.Cache.Get(key, &items); err == nil {
+		return items, nil
+	}
 	root := p.root(lang)
 	if err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -84,6 +90,7 @@ func (p *Engine) getPosts(lang string) ([]Post, error) {
 	}
 
 	sort.Sort(ByPublished(items))
+	p.Cache.Set(key, items, time.Hour*24)
 	return items, nil
 }
 
