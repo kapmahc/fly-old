@@ -123,8 +123,13 @@ func (p *Dao) Authority(user uint, rty string, rid uint) []string {
 }
 
 //Is is role ?
-func (p *Dao) Is(user uint, name string) bool {
-	return p.Can(user, name, "-", 0)
+func (p *Dao) Is(user uint, names ...string) bool {
+	for _, name := range names {
+		if p.Can(user, name, "-", 0) {
+			return true
+		}
+	}
+	return false
 }
 
 //Can can?
