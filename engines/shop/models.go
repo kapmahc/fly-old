@@ -13,9 +13,9 @@ type Store struct {
 	Name        string
 	Description string
 	Address     string
+	ManagerID   uint
 	Manager     string
 	Tel         string
-	Email       string
 	Stocks      []Stock
 }
 

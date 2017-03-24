@@ -5,7 +5,7 @@ CREATE TABLE shop_stores (
   name VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   address VARCHAR(255) NOT NULL,
-  manager VARCHAR(255) NOT NULL,
+  manager_id BIGINT REFERENCES users,
   tel VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
