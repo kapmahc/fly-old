@@ -28,6 +28,7 @@ CREATE INDEX idx_mall_addresses_phone ON mall_addresses(phone);
 CREATE TABLE mall_stores (
   id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  type VARCHAR(8) NOT NULL,
   description TEXT NOT NULL,
   address BIGINT REFERENCES mall_addresses,
   owner_id BIGINT REFERENCES users,
@@ -41,6 +42,7 @@ CREATE INDEX idx_mall_stores_currency ON mall_stores(currency);
 CREATE TABLE mall_tags (
   id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  type VARCHAR(8) NOT NULL,
   description TEXT NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
@@ -49,6 +51,7 @@ CREATE TABLE mall_tags (
 CREATE TABLE mall_vendors (
   id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  type VARCHAR(8) NOT NULL,
   description TEXT NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
@@ -57,6 +60,7 @@ CREATE TABLE mall_vendors (
 CREATE TABLE mall_products (
   id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  type VARCHAR(8) NOT NULL,
   description TEXT NOT NULL,
   vendor_id BIGINT REFERENCES mall_vendors,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),

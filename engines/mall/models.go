@@ -34,6 +34,7 @@ type Model struct {
 	web.Model
 
 	Name        string
+	Type        string
 	Description string
 }
 

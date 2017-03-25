@@ -3,6 +3,7 @@ package erp
 import (
 	"github.com/facebookgo/inject"
 	"github.com/kapmahc/fly/engines/mall"
+	"github.com/kapmahc/fly/web"
 	"github.com/urfave/cli"
 )
 
@@ -33,9 +34,12 @@ func (p *Engine) initTags() error {
 		"Tools",
 	} {
 		if err := p.Db.Create(&mall.Tag{
-			Model: mall.Model{Name: n},
-		}); err != nil {
-			return nil
+			Model: mall.Model{
+				Name: n,
+				Type: web.TypeMARKDOWN,
+			},
+		}).Error; err != nil {
+			return err
 		}
 	}
 	return nil

@@ -5,7 +5,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
-	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
@@ -59,11 +58,6 @@ func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
 		)
 	}
 	return &dd
-}
-
-// Shell shell commands
-func (p *Engine) Shell() []cli.Command {
-	return []cli.Command{}
 }
 
 func init() {
