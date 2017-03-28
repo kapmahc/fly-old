@@ -68,18 +68,17 @@ func init() {
 	})
 
 	viper.SetDefault("server", map[string]interface{}{
-		"name":  "www.change-me.com",
-		"port":  8080,
-		"ssl":   true,
-		"theme": "bootstrap",
+		"name":     "fly",
+		"frontend": "http://localhost:8080",
+		"backend":  "http://localhost:8000",
+		"port":     3000,
+		"ssl":      true,
 	})
 
 	viper.SetDefault("secrets", map[string]interface{}{
-		"jwt":    RandomStr(32),
-		"aes":    RandomStr(32),
-		"hmac":   RandomStr(32),
-		"csrf":   RandomStr(32),
-		"cookie": RandomStr(32),
+		"jwt":  RandomStr(32),
+		"aes":  RandomStr(32),
+		"hmac": RandomStr(32),
 	})
 
 	viper.SetDefault("elasticsearch", map[string]interface{}{

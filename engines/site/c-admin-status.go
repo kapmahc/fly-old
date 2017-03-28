@@ -136,29 +136,29 @@ func (p *Engine) _jobsStatus() (gin.H, error) {
 		"default queue":     cfg.DefaultQueue,
 	}, nil
 }
-func (p *Engine) getAdminSiteStatus(c *gin.Context, lang string, data gin.H) (string, error) {
-	tpl := "site-admin-status"
+func (p *Engine) getAdminSiteStatus(c *gin.Context) (interface{}, error) {
+	data := gin.H{}
 	var err error
-	data["title"] = p.I18n.T(lang, "site.admin.status.title")
+
 	data["os"], err = p._osStatus()
 	if err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["network"], err = p._networkStatus()
 	if err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["jobs"], err = p._jobsStatus()
 	if err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["cache"], err = p._cacheStatus()
 	if err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["database"], err = p._dbStatus()
 	if err != nil {
-		return tpl, err
+		return nil, err
 	}
-	return tpl, nil
+	return data, nil
 }

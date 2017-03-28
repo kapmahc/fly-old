@@ -1,8 +1,6 @@
 package site
 
 import (
-	"net/http"
-
 	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
@@ -18,15 +16,10 @@ func init() {
 	}
 }
 
-func (p *Engine) indexAdminLinks(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "site.admin.links.index.title")
-	tpl := "site-admin-links-index"
+func (p *Engine) indexAdminLinks(c *gin.Context) (interface{}, error) {
 	var links []web.Link
-	if err := p.Db.Order("loc ASC, sort_order DESC").Find(&links).Error; err != nil {
-		return tpl, err
-	}
-	data["items"] = links
-	return tpl, nil
+	err := p.Db.Order("loc ASC, sort_order DESC").Find(&links).Error
+	return links, err
 }
 
 type fmLink struct {
@@ -36,64 +29,48 @@ type fmLink struct {
 	SortOrder int    `form:"sortOrder"`
 }
 
-func (p *Engine) createAdminLink(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "buttons.new")
-	data["locs"] = linkLocs
-	data["sortOrders"] = sortOrders
-	tpl := "site-admin-links-new"
-	if c.Request.Method == http.MethodPost {
-		var fm fmLink
-		if err := c.Bind(&fm); err != nil {
-			return tpl, err
-		}
+func (p *Engine) createAdminLink(c *gin.Context) (interface{}, error) {
 
-		if err := p.Db.Create(&web.Link{
-			Loc:       fm.Loc,
-			Label:     fm.Label,
-			Href:      fm.Href,
-			SortOrder: fm.SortOrder,
-		}).Error; err != nil {
-			return tpl, err
-		}
-		c.Redirect(http.StatusFound, "/admin/links")
-		return "", nil
+	var fm fmLink
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	return tpl, nil
+
+	if err := p.Db.Create(&web.Link{
+		Loc:       fm.Loc,
+		Label:     fm.Label,
+		Href:      fm.Href,
+		SortOrder: fm.SortOrder,
+	}).Error; err != nil {
+		return nil, err
+	}
+	return gin.H{}, nil
 }
 
-func (p *Engine) updateAdminLink(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "buttons.edit")
-	data["locs"] = linkLocs
-	data["sortOrders"] = sortOrders
-	tpl := "site-admin-links-edit"
+func (p *Engine) updateAdminLink(c *gin.Context) (interface{}, error) {
 	id := c.Param("id")
 
 	var item web.Link
 	if err := p.Db.Where("id = ?", id).First(&item).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
-	data["item"] = item
-	if c.Request.Method == http.MethodPost {
-		var fm fmLink
-		if err := c.Bind(&fm); err != nil {
-			return tpl, err
-		}
-
-		if err := p.Db.Model(&web.Link{}).
-			Where("id = ?", id).
-			Updates(map[string]interface{}{
-				"loc":        fm.Loc,
-				"href":       fm.Href,
-				"sort_order": fm.SortOrder,
-				"label":      fm.Label,
-			}).Error; err != nil {
-			return tpl, err
-		}
-		c.Redirect(http.StatusFound, "/admin/links")
-		return "", nil
+	var fm fmLink
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	if err := p.Db.Model(&web.Link{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"loc":        fm.Loc,
+			"href":       fm.Href,
+			"sort_order": fm.SortOrder,
+			"label":      fm.Label,
+		}).Error; err != nil {
+		return nil, err
+	}
+
+	return gin.H{}, nil
 }
 
 func (p *Engine) destroyAdminLink(c *gin.Context) (interface{}, error) {

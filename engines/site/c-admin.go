@@ -1,8 +1,6 @@
 package site
 
 import (
-	"net/http"
-
 	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
@@ -15,30 +13,25 @@ type fmSiteInfo struct {
 	Copyright   string `form:"copyright"`
 }
 
-func (p *Engine) formAdminSiteInfo(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "site.admin.info.title")
-	tpl := "site-admin-info"
-	if c.Request.Method == http.MethodPost {
-		var fm fmSiteInfo
-		if err := c.Bind(&fm); err != nil {
-			return tpl, err
-		}
-
-		for k, v := range map[string]string{
-			"title":       fm.Title,
-			"subTitle":    fm.SubTitle,
-			"keywords":    fm.Keywords,
-			"description": fm.Description,
-			"copyright":   fm.Copyright,
-		} {
-			if err := p.I18n.Set(lang, "site."+k, v); err != nil {
-				return tpl, err
-			}
-		}
-		data[web.NOTICE] = p.I18n.T(lang, "success")
+func (p *Engine) postAdminSiteInfo(c *gin.Context) (interface{}, error) {
+	lang := c.MustGet(web.LOCALE).(string)
+	var fm fmSiteInfo
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	for k, v := range map[string]string{
+		"title":       fm.Title,
+		"subTitle":    fm.SubTitle,
+		"keywords":    fm.Keywords,
+		"description": fm.Description,
+		"copyright":   fm.Copyright,
+	} {
+		if err := p.I18n.Set(lang, "site."+k, v); err != nil {
+			return nil, err
+		}
+	}
+	return gin.H{}, nil
 }
 
 type fmSiteAuthor struct {
@@ -46,27 +39,22 @@ type fmSiteAuthor struct {
 	Email string `form:"email"`
 }
 
-func (p *Engine) formAdminSiteAuthor(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "site.admin.author.title")
-	tpl := "site-admin-author"
-	if c.Request.Method == http.MethodPost {
-
-		var fm fmSiteAuthor
-		if err := c.Bind(&fm); err != nil {
-			return tpl, err
-		}
-
-		for k, v := range map[string]string{
-			"name":  fm.Name,
-			"email": fm.Email,
-		} {
-			if err := p.I18n.Set(lang, "site.author."+k, v); err != nil {
-				return tpl, err
-			}
-		}
-		data[web.NOTICE] = p.I18n.T(lang, "success")
+func (p *Engine) postAdminSiteAuthor(c *gin.Context) (interface{}, error) {
+	lang := c.MustGet(web.LOCALE).(string)
+	var fm fmSiteAuthor
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	return tpl, nil
+
+	for k, v := range map[string]string{
+		"name":  fm.Name,
+		"email": fm.Email,
+	} {
+		if err := p.I18n.Set(lang, "site.author."+k, v); err != nil {
+			return nil, err
+		}
+	}
+	return gin.H{}, nil
 }
 
 type fmSiteSeo struct {
@@ -74,34 +62,34 @@ type fmSiteSeo struct {
 	BaiduVerifyCode  string `form:"baiduVerifyCode"`
 }
 
-func (p *Engine) formAdminSiteSeo(c *gin.Context, lang string, data gin.H) (string, error) {
-
-	data["title"] = p.I18n.T(lang, "site.admin.seo.title")
-	tpl := "site-admin-seo"
-	if c.Request.Method == http.MethodPost {
-		var fm fmSiteSeo
-		if err := c.Bind(&fm); err != nil {
-			return tpl, err
-		}
-
-		for k, v := range map[string]string{
-			"google.verify.code": fm.GoogleVerifyCode,
-			"baidu.verify.code":  fm.BaiduVerifyCode,
-		} {
-			if err := p.Settings.Set("site."+k, v, true); err != nil {
-				return tpl, err
-			}
-		}
-		data[web.NOTICE] = p.I18n.T(lang, "success")
-	}
-
+func (p *Engine) getAdminSiteSeo(c *gin.Context) (interface{}, error) {
 	var gc string
 	var bc string
 	p.Settings.Get("site.google.verify.code", &gc)
 	p.Settings.Get("site.baidu.verify.code", &bc)
-	data["googleVerifyCode"] = gc
-	data["baiduVerifyCode"] = bc
-	return tpl, nil
+	return gin.H{
+		"googleVerifyCode": gc,
+		"baiduVerifyCode":  bc,
+	}, nil
+}
+
+func (p *Engine) postAdminSiteSeo(c *gin.Context) (interface{}, error) {
+
+	var fm fmSiteSeo
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+
+	for k, v := range map[string]string{
+		"google.verify.code": fm.GoogleVerifyCode,
+		"baidu.verify.code":  fm.BaiduVerifyCode,
+	} {
+		if err := p.Settings.Set("site."+k, v, true); err != nil {
+			return nil, err
+		}
+	}
+
+	return gin.H{}, nil
 }
 
 type fmSiteSMTP struct {
@@ -113,28 +101,7 @@ type fmSiteSMTP struct {
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
-func (p *Engine) formAdminSiteSMTP(c *gin.Context, lang string, data gin.H) (string, error) {
-
-	data["title"] = p.I18n.T(lang, "site.admin.smtp.title")
-	tpl := "site-admin-smtp"
-	if c.Request.Method == http.MethodPost {
-		var fm fmSiteSMTP
-		if err := c.Bind(&fm); err != nil {
-			return tpl, err
-		}
-
-		val := map[string]interface{}{
-			"host":     fm.Host,
-			"port":     fm.Port,
-			"username": fm.Username,
-			"password": fm.Password,
-			"ssl":      fm.Ssl,
-		}
-		if err := p.Settings.Set("site.smtp", val, true); err != nil {
-			return tpl, err
-		}
-		data[web.NOTICE] = p.I18n.T(lang, "success")
-	}
+func (p *Engine) getAdminSiteSMTP(c *gin.Context) (interface{}, error) {
 
 	smtp := make(map[string]interface{})
 	if err := p.Settings.Get("site.smtp", &smtp); err == nil {
@@ -146,7 +113,27 @@ func (p *Engine) formAdminSiteSMTP(c *gin.Context, lang string, data gin.H) (str
 		smtp["username"] = "no-reply@change-me.com"
 		smtp["password"] = ""
 	}
-	data["smtp"] = smtp
-	data["ports"] = []int{25, 465, 587, 2525, 2526}
-	return tpl, nil
+
+	return smtp, nil
+
+}
+func (p *Engine) postAdminSiteSMTP(c *gin.Context) (interface{}, error) {
+
+	var fm fmSiteSMTP
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+
+	val := map[string]interface{}{
+		"host":     fm.Host,
+		"port":     fm.Port,
+		"username": fm.Username,
+		"password": fm.Password,
+		"ssl":      fm.Ssl,
+	}
+	if err := p.Settings.Set("site.smtp", val, true); err != nil {
+		return nil, err
+	}
+
+	return gin.H{}, nil
 }

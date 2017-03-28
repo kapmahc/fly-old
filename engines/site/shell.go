@@ -607,11 +607,11 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		rt.Static("/public", path.Join("themes", theme, "public"))
 	}
 
-	tpl, err := p.openRender(theme)
-	if err != nil {
-		return err
-	}
-	rt.SetHTMLTemplate(tpl)
+	// tpl, err := p.openRender(theme)
+	// if err != nil {
+	// 	return err
+	// }
+	// rt.SetHTMLTemplate(tpl)
 	// ---------
 
 	// cfg := cors.DefaultConfig()

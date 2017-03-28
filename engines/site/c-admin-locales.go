@@ -1,20 +1,17 @@
 package site
 
 import (
-	"net/http"
-
 	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) getAdminLocales(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "site.admin.locales.index.title")
+func (p *Engine) getAdminLocales(c *gin.Context) (interface{}, error) {
+	lang := c.MustGet(web.LOCALE).(string)
 	var items []web.Locale
 	err := p.Db.Select([]string{"id", "code", "message"}).
 		Where("lang = ?", lang).
 		Order("code ASC").Find(&items).Error
-	data["items"] = items
-	return "site-admin-locales-index", err
+	return items, err
 }
 
 func (p *Engine) deleteAdminLocales(c *gin.Context) (interface{}, error) {
@@ -30,22 +27,14 @@ type fmLocale struct {
 	Message string `form:"message" binding:"required"`
 }
 
-func (p *Engine) formAdminLocales(c *gin.Context, lang string, data gin.H) (string, error) {
-	data["title"] = p.I18n.T(lang, "buttons.edit")
-	tpl := "site-admin-locales-edit"
-	if c.Request.Method == http.MethodPost {
-		var fm fmLocale
-		if err := c.Bind(&fm); err != nil {
-			return tpl, err
-		}
-		data["code"] = fm.Code
-		if err := p.I18n.Set(lang, fm.Code, fm.Message); err != nil {
-			return tpl, err
-		}
-		c.Redirect(http.StatusFound, "/admin/locales")
-		return "", nil
+func (p *Engine) postAdminLocales(c *gin.Context) (interface{}, error) {
+	lang := c.MustGet(web.LOCALE).(string)
+	var fm fmLocale
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-
-	data["code"] = c.Request.URL.Query().Get("code")
-	return tpl, nil
+	if err := p.I18n.Set(lang, fm.Code, fm.Message); err != nil {
+		return nil, err
+	}
+	return gin.H{}, nil
 }
