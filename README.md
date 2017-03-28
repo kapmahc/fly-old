@@ -3,6 +3,7 @@
 A complete open source e-commerce solution for the Go language.
 
 ## Some packages
+
 ```bash
 sudo apt-get install libmagickwand-dev
 ```
@@ -15,13 +16,30 @@ gvm install go1.8 -B
 gvm use go1.8 --default
 ```
 
-## Usage
+## Install nodejs
+```bash
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | zsh
+nvm install 6
+npm install -g @angular/cli
+```
+
+
+## Building
 
 ```bash
 go get -u github.com/kapmahc/fly
 cd $GOPATH/src/github.com/kapmahc/fly
 make
 ls dist
+```
+
+
+## Development
+```bash
+cd $GOPATH/src/github.com/kapmahc/fly
+# run backend
+./run
+# run frontend
 ```
 
 ## Create database
@@ -64,6 +82,7 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 
   ## Documents
 
+  - [angular](https://angular.io/)
   - [gorm](http://jinzhu.me/gorm/)
   - [cli](https://github.com/urfave/cli)
   - [govendor](https://github.com/kardianos/govendor)
