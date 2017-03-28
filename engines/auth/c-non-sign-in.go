@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/SermoDigital/jose/jws"
@@ -80,19 +81,21 @@ type fmEmail struct {
 	Email string `form:"email" binding:"required,email"`
 }
 
-func (p *Engine) getUsersConfirm(c *gin.Context) (interface{}, error) {
+func (p *Engine) getUsersConfirm(c *gin.Context) {
 	lang := c.MustGet(web.LOCALE).(string)
 	token := c.Param("token")
 	user, err := p.parseToken(lang, token, actConfirm)
 	if err != nil {
-		return nil, err
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
 	}
 	if user.IsConfirm() {
-		return nil, p.I18n.E(lang, "auth.errors.user-already-confirm")
+		c.String(http.StatusInternalServerError, p.I18n.T(lang, "auth.errors.user-already-confirm"))
+		return
 	}
 	p.Db.Model(user).Update("confirmed_at", time.Now())
 	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.confirm"))
-	return gin.H{}, nil
+	c.Redirect(http.StatusFound, "/")
 }
 func (p *Engine) postUsersConfirm(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
@@ -115,21 +118,24 @@ func (p *Engine) postUsersConfirm(c *gin.Context) (interface{}, error) {
 	return gin.H{}, nil
 }
 
-func (p *Engine) getUsersUnlock(c *gin.Context) (interface{}, error) {
+func (p *Engine) getUsersUnlock(c *gin.Context) {
 	lang := c.MustGet(web.LOCALE).(string)
 	token := c.Param("token")
 	user, err := p.parseToken(lang, token, actUnlock)
 	if err != nil {
-		return nil, err
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
 	}
 	if !user.IsLock() {
-		return nil, p.I18n.E(lang, "auth.errors.user-not-lock")
+		c.String(http.StatusInternalServerError, p.I18n.T(lang, "auth.errors.user-not-lock"))
+		return
 	}
 
 	p.Db.Model(user).Update(map[string]interface{}{"locked_at": nil})
 	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.unlock"))
-	return gin.H{}, nil
+	c.Redirect(http.StatusFound, "/")
 }
+
 func (p *Engine) postUsersUnlock(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 
