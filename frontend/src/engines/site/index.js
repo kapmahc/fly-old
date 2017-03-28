@@ -3,7 +3,7 @@ import Home from './Home'
 export default [
   {
     path: '/',
-    name: 'Home',
+    name: 'site.home',
     component: Home
   }
 ]
