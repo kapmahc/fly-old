@@ -3,8 +3,16 @@
 A complete open source e-commerce solution for the Go language.
 
 ## Some packages
+
 ```bash
 sudo apt-get install libmagickwand-dev
+```
+
+## Install nodejs
+
+```bash
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | zsh
+nvm install 6
 ```
 
 ## Install go
@@ -20,8 +28,21 @@ gvm use go1.8 --default
 ```bash
 go get -u github.com/kapmahc/fly
 cd $GOPATH/src/github.com/kapmahc/fly
+# download packages
+make init
+# build
 make
 ls dist
+```
+
+## Devleopment
+
+```bash
+cd $GOPATH/src/github.com/kapmahc/fly
+# backend
+./run.sh
+# frontend
+cd front && npm run dev
 ```
 
 ## Create database
