@@ -38,11 +38,9 @@ ls dist
 ```bash
 cd $GOPATH/src/github.com/kapmahc/fly
 # run backend
-cd backend
 ./run.sh
 # run frontend
-cd frontend
-ng serve -o
+cd frontend && ng serve -o
 ```
 
 ## Create database
@@ -86,6 +84,7 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   ## Documents
 
   - [angular](https://angular.io/)
+  - [ng-bootstrap](https://ng-bootstrap.github.io)
   - [gorm](http://jinzhu.me/gorm/)
   - [cli](https://github.com/urfave/cli)
   - [govendor](https://github.com/kardianos/govendor)
