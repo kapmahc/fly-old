@@ -17,7 +17,7 @@ front:
 init:
 	go get -u github.com/kardianos/govendor
 	govendor sync
-	cd themes/$(theme) && npm install
+	cd frontend && npm install
 
 clean:
 	-rm -rv $(dst) frontend/dist dist.tar.bz2
