@@ -17,7 +17,6 @@ import (
 	"github.com/facebookgo/inject"
 	"github.com/fvbock/endless"
 	"github.com/google/uuid"
-	"github.com/gorilla/csrf"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
@@ -26,6 +25,7 @@ import (
 	"github.com/urfave/cli"
 	"golang.org/x/text/language"
 	"golang.org/x/tools/blog/atom"
+	cors "gopkg.in/gin-contrib/cors.v1"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -602,14 +602,13 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	rt := gin.Default()
 	rt.LoadHTMLGlob("templates/*")
 
-	// cfg := cors.DefaultConfig()
-	// cfg.AllowMethods = append(cfg.AllowMethods, http.MethodDelete, http.MethodPatch)
-	// cfg.AllowCredentials = true
-	// cfg.AllowHeaders = append(cfg.AllowHeaders, "Authorization")
-	// cfg.AllowOrigins = []string{web.Home()}
+	cfg := cors.DefaultConfig()
+	cfg.AllowMethods = append(cfg.AllowMethods, http.MethodDelete, http.MethodPatch)
+	cfg.AllowCredentials = true
+	cfg.AllowHeaders = append(cfg.AllowHeaders, "Authorization")
+	cfg.AllowOrigins = []string{viper.GetString("server.frontend")}
 	rt.Use(
-		// cors.New(cfg),
-		// sessions.Sessions("_session_", sessions.NewCookieStore([]byte(viper.GetString("secrets.cookie")))),
+		cors.New(cfg),
 		p.I18n.Middleware,
 		p.Jwt.CurrentUserMiddleware,
 	)
@@ -619,18 +618,10 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		return nil
 	})
 
-	// -------------
-	hnd := csrf.Protect(
-		[]byte(viper.GetString("secrets.csrf")),
-		csrf.Secure(web.IsProduction()),
-		csrf.CookieName("_csrf_"),
-		csrf.Path("/"),
-		csrf.FieldName("authenticity_token"),
-	)(rt)
 	// ---------------
 	addr := fmt.Sprintf(":%d", port)
 	if web.IsProduction() {
-		srv := endless.NewServer(addr, hnd)
+		srv := endless.NewServer(addr, rt)
 		srv.BeforeBegin = func(add string) {
 			fd, err := os.OpenFile(path.Join("tmp", "pid"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 			if err != nil {
@@ -645,7 +636,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		return srv.ListenAndServe()
 	}
 
-	return http.ListenAndServe(addr, hnd)
+	return http.ListenAndServe(addr, rt)
 }
 
 func (p *Engine) writeSitemap(root string) error {
