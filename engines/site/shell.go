@@ -600,19 +600,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	rt := gin.Default()
-	// --------------
-	theme := viper.GetString("server.theme")
-	if !web.IsProduction() {
-		// using nginx for production
-		rt.Static("/public", path.Join("themes", theme, "public"))
-	}
-
-	// tpl, err := p.openRender(theme)
-	// if err != nil {
-	// 	return err
-	// }
-	// rt.SetHTMLTemplate(tpl)
-	// ---------
+	rt.LoadHTMLGlob("templates/*")
 
 	// cfg := cors.DefaultConfig()
 	// cfg.AllowMethods = append(cfg.AllowMethods, http.MethodDelete, http.MethodPatch)
