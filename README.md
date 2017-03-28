@@ -38,8 +38,11 @@ ls dist
 ```bash
 cd $GOPATH/src/github.com/kapmahc/fly
 # run backend
-./run
+cd backend
+./run.sh
 # run frontend
+cd frontend
+ng serve -o
 ```
 
 ## Create database

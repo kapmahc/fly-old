@@ -6,3 +6,10 @@
 .*.swp
 .*.un~
 
+# Go
+/vendor/*/
+
+# Test
+/etc
+/tmp
+/config.toml
