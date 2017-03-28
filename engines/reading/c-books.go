@@ -16,12 +16,12 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) indexBooks(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) indexBooks(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "reading.books.index.title")
 	tpl := "reading-books-index"
 	var total int64
 	if err := p.Db.Model(&Book{}).Count(&total).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	pag := web.NewPagination(c.Request, total)
 
@@ -29,7 +29,7 @@ func (p *Engine) indexBooks(c *gin.Context, lang string, data gin.H) (string, er
 	if err := p.Db.
 		Limit(pag.Limit()).Offset(pag.Offset()).
 		Find(&books).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	for _, b := range books {
 		pag.Items = append(pag.Items, b)
@@ -38,17 +38,17 @@ func (p *Engine) indexBooks(c *gin.Context, lang string, data gin.H) (string, er
 	return tpl, nil
 }
 
-func (p *Engine) showBook(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) showBook(c *gin.Context) (interface{}, error) {
 	id := c.Param("id")
 	tpl := "reading-books-show"
 	var buf bytes.Buffer
 	it, bk, err := p.readBook(id)
 	if err != nil {
-		return tpl, err
+		return nil, err
 	}
 	var notes []Note
 	if err := p.Db.Order("updated_at DESC").Find(&notes).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["notes"] = notes
 	// c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")

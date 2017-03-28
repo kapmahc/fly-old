@@ -7,37 +7,29 @@ import (
 
 // Mount web mount-points
 func (p *Engine) Mount(rt *gin.Engine) {
-	rt.GET("/users", HTML(p.indexUsers))
+	rt.GET("/users", web.JSON(p.indexUsers))
 
 	ung := rt.Group("/users")
-	ung.GET("/sign-in", HTML(p.formUsersSignIn))
-	ung.POST("/sign-in", HTML(p.formUsersSignIn))
-	ung.GET("/sign-up", HTML(p.formUsersSignUp))
-	ung.POST("/sign-up", HTML(p.formUsersSignUp))
-	ung.GET("/confirm/:token", HTML(p.formUsersConfirm))
-	ung.GET("/confirm", HTML(p.formUsersConfirm))
-	ung.POST("/confirm", HTML(p.formUsersConfirm))
-	ung.GET("/unlock/:token", HTML(p.formUsersUnlock))
-	ung.GET("/unlock", HTML(p.formUsersUnlock))
-	ung.POST("/unlock", HTML(p.formUsersUnlock))
-	ung.GET("/forgot-password", HTML(p.formUsersForgotPassword))
-	ung.POST("/forgot-password", HTML(p.formUsersForgotPassword))
-	ung.GET("/reset-password/:token", HTML(p.formUsersResetPassword))
-	ung.POST("/reset-password/:token", HTML(p.formUsersResetPassword))
+
+	ung.POST("/sign-in", web.JSON(p.postUsersSignIn))
+	ung.POST("/sign-up", web.JSON(p.postUsersSignUp))
+	ung.GET("/confirm/:token", web.JSON(p.getUsersConfirm))
+	ung.POST("/confirm", web.JSON(p.postUsersConfirm))
+	ung.GET("/unlock/:token", web.JSON(p.getUsersUnlock))
+	ung.POST("/unlock", web.JSON(p.postUsersUnlock))
+	ung.POST("/forgot-password", web.JSON(p.postUsersForgotPassword))
+	ung.POST("/reset-password", web.JSON(p.postUsersResetPassword))
 
 	umg := rt.Group("/users", p.Jwt.MustSignInMiddleware)
-	umg.GET("/info", HTML(p.formUsersInfo))
-	umg.POST("/info", HTML(p.formUsersInfo))
-	umg.GET("/change-password", HTML(p.formUsersChangePassword))
-	umg.POST("/change-password", HTML(p.formUsersChangePassword))
-	umg.GET("/logs", HTML(p.getUsersLogs))
+	umg.POST("/info", web.JSON(p.postUsersInfo))
+	umg.POST("/change-password", web.JSON(p.postUsersChangePassword))
+	umg.GET("/logs", web.JSON(p.getUsersLogs))
 	umg.DELETE("/sign-out", web.JSON(p.deleteUsersSignOut))
 
-	rt.GET("/attachments", p.Jwt.MustSignInMiddleware, HTML(p.indexAttachments))
-	rt.GET("/attachments/new", p.Jwt.MustSignInMiddleware, HTML(p.newAttachment))
+	rt.GET("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.indexAttachments))
 	rt.POST("/attachments", p.Jwt.MustSignInMiddleware, web.JSON(p.createAttachment))
-	rt.GET("/attachments/edit/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, HTML(p.updateAttachment))
-	rt.POST("/attachments/edit/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, HTML(p.updateAttachment))
+	rt.GET("/attachments/edit/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.updateAttachment))
+	rt.POST("/attachments/edit/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.updateAttachment))
 	rt.DELETE("/attachments/:id", p.Jwt.MustSignInMiddleware, p.canEditAttachment, web.JSON(p.destroyAttachment))
 
 }

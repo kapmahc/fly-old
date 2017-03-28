@@ -9,7 +9,7 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) myNotes(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) myNotes(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "reading.notes.my.title")
 	tpl := "reading-notes-my"
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
@@ -20,20 +20,20 @@ func (p *Engine) myNotes(c *gin.Context, lang string, data gin.H) (string, error
 		qry = qry.Where("user_id = ?", user.ID)
 	}
 	if err := qry.Order("updated_at DESC").Find(&notes).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["items"] = notes
 	return tpl, nil
 }
 
-func (p *Engine) indexNotes(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) indexNotes(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "reading.notes.index.title")
 	tpl := "reading-notes-index"
 
 	var total int64
 	var pag *web.Pagination
 	if err := p.Db.Model(&Note{}).Count(&total).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 
 	pag = web.NewPagination(c.Request, total)
@@ -41,7 +41,7 @@ func (p *Engine) indexNotes(c *gin.Context, lang string, data gin.H) (string, er
 	if err := p.Db.
 		Limit(pag.Limit()).Offset(pag.Offset()).
 		Find(&notes).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 
 	for _, it := range notes {
@@ -57,14 +57,14 @@ type fmNoteNew struct {
 	BookID uint   `form:"bookId"`
 }
 
-func (p *Engine) createNote(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) createNote(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "buttons.new")
 	tpl := "reading-notes-new"
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 	if c.Request.Method == http.MethodPost {
 		var fm fmNoteNew
 		if err := c.Bind(&fm); err != nil {
-			return tpl, err
+			return nil, err
 		}
 		if err := p.Db.Create(&Note{
 			Type:   fm.Type,
@@ -72,7 +72,7 @@ func (p *Engine) createNote(c *gin.Context, lang string, data gin.H) (string, er
 			BookID: fm.BookID,
 			UserID: user.ID,
 		}).Error; err != nil {
-			return tpl, err
+			return nil, err
 		}
 
 		c.Redirect(http.StatusFound, fmt.Sprintf("/reading/books/%d", fm.BookID))
@@ -87,7 +87,7 @@ type fmNoteEdit struct {
 	Body string `form:"body" binding:"required,max=2000"`
 }
 
-func (p *Engine) updateNote(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) updateNote(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "buttons.edit")
 	tpl := "reading-notes-edit"
 
@@ -97,7 +97,7 @@ func (p *Engine) updateNote(c *gin.Context, lang string, data gin.H) (string, er
 	if c.Request.Method == http.MethodPost {
 		var fm fmNoteEdit
 		if err := c.Bind(&fm); err != nil {
-			return tpl, err
+			return nil, err
 		}
 
 		if err := p.Db.Model(&Note{}).
@@ -106,7 +106,7 @@ func (p *Engine) updateNote(c *gin.Context, lang string, data gin.H) (string, er
 				"body": fm.Body,
 				"type": fm.Type,
 			}).Error; err != nil {
-			return tpl, err
+			return nil, err
 		}
 
 		c.Redirect(http.StatusFound, fmt.Sprintf("/reading/books/%d", note.ID))

@@ -9,7 +9,7 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) myArticles(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) myArticles(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "forum.articles.my.title")
 	tpl := "forum-articles-my"
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
@@ -20,20 +20,20 @@ func (p *Engine) myArticles(c *gin.Context, lang string, data gin.H) (string, er
 		qry = qry.Where("user_id = ?", user.ID)
 	}
 	if err := qry.Order("updated_at DESC").Find(&articles).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["items"] = articles
 	return tpl, nil
 }
 
-func (p *Engine) indexArticles(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) indexArticles(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "forum.articles.index.title")
 	tpl := "forum-articles-index"
 
 	var total int64
 	var pag *web.Pagination
 	if err := p.Db.Model(&Article{}).Count(&total).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 
 	pag = web.NewPagination(c.Request, total)
@@ -41,7 +41,7 @@ func (p *Engine) indexArticles(c *gin.Context, lang string, data gin.H) (string,
 	if err := p.Db.Select([]string{"id", "title", "summary", "user_id", "updated_at"}).
 		Limit(pag.Limit()).Offset(pag.Offset()).
 		Find(&articles).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 
 	for _, it := range articles {
@@ -59,20 +59,20 @@ type fmArticle struct {
 	Tags    []string `form:"tags"`
 }
 
-func (p *Engine) createArticle(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) createArticle(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "forum.articles.new.title")
 	tpl := "forum-articles-new"
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 	var tags []Tag
 	if err := p.Db.Select([]string{"id", "name"}).Find(&tags).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["tags"] = tags
 
 	if c.Request.Method == http.MethodPost {
 		var fm fmArticle
 		if err := c.Bind(&fm); err != nil {
-			return tpl, err
+			return nil, err
 		}
 
 		var tags []Tag
@@ -81,7 +81,7 @@ func (p *Engine) createArticle(c *gin.Context, lang string, data gin.H) (string,
 			if err := p.Db.Select([]string{"id"}).Where("id = ?", it).First(&t).Error; err == nil {
 				tags = append(tags, t)
 			} else {
-				return tpl, err
+				return nil, err
 			}
 		}
 		a := Article{
@@ -93,10 +93,10 @@ func (p *Engine) createArticle(c *gin.Context, lang string, data gin.H) (string,
 		}
 
 		if err := p.Db.Create(&a).Error; err != nil {
-			return tpl, err
+			return nil, err
 		}
 		if err := p.Db.Model(&a).Association("Tags").Append(tags).Error; err != nil {
-			return tpl, err
+			return nil, err
 		}
 		c.Redirect(http.StatusFound, fmt.Sprintf("/forum/articles/show/%d", a.ID))
 		return "", nil
@@ -105,34 +105,34 @@ func (p *Engine) createArticle(c *gin.Context, lang string, data gin.H) (string,
 	return tpl, nil
 }
 
-func (p *Engine) showArticle(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) showArticle(c *gin.Context) (interface{}, error) {
 
 	tpl := "forum-articles-show"
 	var a Article
 	if err := p.Db.Where("id = ?", c.Param("id")).First(&a).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["title"] = a.Title
 	if err := p.Db.Model(&a).Related(&a.Comments).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	if err := p.Db.Model(&a).Association("Tags").Find(&a.Tags).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["item"] = a
 	return tpl, nil
 }
 
-func (p *Engine) updateArticle(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) updateArticle(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "buttons.edit")
 	tpl := "forum-articles-edit"
 	a := c.MustGet("article").(*Article)
 	if err := p.Db.Model(a).Association("Tags").Find(&a.Tags).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	var tags []Tag
 	if err := p.Db.Select([]string{"id", "name"}).Find(&tags).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	var ids []interface{}
 	for _, t := range a.Tags {
@@ -145,7 +145,7 @@ func (p *Engine) updateArticle(c *gin.Context, lang string, data gin.H) (string,
 	if c.Request.Method == http.MethodPost {
 		var fm fmArticle
 		if err := c.Bind(&fm); err != nil {
-			return tpl, err
+			return nil, err
 		}
 
 		var tags []Tag
@@ -154,7 +154,7 @@ func (p *Engine) updateArticle(c *gin.Context, lang string, data gin.H) (string,
 			if err := p.Db.Select([]string{"id"}).Where("id = ?", it).First(&t).Error; err == nil {
 				tags = append(tags, t)
 			} else {
-				return tpl, err
+				return nil, err
 			}
 		}
 
@@ -164,11 +164,11 @@ func (p *Engine) updateArticle(c *gin.Context, lang string, data gin.H) (string,
 			"body":    fm.Body,
 			"type":    fm.Type,
 		}).Error; err != nil {
-			return tpl, err
+			return nil, err
 		}
 
 		if err := p.Db.Model(a).Association("Tags").Replace(tags).Error; err != nil {
-			return tpl, err
+			return nil, err
 		}
 
 		c.Redirect(http.StatusFound, fmt.Sprintf("/forum/articles/show/%d", a.ID))

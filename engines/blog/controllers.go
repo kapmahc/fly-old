@@ -17,19 +17,19 @@ const (
 	MARKDOWN = ".md"
 )
 
-func (p *Engine) indexPosts(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) indexPosts(c *gin.Context) (interface{}, error) {
 	items, err := p.getPosts(c.MustGet(web.LOCALE).(string))
 	data["items"] = items
 	data["title"] = p.I18n.T(lang, "blog.index.title")
 	return "blog-index", err
 }
 
-func (p *Engine) showPost(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) showPost(c *gin.Context) (interface{}, error) {
 	href := c.Param("href")[1:]
 	tpl := "blog-show"
 	posts, err := p.getPosts(c.MustGet(web.LOCALE).(string))
 	if err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["items"] = posts
 	for _, i := range posts {

@@ -11,14 +11,14 @@ type fmDict struct {
 	Keywords string `form:"keywords" binding:"required,max=255"`
 }
 
-func (p *Engine) formDict(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) formDict(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "reading.dict.index.title")
 	tpl := "reading-dict-index"
 	switch c.Request.Method {
 	case http.MethodPost:
 		var fm fmDict
 		if err := c.Bind(&fm); err != nil {
-			return tpl, err
+			return nil, err
 		}
 		data["keywords"] = fm.Keywords
 		rst := gin.H{}

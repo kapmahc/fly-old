@@ -1,16 +1,5 @@
 package web
 
-const (
-	// DATA data key
-	DATA = "data"
-	// NOTICE flash notice
-	NOTICE = "notice"
-	// ERROR flash error
-	ERROR = "error"
-	// ALERT flash alert
-	ALERT = "alert"
-)
-
 // Link link
 type Link struct {
 	Model

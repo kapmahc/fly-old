@@ -6,6 +6,10 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
+func (p *Engine) getLocales(c *gin.Context) (interface{}, error) {
+	return p.I18n.Items(c.Param("lang"))
+}
+
 func (p *Engine) getSiteInfo(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
 	data := gin.H{

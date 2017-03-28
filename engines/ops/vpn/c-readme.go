@@ -7,7 +7,7 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) getReadme(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) getReadme(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "ops.vpn.readme.title")
 	tpl := "ops-vpn-readme"
 	data["user"] = c.MustGet(auth.CurrentUser)
@@ -18,7 +18,7 @@ func (p *Engine) getReadme(c *gin.Context, lang string, data gin.H) (string, err
 
 	token, err := p.generateToken(10)
 	if err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["token"] = string(token)
 	return tpl, nil

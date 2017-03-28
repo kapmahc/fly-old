@@ -5,12 +5,12 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) getAdminStatus(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) getAdminStatus(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "reading.admin.status.title")
 	tpl := "reading-admin-status"
 	var bc int
 	if err := p.Db.Model(&Book{}).Count(&bc).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["book"] = gin.H{
 		p.I18n.T(lang, "reading.admin.status.book-count"): bc,
@@ -24,12 +24,12 @@ func (p *Engine) getAdminStatus(c *gin.Context, lang string, data gin.H) (string
 	return tpl, nil
 }
 
-func (p *Engine) indexAdminBooks(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) indexAdminBooks(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "reading.admin.books.index.title")
 	tpl := "reading-admin-books-index"
 	var total int64
 	if err := p.Db.Model(&Book{}).Count(&total).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	pag := web.NewPagination(c.Request, total)
 
@@ -38,7 +38,7 @@ func (p *Engine) indexAdminBooks(c *gin.Context, lang string, data gin.H) (strin
 		Select([]string{"id", "title", "author"}).
 		Limit(pag.Limit()).Offset(pag.Offset()).
 		Find(&books).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 
 	for _, b := range books {

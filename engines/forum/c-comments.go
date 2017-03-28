@@ -9,7 +9,7 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
-func (p *Engine) myComments(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) myComments(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "forum.comments.my.title")
 	tpl := "forum-comments-my"
 
@@ -21,18 +21,18 @@ func (p *Engine) myComments(c *gin.Context, lang string, data gin.H) (string, er
 		qry = qry.Where("user_id = ?", user.ID)
 	}
 	if err := qry.Order("updated_at DESC").Find(&comments).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	data["items"] = comments
 	return tpl, nil
 }
 
-func (p *Engine) indexComments(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) indexComments(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "forum.comments.index.title")
 	tpl := "forum-comments-index"
 	var total int64
 	if err := p.Db.Model(&Comment{}).Count(&total).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	var pag *web.Pagination
 
@@ -42,7 +42,7 @@ func (p *Engine) indexComments(c *gin.Context, lang string, data gin.H) (string,
 	if err := p.Db.Select([]string{"id", "type", "body", "article_id", "updated_at"}).
 		Limit(pag.Limit()).Offset(pag.Offset()).
 		Find(&comments).Error; err != nil {
-		return tpl, err
+		return nil, err
 	}
 	for _, it := range comments {
 		pag.Items = append(pag.Items, it)
@@ -57,14 +57,14 @@ type fmCommentAdd struct {
 	ArticleID uint   `form:"articleId" binding:"required"`
 }
 
-func (p *Engine) createComment(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) createComment(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "buttons.new")
 	tpl := "forum-comments-new"
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 	if c.Request.Method == http.MethodPost {
 		var fm fmCommentAdd
 		if err := c.Bind(&fm); err != nil {
-			return tpl, err
+			return nil, err
 		}
 		cm := Comment{
 			Body:      fm.Body,
@@ -74,7 +74,7 @@ func (p *Engine) createComment(c *gin.Context, lang string, data gin.H) (string,
 		}
 
 		if err := p.Db.Create(&cm).Error; err != nil {
-			return tpl, err
+			return nil, err
 		}
 		c.Redirect(http.StatusFound, fmt.Sprintf("/forum/articles/show/%d", cm.ArticleID))
 		return "", nil
@@ -87,7 +87,7 @@ type fmCommentEdit struct {
 	Type string `form:"type" binding:"required,max=8"`
 }
 
-func (p *Engine) updateComment(c *gin.Context, lang string, data gin.H) (string, error) {
+func (p *Engine) updateComment(c *gin.Context) (interface{}, error) {
 	data["title"] = p.I18n.T(lang, "buttons.edit")
 	tpl := "forum-comments-edit"
 	cm := c.MustGet("comment").(*Comment)
@@ -97,13 +97,13 @@ func (p *Engine) updateComment(c *gin.Context, lang string, data gin.H) (string,
 	case http.MethodPost:
 		var fm fmCommentEdit
 		if err := c.Bind(&fm); err != nil {
-			return tpl, err
+			return nil, err
 		}
 		if err := p.Db.Model(cm).Updates(map[string]interface{}{
 			"body": fm.Body,
 			"type": fm.Type,
 		}).Error; err != nil {
-			return tpl, err
+			return nil, err
 		}
 
 		c.Redirect(http.StatusFound, fmt.Sprintf("/forum/articles/show/%d", cm.ArticleID))
