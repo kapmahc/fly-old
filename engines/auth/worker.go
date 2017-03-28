@@ -8,6 +8,7 @@ import (
 	"github.com/SermoDigital/jose/jws"
 	log "github.com/Sirupsen/logrus"
 	"github.com/kapmahc/fly/web"
+	"github.com/spf13/viper"
 	gomail "gopkg.in/gomail.v2"
 )
 
@@ -35,11 +36,13 @@ func (p *Engine) sendEmail(lng string, user *User, act string) {
 	}
 
 	obj := struct {
-		Home  string
-		Token string
+		Frontend string
+		Backend  string
+		Token    string
 	}{
-		Home:  web.Home(),
-		Token: string(tkn),
+		Frontend: viper.GetString("server.frontend"),
+		Backend:  viper.GetString("server.backend"),
+		Token:    string(tkn),
 	}
 	subject, err := p.I18n.F(lng, fmt.Sprintf("auth.emails.%s.subject", act), obj)
 	if err != nil {

@@ -2,5 +2,5 @@
 while true; do
   fuser -k 3000/tcp
   go run main.go s &
-  inotifywait -e modify -e move -e create -e delete -e attrib -r web engines themes/bootstrap/views
+  inotifywait -e modify -e move -e create -e delete -e attrib -r web engines 
 done

@@ -12,6 +12,7 @@ import (
 
 	"github.com/kapmahc/epub"
 	"github.com/kapmahc/fly/web"
+	"github.com/spf13/viper"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -52,7 +53,7 @@ func (p *Engine) showBook(c *gin.Context) (interface{}, error) {
 	// c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")
 	p.writePoints(
 		&buf,
-		fmt.Sprintf("%s/reading/pages/%s", web.Home(), id),
+		fmt.Sprintf("%s/reading/pages/%s", viper.GetString("server.backend"), id),
 		bk.Ncx.Points,
 	)
 

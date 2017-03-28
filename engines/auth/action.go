@@ -52,15 +52,14 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		}
 		// --------------------
 		var up web.Uploader
-		theme := viper.GetString("server.theme")
 		if web.IsProduction() {
 			up, err = web.NewFileSystemUploader(
-				path.Join("themes", theme, "public", "attachments"),
+				path.Join("public", "attachments"),
 				"/attachments",
 			)
 		} else {
 			up, err = web.NewFileSystemUploader(
-				path.Join("themes", theme, "public", "attachments"),
+				path.Join("public", "attachments"),
 				"/public/attachments",
 			)
 		}

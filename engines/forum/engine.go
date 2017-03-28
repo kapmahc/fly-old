@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
+	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
 	gin "gopkg.in/gin-gonic/gin.v1"
@@ -40,11 +41,12 @@ func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
 		Find(&articles).Error; err != nil {
 		return nil, err
 	}
+	home := viper.GetString("server.frontend")
 	for _, a := range articles {
 		items = append(items, &atom.Entry{
 			Title: a.Title,
 			Link: []atom.Link{
-				{Href: fmt.Sprintf("%s/forum/articles/show/%d", web.Home(), a.ID)},
+				{Href: fmt.Sprintf("%s/forum/articles/%d", home, a.ID)},
 			},
 			ID:        fmt.Sprintf("forum-articles-%d", a.ID),
 			Published: atom.Time(a.UpdatedAt),
@@ -67,7 +69,7 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		return nil, err
 	}
 	for _, a := range articles {
-		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/articles/show/%d", a.ID)})
+		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/articles/%d", a.ID)})
 	}
 
 	var tags []Tag
@@ -75,7 +77,7 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		return nil, err
 	}
 	for _, t := range tags {
-		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/tags/show/%d", t.ID)})
+		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/tags/%d", t.ID)})
 	}
 	return urls, nil
 }

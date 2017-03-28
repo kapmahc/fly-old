@@ -46,7 +46,7 @@ func (p *Engine) Shell() []cli.Command {
 			Name:  "seo",
 			Usage: "generate sitemap.xml.gz/rss.atom/robots.txt ...etc",
 			Action: auth.Action(func(*cli.Context, *inject.Graph) error {
-				root := path.Join("themes", viper.GetString("server.theme"), "public")
+				root := "public"
 				os.MkdirAll(root, 0755)
 				if err := p.writeSitemap(root); err != nil {
 					return err
@@ -323,7 +323,7 @@ func (p *Engine) generateNginxConf(*cli.Context) error {
 	}{
 		Name:    name,
 		Port:    viper.GetInt("server.port"),
-		Root:    path.Join(pwd, "themes", viper.GetString("server.theme"), "public"),
+		Root:    path.Join(pwd, "public"),
 		Version: "v1",
 		Ssl:     viper.GetBool("server.ssl"),
 	})
@@ -650,7 +650,7 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 
 func (p *Engine) writeSitemap(root string) error {
 	sm := stm.NewSitemap()
-	sm.SetDefaultHost(web.Home())
+	sm.SetDefaultHost(viper.GetString("server.frontend"))
 	sm.SetPublicPath(root)
 	sm.SetCompress(true)
 	sm.SetSitemapsPath("/")
@@ -688,7 +688,7 @@ func (p *Engine) writeRssAtom(root string, lang string) error {
 		},
 		Entry: make([]*atom.Entry, 0),
 	}
-	home := web.Home()
+	home := viper.GetString("server.frontend")
 	if err := web.Walk(func(en web.Engine) error {
 		items, err := en.Atom(lang)
 		if err != nil {
@@ -730,7 +730,7 @@ func (p *Engine) writeRobotsTxt(root string) error {
 	defer fd.Close()
 	return t.Execute(fd, struct {
 		Home string
-	}{Home: web.Home()})
+	}{Home: viper.GetString("server.frontend")})
 }
 
 func (p *Engine) writeGoogleVerify(root string) error {
