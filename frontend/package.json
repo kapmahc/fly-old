@@ -13,6 +13,9 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "bootstrap": "^4.0.0-alpha.6",
+    "dropzone": "^4.3.0",
+    "highlight.js": "^9.10.0",
     "vue": "^2.2.2",
     "vue-router": "^2.2.0"
   },

@@ -1,0 +1,26 @@
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~highlight.js/styles/default.css";
+@import "~dropzone/dist/dropzone.css";
+@import "~dropzone/dist/basic.css";
+
+/* GLOBAL STYLES
+-------------------------------------------------- */
+
+body {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+  color: #5a5a5a;
+}
+
+
+/* BLOCK CSS
+-------------------------------------------------- */
+
+div.block {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+a.block {
+  padding-left: 1rem;
+}
