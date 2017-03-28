@@ -1,20 +1,14 @@
 package mail
 
-import (
-	"net/http"
-
-	gin "gopkg.in/gin-gonic/gin.v1"
-)
+import gin "gopkg.in/gin-gonic/gin.v1"
 
 func (p *Engine) indexDomains(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "ops.mail.domains.index.title")
-	tpl := "ops-mail-domains-index"
+
 	var items []Domain
 	if err := p.Db.Order("updated_at DESC").Find(&items).Error; err != nil {
 		return nil, err
 	}
-	data["items"] = items
-	return tpl, nil
+	return items, nil
 }
 
 type fmDomain struct {
@@ -22,54 +16,40 @@ type fmDomain struct {
 }
 
 func (p *Engine) createDomain(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.new")
-	tpl := "ops-mail-domains-new"
-	if c.Request.Method == http.MethodPost {
-		var fm fmDomain
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
 
-		if err := p.Db.Create(&Domain{
-			Name: fm.Name,
-		}).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, "/ops/mail/domains")
-		return "", nil
+	var fm fmDomain
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	return tpl, nil
+
+	item := Domain{
+		Name: fm.Name,
+	}
+	if err := p.Db.Create(&item).Error; err != nil {
+		return nil, err
+	}
+
+	return item, nil
+
 }
 
 func (p *Engine) updateDomain(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.edit")
-	tpl := "ops-mail-domains-edit"
-	id := c.Param("id")
 
-	var item Domain
-	if err := p.Db.Where("id = ?", id).First(&item).Error; err != nil {
+	id := c.Param("id")
+	var fm fmDomain
+	if err := c.Bind(&fm); err != nil {
 		return nil, err
 	}
-	data["item"] = item
 
-	if c.Request.Method == http.MethodPost {
-		var fm fmDomain
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-
-		if err := p.Db.Model(&Domain{}).
-			Where("id = ?", id).
-			Updates(map[string]interface{}{
-				"name": fm.Name,
-			}).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, "/ops/mail/domains")
-		return "", nil
+	if err := p.Db.Model(&Domain{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"name": fm.Name,
+		}).Error; err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	return gin.H{}, nil
 }
 
 func (p *Engine) destroyDomain(c *gin.Context) (interface{}, error) {

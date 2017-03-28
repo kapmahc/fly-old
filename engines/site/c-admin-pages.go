@@ -33,7 +33,7 @@ func (p *Engine) createAdminPage(c *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	if err := p.Db.Create(&web.Page{
+	item := web.Page{
 		Loc:       fm.Loc,
 		Title:     fm.Title,
 		Summary:   fm.Summary,
@@ -41,10 +41,11 @@ func (p *Engine) createAdminPage(c *gin.Context) (interface{}, error) {
 		Href:      fm.Href,
 		Action:    fm.Action,
 		SortOrder: fm.SortOrder,
-	}).Error; err != nil {
+	}
+	if err := p.Db.Create(&item).Error; err != nil {
 		return nil, err
 	}
-	return gin.H{}, nil
+	return item, nil
 }
 
 func (p *Engine) updateAdminPage(c *gin.Context) (interface{}, error) {

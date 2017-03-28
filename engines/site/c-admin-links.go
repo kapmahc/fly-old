@@ -36,15 +36,16 @@ func (p *Engine) createAdminLink(c *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	if err := p.Db.Create(&web.Link{
+	item := web.Link{
 		Loc:       fm.Loc,
 		Label:     fm.Label,
 		Href:      fm.Href,
 		SortOrder: fm.SortOrder,
-	}).Error; err != nil {
+	}
+	if err := p.Db.Create(&item).Error; err != nil {
 		return nil, err
 	}
-	return gin.H{}, nil
+	return item, nil
 }
 
 func (p *Engine) updateAdminLink(c *gin.Context) (interface{}, error) {

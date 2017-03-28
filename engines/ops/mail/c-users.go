@@ -1,15 +1,12 @@
 package mail
 
 import (
-	"net/http"
-
 	"github.com/kapmahc/fly/web"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 func (p *Engine) indexUsers(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "ops.mail.users.index.title")
-	tpl := "ops-mail-users-index"
+
 	var items []User
 	if err := p.Db.Order("updated_at DESC").Find(&items).Error; err != nil {
 		return nil, err
@@ -27,8 +24,8 @@ func (p *Engine) indexUsers(c *gin.Context) (interface{}, error) {
 			}
 		}
 	}
-	data["items"] = items
-	return tpl, nil
+
+	return items, nil
 }
 
 type fmUserNew struct {
@@ -41,34 +38,25 @@ type fmUserNew struct {
 }
 
 func (p *Engine) createUser(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.new")
-	tpl := "ops-mail-users-new"
-	var domains []Domain
-	if err := p.Db.Select([]string{"id", "name"}).Find(&domains).Error; err != nil {
+
+	var fm fmUserNew
+	if err := c.Bind(&fm); err != nil {
 		return nil, err
 	}
-	data["domains"] = domains
-	if c.Request.Method == http.MethodPost {
-		var fm fmUserNew
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-		user := User{
-			FullName: fm.FullName,
-			Email:    fm.Email,
-			Enable:   fm.Enable,
-			DomainID: fm.DomainID,
-		}
-		if err := user.SetPassword(fm.Password); err != nil {
-			return nil, err
-		}
-		if err := p.Db.Create(&user).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, "/ops/mail/users")
-		return "", nil
+	user := User{
+		FullName: fm.FullName,
+		Email:    fm.Email,
+		Enable:   fm.Enable,
+		DomainID: fm.DomainID,
 	}
-	return tpl, nil
+	if err := user.SetPassword(fm.Password); err != nil {
+		return nil, err
+	}
+	if err := p.Db.Create(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
 type fmUserEdit struct {
@@ -77,35 +65,24 @@ type fmUserEdit struct {
 }
 
 func (p *Engine) updateUser(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "ops.mail.users.edit.title")
-	tpl := "ops-mail-users-edit"
+
 	id := c.Param("id")
 
-	var item User
-	if err := p.Db.Where("id = ?", id).First(&item).Error; err != nil {
+	var fm fmUserEdit
+	if err := c.Bind(&fm); err != nil {
 		return nil, err
 	}
-	data["item"] = item
 
-	if c.Request.Method == http.MethodPost {
-		var fm fmUserEdit
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-
-		if err := p.Db.Model(&User{}).
-			Where("id = ?", id).
-			Updates(map[string]interface{}{
-				"enable":    fm.Enable,
-				"full_name": fm.FullName,
-			}).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, "/ops/mail/users")
-		return "", nil
+	if err := p.Db.Model(&User{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"enable":    fm.Enable,
+			"full_name": fm.FullName,
+		}).Error; err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	return gin.H{}, nil
 }
 
 type fmUserResetPassword struct {
@@ -113,37 +90,31 @@ type fmUserResetPassword struct {
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
-func (p *Engine) resetUserPassword(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "ops.mail.users.reset-password.title")
-	tpl := "ops-mail-users-reset-password"
+func (p *Engine) postResetUserPassword(c *gin.Context) (interface{}, error) {
+
 	id := c.Param("id")
 
-	var item User
-	if err := p.Db.Where("id = ?", id).First(&item).Error; err != nil {
+	var fm fmUserResetPassword
+	if err := c.Bind(&fm); err != nil {
 		return nil, err
 	}
-	data["item"] = item
 
-	if c.Request.Method == http.MethodPost {
-		var fm fmUserResetPassword
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-
-		if err := item.SetPassword(fm.Password); err != nil {
-			return nil, err
-		}
-		if err := p.Db.Model(&item).
-			Updates(map[string]interface{}{
-				"password": item.Password,
-			}).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, "/ops/mail/users")
-		return "", nil
+	var user User
+	if err := p.Db.Where("id = ?", id).First(&user).Error; err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	if err := user.SetPassword(fm.Password); err != nil {
+		return nil, err
+	}
+	if err := p.Db.Model(&user).
+		Updates(map[string]interface{}{
+			"password": user.Password,
+		}).Error; err != nil {
+		return nil, err
+	}
+
+	return gin.H{}, nil
 }
 
 type fmUserChangePassword struct {
@@ -153,36 +124,31 @@ type fmUserChangePassword struct {
 	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=NewPassword"`
 }
 
-func (p *Engine) changeUserPassword(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "ops.mail.users.change-password.title")
-	tpl := "ops-mail-users-change-password"
-
-	if c.Request.Method == http.MethodPost {
-		var fm fmUserChangePassword
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-		var user User
-		if err := p.Db.Where("email = ?", fm.Email).First(&user).Error; err != nil {
-			return nil, err
-		}
-		if !user.ChkPassword(fm.CurrentPassword) {
-			return tpl, p.I18n.E(lang, "ops.mail.users.email-password-not-match")
-		}
-		if err := user.SetPassword(fm.NewPassword); err != nil {
-			return nil, err
-		}
-
-		if err := p.Db.Model(user).
-			Updates(map[string]interface{}{
-				"password": user.Password,
-			}).Error; err != nil {
-			return nil, err
-		}
-		data[web.NOTICE] = p.I18n.T(lang, "success")
+func (p *Engine) postChangeUserPassword(c *gin.Context) (interface{}, error) {
+	lang := c.MustGet(web.LOCALE).(string)
+	var fm fmUserChangePassword
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+	var user User
+	if err := p.Db.Where("email = ?", fm.Email).First(&user).Error; err != nil {
+		return nil, err
+	}
+	if !user.ChkPassword(fm.CurrentPassword) {
+		return nil, p.I18n.E(lang, "ops.mail.users.email-password-not-match")
+	}
+	if err := user.SetPassword(fm.NewPassword); err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	if err := p.Db.Model(user).
+		Updates(map[string]interface{}{
+			"password": user.Password,
+		}).Error; err != nil {
+		return nil, err
+	}
+
+	return gin.H{}, nil
 }
 
 func (p *Engine) destroyUser(c *gin.Context) (interface{}, error) {

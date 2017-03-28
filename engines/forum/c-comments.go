@@ -1,7 +1,6 @@
 package forum
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/kapmahc/fly/engines/auth"
@@ -10,8 +9,6 @@ import (
 )
 
 func (p *Engine) myComments(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "forum.comments.my.title")
-	tpl := "forum-comments-my"
 
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 	isa := c.MustGet(auth.IsAdmin).(bool)
@@ -23,13 +20,12 @@ func (p *Engine) myComments(c *gin.Context) (interface{}, error) {
 	if err := qry.Order("updated_at DESC").Find(&comments).Error; err != nil {
 		return nil, err
 	}
-	data["items"] = comments
-	return tpl, nil
+
+	return comments, nil
 }
 
 func (p *Engine) indexComments(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "forum.comments.index.title")
-	tpl := "forum-comments-index"
+
 	var total int64
 	if err := p.Db.Model(&Comment{}).Count(&total).Error; err != nil {
 		return nil, err
@@ -47,8 +43,8 @@ func (p *Engine) indexComments(c *gin.Context) (interface{}, error) {
 	for _, it := range comments {
 		pag.Items = append(pag.Items, it)
 	}
-	data["pager"] = pag
-	return tpl, nil
+
+	return pag, nil
 }
 
 type fmCommentAdd struct {
@@ -58,28 +54,25 @@ type fmCommentAdd struct {
 }
 
 func (p *Engine) createComment(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.new")
-	tpl := "forum-comments-new"
-	user := c.MustGet(auth.CurrentUser).(*auth.User)
-	if c.Request.Method == http.MethodPost {
-		var fm fmCommentAdd
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-		cm := Comment{
-			Body:      fm.Body,
-			Type:      fm.Type,
-			ArticleID: fm.ArticleID,
-			UserID:    user.ID,
-		}
 
-		if err := p.Db.Create(&cm).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, fmt.Sprintf("/forum/articles/show/%d", cm.ArticleID))
-		return "", nil
+	user := c.MustGet(auth.CurrentUser).(*auth.User)
+
+	var fm fmCommentAdd
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	return tpl, nil
+	cm := Comment{
+		Body:      fm.Body,
+		Type:      fm.Type,
+		ArticleID: fm.ArticleID,
+		UserID:    user.ID,
+	}
+
+	if err := p.Db.Create(&cm).Error; err != nil {
+		return nil, err
+	}
+
+	return cm, nil
 }
 
 type fmCommentEdit struct {
@@ -88,28 +81,21 @@ type fmCommentEdit struct {
 }
 
 func (p *Engine) updateComment(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.edit")
-	tpl := "forum-comments-edit"
+
 	cm := c.MustGet("comment").(*Comment)
-	data["item"] = cm
 
-	switch c.Request.Method {
-	case http.MethodPost:
-		var fm fmCommentEdit
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-		if err := p.Db.Model(cm).Updates(map[string]interface{}{
-			"body": fm.Body,
-			"type": fm.Type,
-		}).Error; err != nil {
-			return nil, err
-		}
-
-		c.Redirect(http.StatusFound, fmt.Sprintf("/forum/articles/show/%d", cm.ArticleID))
-		return "", nil
+	var fm fmCommentEdit
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	return tpl, nil
+	if err := p.Db.Model(cm).Updates(map[string]interface{}{
+		"body": fm.Body,
+		"type": fm.Type,
+	}).Error; err != nil {
+		return nil, err
+	}
+
+	return cm, nil
 }
 
 func (p *Engine) destroyComment(c *gin.Context) (interface{}, error) {

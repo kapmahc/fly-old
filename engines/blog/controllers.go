@@ -2,7 +2,6 @@ package blog
 
 import (
 	"bufio"
-	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
@@ -19,29 +18,25 @@ const (
 
 func (p *Engine) indexPosts(c *gin.Context) (interface{}, error) {
 	items, err := p.getPosts(c.MustGet(web.LOCALE).(string))
-	data["items"] = items
-	data["title"] = p.I18n.T(lang, "blog.index.title")
-	return "blog-index", err
+	return items, err
 }
 
 func (p *Engine) showPost(c *gin.Context) (interface{}, error) {
+	lang := c.MustGet(web.LOCALE).(string)
 	href := c.Param("href")[1:]
-	tpl := "blog-show"
-	posts, err := p.getPosts(c.MustGet(web.LOCALE).(string))
+
+	posts, err := p.getPosts(lang)
 	if err != nil {
 		return nil, err
 	}
-	data["items"] = posts
+
 	for _, i := range posts {
 		if i.Href == href {
-			data["title"] = i.Title
-			data["item"] = i
-			return tpl, nil
+			return i, nil
 		}
 	}
 
-	c.AbortWithStatus(http.StatusNotFound)
-	return "", nil
+	return nil, p.I18n.E(lang, "errors.no-found")
 }
 
 // -------------

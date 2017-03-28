@@ -19,8 +19,7 @@ import (
 
 const (
 	// LOCALE locale key
-	LOCALE    = "locale"
-	webPrefix = "web."
+	LOCALE = "locale"
 )
 
 //Locale locale model
@@ -207,21 +206,19 @@ func (p *I18n) Items(lng string) (map[string]interface{}, error) {
 	}
 
 	for _, l := range items {
-		if strings.HasPrefix(l.Code, webPrefix) {
-			k := l.Code[len(webPrefix):]
-			codes := strings.Split(k, ".")
-			tmp := rt
-			for i, c := range codes {
-				if i+1 == len(codes) {
-					tmp[c] = l.Message
-				} else {
-					if tmp[c] == nil {
-						tmp[c] = make(map[string]interface{})
-					}
-					tmp = tmp[c].(map[string]interface{})
-				}
-			}
 
+		k := l.Code
+		codes := strings.Split(k, ".")
+		tmp := rt
+		for i, c := range codes {
+			if i+1 == len(codes) {
+				tmp[c] = l.Message
+			} else {
+				if tmp[c] == nil {
+					tmp[c] = make(map[string]interface{})
+				}
+				tmp = tmp[c].(map[string]interface{})
+			}
 		}
 
 	}

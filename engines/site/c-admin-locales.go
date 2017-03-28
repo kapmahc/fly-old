@@ -36,5 +36,8 @@ func (p *Engine) postAdminLocales(c *gin.Context) (interface{}, error) {
 	if err := p.I18n.Set(lang, fm.Code, fm.Message); err != nil {
 		return nil, err
 	}
-	return gin.H{}, nil
+
+	var l web.Locale
+	err := p.Db.Where("lang = ? AND code = ?", lang, fm.Code).First(&l).Error
+	return l, err
 }

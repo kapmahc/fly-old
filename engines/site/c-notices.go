@@ -25,7 +25,7 @@ func (p *Engine) createNotice(c *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	return gin.H{}, nil
+	return n, nil
 }
 
 func (p *Engine) updateNotice(c *gin.Context) (interface{}, error) {

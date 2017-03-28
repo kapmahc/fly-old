@@ -1,31 +1,15 @@
 package forum
 
-import (
-	"net/http"
-
-	gin "gopkg.in/gin-gonic/gin.v1"
-)
-
-func (p *Engine) indexAdminTags(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "forum.tags.index.title")
-	tpl := "forum-tags-manage"
-	var tags []Tag
-	if err := p.Db.Order("updated_at DESC").Find(&tags).Error; err != nil {
-		return nil, err
-	}
-	data["items"] = tags
-	return tpl, nil
-}
+import gin "gopkg.in/gin-gonic/gin.v1"
 
 func (p *Engine) indexTags(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "forum.tags.index.title")
-	tpl := "forum-tags-index"
+
 	var tags []Tag
 	if err := p.Db.Find(&tags).Error; err != nil {
 		return nil, err
 	}
-	data["items"] = tags
-	return tpl, nil
+
+	return tags, nil
 }
 
 type fmTag struct {
@@ -33,65 +17,51 @@ type fmTag struct {
 }
 
 func (p *Engine) createTag(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.new")
-	tpl := "forum-tags-new"
-	if c.Request.Method == http.MethodPost {
-		var fm fmTag
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-		t := Tag{Name: fm.Name}
-		if err := p.Db.Create(&t).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, "/forum/admin/tags")
-		return "", nil
+
+	var fm fmTag
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
-	return tpl, nil
+	t := Tag{Name: fm.Name}
+	if err := p.Db.Create(&t).Error; err != nil {
+		return nil, err
+	}
+
+	return t, nil
 }
 
 func (p *Engine) showTag(c *gin.Context) (interface{}, error) {
 
-	tpl := "forum-tags-show"
 	var tag Tag
 	if err := p.Db.Where("id = ?", c.Param("id")).First(&tag).Error; err != nil {
 		return nil, err
 	}
-	data["title"] = tag.Name
 
 	if err := p.Db.Model(&tag).Association("Articles").Find(&tag.Articles).Error; err != nil {
 		return nil, err
 	}
-	data["item"] = tag
-	return tpl, nil
+
+	return tag, nil
 }
 
 func (p *Engine) updateTag(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.edit")
-	tpl := "forum-tags-edit"
+
 	id := c.Param("id")
 
 	var tag Tag
 	if err := p.Db.Where("id = ?", id).First(&tag).Error; err != nil {
 		return nil, err
 	}
-	data["name"] = tag.Name
-
-	switch c.Request.Method {
-	case http.MethodPost:
-		var fm fmTag
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-
-		if err := p.Db.Model(&Tag{}).Where("id = ?", id).Update("name", fm.Name).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, "/forum/admin/tags")
-		return "", nil
+	var fm fmTag
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	if err := p.Db.Model(&Tag{}).Where("id = ?", id).Update("name", fm.Name).Error; err != nil {
+		return nil, err
+	}
+
+	return gin.H{}, nil
 }
 
 func (p *Engine) destroyTag(c *gin.Context) (interface{}, error) {

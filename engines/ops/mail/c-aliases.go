@@ -1,14 +1,9 @@
 package mail
 
-import (
-	"net/http"
-
-	gin "gopkg.in/gin-gonic/gin.v1"
-)
+import gin "gopkg.in/gin-gonic/gin.v1"
 
 func (p *Engine) indexAliases(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "ops.mail.aliases.index.title")
-	tpl := "ops-mail-aliases-index"
+
 	var items []Alias
 	if err := p.Db.Order("updated_at DESC").Find(&items).Error; err != nil {
 		return nil, err
@@ -28,8 +23,7 @@ func (p *Engine) indexAliases(c *gin.Context) (interface{}, error) {
 		}
 	}
 
-	data["items"] = items
-	return tpl, nil
+	return items, nil
 }
 
 type fmAlias struct {
@@ -38,79 +32,51 @@ type fmAlias struct {
 }
 
 func (p *Engine) createAlias(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.new")
-	tpl := "ops-mail-aliases-new"
 
-	var users []User
-	if err := p.Db.Select([]string{"email", "full_name"}).Order("full_name ASC").Find(&users).Error; err != nil {
+	var fm fmAlias
+	if err := c.Bind(&fm); err != nil {
 		return nil, err
 	}
-	data["users"] = users
-
-	if c.Request.Method == http.MethodPost {
-		var fm fmAlias
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-		var user User
-		if err := p.Db.Where("email = ?", fm.Destination).First(&user).Error; err != nil {
-			return nil, err
-		}
-
-		if err := p.Db.Create(&Alias{
-			Source:      fm.Source,
-			Destination: fm.Destination,
-			DomainID:    user.DomainID,
-		}).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, "/ops/mail/aliases")
-		return "", nil
+	var user User
+	if err := p.Db.Where("email = ?", fm.Destination).First(&user).Error; err != nil {
+		return nil, err
 	}
-	return tpl, nil
+	item := Alias{
+		Source:      fm.Source,
+		Destination: fm.Destination,
+		DomainID:    user.DomainID,
+	}
+	if err := p.Db.Create(&item).Error; err != nil {
+		return nil, err
+	}
+
+	return item, nil
 }
 
 func (p *Engine) updateAlias(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.edit")
-	tpl := "ops-mail-aliases-edit"
+
 	id := c.Param("id")
 
-	var users []User
-	if err := p.Db.Select([]string{"email", "full_name"}).Order("full_name ASC").Find(&users).Error; err != nil {
+	var fm fmAlias
+	if err := c.Bind(&fm); err != nil {
 		return nil, err
 	}
-	data["users"] = users
-
-	var item Alias
-	if err := p.Db.Where("id = ?", id).First(&item).Error; err != nil {
+	var user User
+	if err := p.Db.Where("email = ?", fm.Destination).First(&user).Error; err != nil {
 		return nil, err
 	}
-	data["item"] = item
 
-	if c.Request.Method == http.MethodPost {
-		var fm fmAlias
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-		var user User
-		if err := p.Db.Where("email = ?", fm.Destination).First(&user).Error; err != nil {
-			return nil, err
-		}
-
-		if err := p.Db.Model(&Alias{}).
-			Where("id = ?", id).
-			Updates(map[string]interface{}{
-				"domain_id":   user.DomainID,
-				"source":      fm.Source,
-				"destination": fm.Destination,
-			}).Error; err != nil {
-			return nil, err
-		}
-		c.Redirect(http.StatusFound, "/ops/mail/aliases")
-		return "", nil
+	if err := p.Db.Model(&Alias{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"domain_id":   user.DomainID,
+			"source":      fm.Source,
+			"destination": fm.Destination,
+		}).Error; err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	return gin.H{}, nil
 }
 
 func (p *Engine) destroyAlias(c *gin.Context) (interface{}, error) {

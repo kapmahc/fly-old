@@ -7,7 +7,8 @@ import (
 )
 
 func (p *Engine) getLocales(c *gin.Context) (interface{}, error) {
-	return p.I18n.Items(c.Param("lang"))
+	items, err := p.I18n.Items(c.Param("lang"))
+	return items, err
 }
 
 func (p *Engine) getSiteInfo(c *gin.Context) (interface{}, error) {

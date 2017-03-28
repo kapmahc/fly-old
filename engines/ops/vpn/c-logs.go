@@ -6,8 +6,7 @@ import (
 )
 
 func (p *Engine) indexLogs(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "ops.vpn.logs.index.title")
-	tpl := "ops-vpn-logs-index"
+
 	var total int64
 	if err := p.Db.Model(&Log{}).Count(&total).Error; err != nil {
 		return nil, err
@@ -23,6 +22,6 @@ func (p *Engine) indexLogs(c *gin.Context) (interface{}, error) {
 	for _, b := range items {
 		pag.Items = append(pag.Items, b)
 	}
-	data["pager"] = pag
-	return tpl, nil
+
+	return pag, nil
 }

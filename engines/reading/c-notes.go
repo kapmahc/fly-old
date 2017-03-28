@@ -1,7 +1,6 @@
 package reading
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/kapmahc/fly/engines/auth"
@@ -10,8 +9,7 @@ import (
 )
 
 func (p *Engine) myNotes(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "reading.notes.my.title")
-	tpl := "reading-notes-my"
+
 	user := c.MustGet(auth.CurrentUser).(*auth.User)
 	isa := c.MustGet(auth.IsAdmin).(bool)
 	var notes []Note
@@ -22,13 +20,11 @@ func (p *Engine) myNotes(c *gin.Context) (interface{}, error) {
 	if err := qry.Order("updated_at DESC").Find(&notes).Error; err != nil {
 		return nil, err
 	}
-	data["items"] = notes
-	return tpl, nil
+
+	return notes, nil
 }
 
 func (p *Engine) indexNotes(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "reading.notes.index.title")
-	tpl := "reading-notes-index"
 
 	var total int64
 	var pag *web.Pagination
@@ -47,8 +43,8 @@ func (p *Engine) indexNotes(c *gin.Context) (interface{}, error) {
 	for _, it := range notes {
 		pag.Items = append(pag.Items, it)
 	}
-	data["pager"] = pag
-	return tpl, nil
+
+	return pag, nil
 }
 
 type fmNoteNew struct {
@@ -58,28 +54,24 @@ type fmNoteNew struct {
 }
 
 func (p *Engine) createNote(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.new")
-	tpl := "reading-notes-new"
-	user := c.MustGet(auth.CurrentUser).(*auth.User)
-	if c.Request.Method == http.MethodPost {
-		var fm fmNoteNew
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-		if err := p.Db.Create(&Note{
-			Type:   fm.Type,
-			Body:   fm.Body,
-			BookID: fm.BookID,
-			UserID: user.ID,
-		}).Error; err != nil {
-			return nil, err
-		}
 
-		c.Redirect(http.StatusFound, fmt.Sprintf("/reading/books/%d", fm.BookID))
-		return "", nil
+	user := c.MustGet(auth.CurrentUser).(*auth.User)
+
+	var fm fmNoteNew
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+	item := Note{
+		Type:   fm.Type,
+		Body:   fm.Body,
+		BookID: fm.BookID,
+		UserID: user.ID,
+	}
+	if err := p.Db.Create(&item).Error; err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	return item, nil
 }
 
 type fmNoteEdit struct {
@@ -88,32 +80,23 @@ type fmNoteEdit struct {
 }
 
 func (p *Engine) updateNote(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "buttons.edit")
-	tpl := "reading-notes-edit"
 
 	note := c.MustGet("note").(*Note)
-	data["item"] = note
 
-	if c.Request.Method == http.MethodPost {
-		var fm fmNoteEdit
-		if err := c.Bind(&fm); err != nil {
-			return nil, err
-		}
-
-		if err := p.Db.Model(&Note{}).
-			Where("id = ?", c.Param("id")).
-			Updates(map[string]interface{}{
-				"body": fm.Body,
-				"type": fm.Type,
-			}).Error; err != nil {
-			return nil, err
-		}
-
-		c.Redirect(http.StatusFound, fmt.Sprintf("/reading/books/%d", note.ID))
-		return "", nil
+	var fm fmNoteEdit
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
 
-	return tpl, nil
+	if err := p.Db.Model(note).
+		Updates(map[string]interface{}{
+			"body": fm.Body,
+			"type": fm.Type,
+		}).Error; err != nil {
+		return nil, err
+	}
+
+	return gin.H{}, nil
 }
 
 func (p *Engine) destroyNote(c *gin.Context) (interface{}, error) {

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"html/template"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -17,8 +16,7 @@ import (
 )
 
 func (p *Engine) indexBooks(c *gin.Context) (interface{}, error) {
-	data["title"] = p.I18n.T(lang, "reading.books.index.title")
-	tpl := "reading-books-index"
+
 	var total int64
 	if err := p.Db.Model(&Book{}).Count(&total).Error; err != nil {
 		return nil, err
@@ -34,13 +32,13 @@ func (p *Engine) indexBooks(c *gin.Context) (interface{}, error) {
 	for _, b := range books {
 		pag.Items = append(pag.Items, b)
 	}
-	data["pager"] = pag
-	return tpl, nil
+
+	return pag, nil
 }
 
 func (p *Engine) showBook(c *gin.Context) (interface{}, error) {
 	id := c.Param("id")
-	tpl := "reading-books-show"
+
 	var buf bytes.Buffer
 	it, bk, err := p.readBook(id)
 	if err != nil {
@@ -50,17 +48,18 @@ func (p *Engine) showBook(c *gin.Context) (interface{}, error) {
 	if err := p.Db.Order("updated_at DESC").Find(&notes).Error; err != nil {
 		return nil, err
 	}
-	data["notes"] = notes
+
 	// c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")
 	p.writePoints(
 		&buf,
 		fmt.Sprintf("%s/reading/pages/%s", web.Home(), id),
 		bk.Ncx.Points,
 	)
-	data["homeage"] = template.HTML(buf.String())
-	data["book"] = it
-	data["title"] = it.Title
-	return tpl, nil
+
+	return gin.H{
+		"book": it,
+		"home": buf.String(),
+	}, nil
 }
 
 func (p *Engine) showPage(c *gin.Context) {
@@ -125,4 +124,11 @@ func (p *Engine) readBook(id string) (*Book, *epub.Book, error) {
 	}
 	bk, err := epub.Open(path.Join(p.root(), book.File))
 	return &book, bk, err
+}
+
+func (p *Engine) destroyBook(c *gin.Context) (interface{}, error) {
+	err := p.Db.
+		Where("id = ?", c.Param("id")).
+		Delete(Book{}).Error
+	return gin.H{}, err
 }
