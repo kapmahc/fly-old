@@ -135,7 +135,7 @@ func (p *Engine) postChangeUserPassword(c *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 	if !user.ChkPassword(fm.CurrentPassword) {
-		return nil, p.I18n.E(lang, "ops.mail.users.email-password-not-match")
+		return nil, p.I18n.E(lang, "ops.mail.errors.email-password-not-match")
 	}
 	if err := user.SetPassword(fm.NewPassword); err != nil {
 		return nil, err
