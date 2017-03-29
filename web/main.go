@@ -70,7 +70,7 @@ func init() {
 	viper.SetDefault("server", map[string]interface{}{
 		"name":     "fly",
 		"frontend": "http://localhost:8080",
-		"backend":  "http://localhost:8000",
+		"backend":  "http://localhost:3000",
 		"port":     3000,
 		"ssl":      true,
 	})

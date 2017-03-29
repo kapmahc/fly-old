@@ -8,16 +8,29 @@ Vue.use(I18n)
 Vue.use(Router)
 
 import App from './App'
-import routes from './routes'
-import messages from './messages'
+import router from './router'
+import {currentLocale, loadLocaleMessage} from './i18n'
 
 Vue.config.productionTip = false
+
+const locale = currentLocale()
+const messages = {}
+messages[locale] = {}
+const i18n = new I18n({ locale, messages })
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router: new Router({routes}),
-  i18n: new I18n(messages),
+  router,
+  i18n,
   template: '<App/>',
   components: { App }
+})
+
+loadLocaleMessage(locale, (err, message) => {
+  if (err) {
+    console.error(err)
+  } else {
+    i18n.setLocaleMessage(locale, message)
+  }
 })
