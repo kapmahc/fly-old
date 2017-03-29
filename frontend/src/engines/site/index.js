@@ -1,4 +1,5 @@
 import Home from './Home'
+import Install from './Install'
 
 export default {
   routes: [
@@ -6,6 +7,11 @@ export default {
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/install',
+      name: 'site.install',
+      component: Install
     }
   ],
   links: [

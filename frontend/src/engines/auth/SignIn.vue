@@ -1,15 +1,19 @@
 <template>
   <div>
-    <h2>sign in</h2>
+    <h2>{{$t("auth.users.sign-in.title")}}</h2>
+    <hr/>
+    <br/>
+    <shared-links />
   </div>
 </template>
 
 <script>
+import Links from './Links'
+
 export default {
   name: 'auth-sign-in',
-  data () {
-    return {
-    }
+  components: {
+    'shared-links': Links
   }
 }
 </script>
