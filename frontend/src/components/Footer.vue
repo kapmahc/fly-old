@@ -3,7 +3,10 @@
     <hr class="featurette-divider">
       <footer>
         <p class="float-right">
-          <a href="#">Back to top</a>
+          {{ $t("footer.other-languages") }}
+          <button class="btn btn-sm btn-link" v-on:click="setLanguage(l)" v-for="l in info.languages">
+            {{$t(`languages.${l}`)}}
+          </button>
         </p>
         <p>
           &copy; {{ $t("site.copyright") }}
@@ -16,6 +19,8 @@
 
 <script>
 import {get} from '@/ajax'
+import {LOCALE} from '@/constants'
+
 export default {
   name: 'application-footer',
   computed: {
@@ -28,6 +33,12 @@ export default {
       document.title = rst.title
       this.$store.commit('refresh', rst)
     }.bind(this))
+  },
+  methods: {
+    setLanguage (l) {
+      localStorage.setItem(LOCALE, l)
+      location.reload()
+    }
   }
 }
 </script>

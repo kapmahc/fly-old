@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    siteInfo: {author: {}},
+    siteInfo: {author: {}, languages: []},
     currentUser: {}
   },
   mutations: {

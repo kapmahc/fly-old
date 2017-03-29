@@ -4,8 +4,9 @@ import I18n from 'vue-i18n'
 Vue.use(I18n)
 
 import {api} from '@/ajax'
+import {LOCALE} from '@/constants'
 
-const locale = localStorage.getItem('locale') || 'zh-Hans'
+const locale = localStorage.getItem(LOCALE) || process.env.LOCALE
 const messages = {}
 messages[locale] = {}
 const i18n = new I18n({ locale, messages })
