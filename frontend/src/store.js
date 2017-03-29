@@ -10,7 +10,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     refresh: (state, info) => {
-      state.info = info
+      state.siteInfo = info
     },
     signIn: (state, token) => {
       state.currentUser = {name: 'whoami'}
