@@ -84,9 +84,11 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   ```
 
   ## Documents
+
   - [vue](https://vuejs.org/)
   - [vue-router](http://router.vuejs.org/)
   - [vue-i18n](https://kazupon.github.io/vue-i18n/en/started.html)
+  - [vuex](https://vuex.vuejs.org/)
   - [bootstrap](http://v4-alpha.getbootstrap.com/getting-started/introduction/)
   - [gorm](http://jinzhu.me/gorm/)
   - [cli](https://github.com/urfave/cli)

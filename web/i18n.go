@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/go-ini/ini"
@@ -40,7 +39,6 @@ func (Locale) TableName() string {
 type I18n struct {
 	Db      *gorm.DB         `inject:""`
 	Matcher language.Matcher `inject:""`
-	Cache   *Cache           `inject:""`
 }
 
 // Middleware locale-middleware
@@ -115,9 +113,7 @@ func (p *I18n) Set(lng string, code, message string) error {
 		l.Message = message
 		err = p.Db.Save(&l).Error
 	}
-	if err == nil {
-		p.Cache.Set(p.key(lng, code), message, time.Hour*24)
-	}
+
 	return err
 }
 
@@ -129,11 +125,6 @@ func (p *I18n) Del(lng, code string) {
 }
 
 func (p *I18n) getMessage(lng, code string) (string, error) {
-	key := p.key(lng, code)
-	var msg string
-	if err := p.Cache.Get(key, &msg); err == nil {
-		return msg, nil
-	}
 	var l Locale
 	if err := p.Db.
 		Select("message").
@@ -141,7 +132,6 @@ func (p *I18n) getMessage(lng, code string) (string, error) {
 		First(&l).Error; err != nil {
 		return "", err
 	}
-	p.Cache.Set(key, l.Message, time.Hour*24)
 	return l.Message, nil
 }
 
@@ -188,10 +178,6 @@ func (p *I18n) Sync(dir string) error {
 		}
 		return nil
 	})
-}
-
-func (p *I18n) key(lng, code string) string {
-	return fmt.Sprintf("%s/%s", lng, code)
 }
 
 //Items list all items

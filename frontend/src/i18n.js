@@ -1,8 +1,17 @@
-const apiHost = 'http://localhost:3000'
-export const currentLocale = () => localStorage.getItem('locale') || 'zh-Hans'
+import Vue from 'vue'
+import I18n from 'vue-i18n'
 
-export const loadLocaleMessage = (locale, cb) => {
-  return fetch(`${apiHost}/locales/${locale}`, {
+Vue.use(I18n)
+
+const apiHost = 'http://localhost:3000'
+
+const locale = localStorage.getItem('locale') || 'zh-Hans'
+const messages = {}
+messages[locale] = {}
+const i18n = new I18n({ locale, messages })
+
+const loadLocaleMessage = (l) => {
+  return fetch(`${apiHost}/locales/${l}`, {
     method: 'get',
     mode: 'cors',
     headers: {
@@ -18,8 +27,12 @@ export const loadLocaleMessage = (locale, cb) => {
       return Promise.resolve(json)
     }
   }).then((message) => {
-    cb(null, message)
+    i18n.setLocaleMessage(l, message)
   }).catch((error) => {
-    cb(error)
+    console.log(error)
   })
 }
+
+loadLocaleMessage(locale)
+
+export default i18n

@@ -1,8 +1,13 @@
+import Vue from 'vue'
 import Router from 'vue-router'
+
+Vue.use(Router)
 
 import auth from '@/engines/auth'
 import site from '@/engines/site'
 
-export default new Router({
+const router = new Router({
   routes: [].concat(auth, site)
 })
+
+export default router
