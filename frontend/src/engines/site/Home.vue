@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>home</h2>
+    <h2>{{$t("auth.sign-in.title")}}</h2>
   </div>
 </template>
 
