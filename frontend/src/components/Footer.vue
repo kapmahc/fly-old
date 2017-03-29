@@ -4,14 +4,14 @@
       <footer>
         <p class="float-right">
           {{ $t("footer.other-languages") }}
-          <button class="btn btn-sm btn-link" v-on:click="setLanguage(l)" v-for="l in info.languages">
+          <button :key="l" class="btn btn-sm btn-link" v-on:click="setLanguage(l)" v-for="l in info.languages">
             {{$t(`languages.${l}`)}}
           </button>
         </p>
         <p>
           &copy; {{ $t("site.copyright") }}
-          &middot; <a href="#">Privacy</a>
-          &middot; <a href="#">Terms</a>
+          &middot; <router-link :to="{name: 'home'}">{{$t("footer.privacy")}}</router-link>
+          &middot; <router-link :to="{name: 'home'}">{{$t("footer.teams")}}</router-link>
         </p>
       </footer>
   </div>

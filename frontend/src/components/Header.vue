@@ -13,7 +13,7 @@
               {{ $t("header.home") }} <span class="sr-only">(current)</span>
             </router-link>
           </li>
-          <li v-for="l in links">
+          <li :key="l.href" v-for="l in links">
             <router-link class="nav-link" :to="{name: l.href}">{{ $t(l.label) }}</router-link>
           </li>
           <language-bar />

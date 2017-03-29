@@ -4,7 +4,7 @@
       {{$t("language-bar.switch")}}
     </a>
     <div class="dropdown-menu" aria-labelledby="language-bar">
-      <a v-on:click="setLanguage(l)" class="dropdown-item" v-for="l in languages">
+      <a :key="l" v-on:click="setLanguage(l)" class="dropdown-item" v-for="l in languages">
         {{$t(`languages.${l}`)}}
       </a>
     </div>
