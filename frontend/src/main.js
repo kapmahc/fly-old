@@ -1,4 +1,8 @@
 require('./main.css')
+// for bootstrap
+window.$ = window.jQuery = require('jquery')
+global.Tether = require('tether')
+require('bootstrap')
 
 import Vue from 'vue'
 

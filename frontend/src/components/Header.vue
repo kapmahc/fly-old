@@ -12,15 +12,14 @@
             <router-link class="nav-link" :to="{name: 'home'}">
               {{ $t("header.home") }} <span class="sr-only">(current)</span>
             </router-link>
-          </li>          
+          </li>
           <li v-for="l in links">
             <router-link class="nav-link" :to="{name: l.href}">{{ $t(l.label) }}</router-link>
           </li>
+          <language-bar />
+          <personal-bar />
         </ul>
-        <form class="form-inline mt-2 mt-md-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+        <search-form />
       </div>
     </nav>
 </template>
@@ -28,10 +27,19 @@
 <script>
 import {links} from '@/engines'
 
+import SearchForm from './SearchForm'
+import PersonalBar from './PersonalBar'
+import LanguageBar from './LanguageBar'
+
 export default {
   name: 'application-header',
   data () {
     return {links}
+  },
+  components: {
+    'search-form': SearchForm,
+    'personal-bar': PersonalBar,
+    'language-bar': LanguageBar
   },
   computed: {
     info () {
