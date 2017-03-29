@@ -6,7 +6,7 @@
           <a href="#">Back to top</a>
         </p>
         <p>
-          &copy; {{ info.copyright }}
+          &copy; {{ $t("site.copyright") }}
           &middot; <a href="#">Privacy</a>
           &middot; <a href="#">Terms</a>
         </p>

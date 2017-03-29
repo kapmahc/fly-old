@@ -3,17 +3,18 @@
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="#">Carousel</a>
+      <router-link class="navbar-brand" :to="{name: 'home'}">
+        {{ $t("site.subTitle") }}
+      </router-link>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
+            <router-link class="nav-link" :to="{name: 'home'}">
+              {{ $t("header.home") }} <span class="sr-only">(current)</span>
+            </router-link>
+          </li>          
+          <li v-for="l in links">
+            <router-link class="nav-link" :to="{name: l.href}">{{ $t(l.label) }}</router-link>
           </li>
         </ul>
         <form class="form-inline mt-2 mt-md-0">
@@ -25,10 +26,16 @@
 </template>
 
 <script>
+import {links} from '@/engines'
+
 export default {
   name: 'application-header',
   data () {
-    return {
+    return {links}
+  },
+  computed: {
+    info () {
+      return this.$store.state.siteInfo
     }
   }
 }

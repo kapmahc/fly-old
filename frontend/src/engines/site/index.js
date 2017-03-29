@@ -1,9 +1,18 @@
 import Home from './Home'
 
-export default [
-  {
-    path: '/',
-    name: 'site.home',
-    component: Home
-  }
-]
+export default {
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: Home
+    }
+  ],
+  links: [
+    {
+      href: 'home',
+      label: 'site.notices.index.title'
+    }
+  ],
+  dashboard: []
+}
