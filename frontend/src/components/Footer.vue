@@ -1,6 +1,7 @@
 <template>
-  <div class="container">
-    <hr class="featurette-divider">
+  <div class="row">
+    <div class="col-md-12">
+      <hr/>
       <footer>
         <p class="float-right">
           {{ $t("footer.other-languages") }}
@@ -14,6 +15,7 @@
           &middot; <router-link :to="{name: 'home'}">{{$t("footer.teams")}}</router-link>
         </p>
       </footer>
+    </div>
   </div>
 </template>
 

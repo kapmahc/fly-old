@@ -44,5 +44,15 @@ export default {
       label: 'auth.users.index.title'
     }
   ],
-  dashboard: []
+  dashboard: [
+    {
+      label: 'auth.dashboard.title',
+      links: [
+        {href: 'home', label: 'auth.users.info.title'},
+        {href: 'home', label: 'auth.users.change-password.title'},
+        null,
+        {href: 'home', label: 'auth.users.logs.title'}
+      ]
+    }
+  ]
 }

@@ -4,7 +4,7 @@
       {{$t("personal-bar.welcome", {name:user.name})}}
     </a>
     <div class="dropdown-menu" aria-labelledby="personal-bar">
-      <router-link :to="{name: 'home'}" class="dropdown-item">{{$t("personal-bar.dashboard")}}</router-link>
+      <router-link :to="{name: 'dashboard'}" class="dropdown-item">{{$t("personal-bar.dashboard")}}</router-link>
       <div class="dropdown-divider"></div>
       <a v-on:click="onSignOut" class="dropdown-item">{{ $t("personal-bar.sign-out") }}</a>
     </div>

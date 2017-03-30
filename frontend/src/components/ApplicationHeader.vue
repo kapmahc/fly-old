@@ -16,6 +16,9 @@
           <li :key="l.href" v-for="l in links">
             <router-link class="nav-link" :to="{name: l.href}">{{ $t(l.label) }}</router-link>
           </li>
+          <li v-if="user.uid">
+            <router-link class="nav-link" :to="{name: 'dashboard'}">{{ $t('header.dashboard') }}</router-link>
+          </li>
           <language-bar />
           <personal-bar />
         </ul>
@@ -44,6 +47,9 @@ export default {
   computed: {
     info () {
       return this.$store.state.siteInfo
+    },
+    user () {
+      return this.$store.state.currentUser
     }
   }
 }
