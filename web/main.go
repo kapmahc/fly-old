@@ -50,7 +50,13 @@ func init() {
 		"port": 6379,
 		"db":   8,
 	})
-
+	viper.SetDefault("rabbitmq", map[string]interface{}{
+		"user":     "guest",
+		"password": "guest",
+		"host":     "localhost",
+		"port":     "5672",
+		"virtual":  "devel",
+	})
 	viper.SetDefault("database", map[string]interface{}{
 		"driver": "postgres",
 		"args": map[string]interface{}{

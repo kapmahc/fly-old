@@ -17,54 +17,6 @@
 			"revisionTime": "2017-03-07T03:38:02Z"
 		},
 		{
-			"checksumSHA1": "VrY3/MuaXwWDLtBLcp10MTFnVOI=",
-			"path": "github.com/RichardKnop/machinery/v1",
-			"revision": "f1563577ba2e9eca34985c8bd8c4983a42a696e3",
-			"revisionTime": "2017-02-04T13:28:11Z"
-		},
-		{
-			"checksumSHA1": "qf3GR00rmElHuO9EVEf21Ue4GFE=",
-			"path": "github.com/RichardKnop/machinery/v1/backends",
-			"revision": "f1563577ba2e9eca34985c8bd8c4983a42a696e3",
-			"revisionTime": "2017-02-04T13:28:11Z"
-		},
-		{
-			"checksumSHA1": "kjFeqYvuDYHPvGLRY7rzoPrAQGo=",
-			"path": "github.com/RichardKnop/machinery/v1/brokers",
-			"revision": "f1563577ba2e9eca34985c8bd8c4983a42a696e3",
-			"revisionTime": "2017-02-04T13:28:11Z"
-		},
-		{
-			"checksumSHA1": "/lDa+9D4ZV+n1EQVTGbvLpsbKik=",
-			"path": "github.com/RichardKnop/machinery/v1/config",
-			"revision": "f1563577ba2e9eca34985c8bd8c4983a42a696e3",
-			"revisionTime": "2017-02-04T13:28:11Z"
-		},
-		{
-			"checksumSHA1": "gohBrAPp11ucCwWQxqdguQfjp8M=",
-			"path": "github.com/RichardKnop/machinery/v1/logger",
-			"revision": "f1563577ba2e9eca34985c8bd8c4983a42a696e3",
-			"revisionTime": "2017-02-04T13:28:11Z"
-		},
-		{
-			"checksumSHA1": "MnO+EJ1yzLZ6KG5DnVgNZFbj3Ps=",
-			"path": "github.com/RichardKnop/machinery/v1/signatures",
-			"revision": "f1563577ba2e9eca34985c8bd8c4983a42a696e3",
-			"revisionTime": "2017-02-04T13:28:11Z"
-		},
-		{
-			"checksumSHA1": "VCEmyKj1HwZnjngF4mjSw7GmiaI=",
-			"path": "github.com/RichardKnop/machinery/v1/utils",
-			"revision": "f1563577ba2e9eca34985c8bd8c4983a42a696e3",
-			"revisionTime": "2017-02-04T13:28:11Z"
-		},
-		{
-			"checksumSHA1": "k/NXLVTpGAhDz7DQM2G8dDuJZpg=",
-			"path": "github.com/RichardKnop/uuid",
-			"revision": "c55201b036063326c5b1b89ccfe45a184973d073",
-			"revisionTime": "2016-02-16T16:37:10Z"
-		},
-		{
 			"checksumSHA1": "t+uej2kiyqRyQYguygI8t9nJH2w=",
 			"path": "github.com/SermoDigital/jose",
 			"revision": "2bd9b81ac51d6d6134fcd4fd846bd2e7347a15f9",
@@ -635,10 +587,10 @@
 			"revisionTime": "2016-07-25T13:16:29Z"
 		},
 		{
-			"checksumSHA1": "2tjJ0eQrZHGXncRkHSYwsfTDQh8=",
+			"checksumSHA1": "Om0cn0L5ewCIBcORQAXD8guTa9M=",
 			"path": "github.com/streadway/amqp",
-			"revision": "ce1c69d94c3efdb1f287015f851b17db8fa205b1",
-			"revisionTime": "2017-03-03T13:53:37Z"
+			"revision": "afe8eee29a74d213b1f3fb2586058157c397da60",
+			"revisionTime": "2017-03-13T17:48:48Z"
 		},
 		{
 			"checksumSHA1": "K/CP3EBR0TUpw8DPpjRExGEYNkY=",

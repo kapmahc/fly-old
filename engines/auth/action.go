@@ -39,13 +39,6 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 			return err
 		}
 		// -------------------
-		rep := web.OpenRedis()
-		// -------------------
-		bws, err := web.NewWorkerServer()
-		if err != nil {
-			return err
-		}
-		// -------------------
 		cip, err := aes.NewCipher([]byte(viper.GetString("secrets.aes")))
 		if err != nil {
 			return err
@@ -70,9 +63,9 @@ func Action(fn func(*cli.Context, *inject.Graph) error) cli.ActionFunc {
 		// ---------------
 		if err := inj.Provide(
 			&inject.Object{Value: db},
-			&inject.Object{Value: bws},
-			&inject.Object{Value: rep},
+			&inject.Object{Value: web.OpenRedis()},
 			&inject.Object{Value: up},
+			&inject.Object{Value: web.NewQueue()},
 			&inject.Object{Value: language.NewMatcher(tags)},
 			&inject.Object{Value: cip, Name: "aes.cip"},
 			&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},

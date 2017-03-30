@@ -1,7 +1,6 @@
 package auth
 
 import (
-	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/web"
@@ -11,14 +10,14 @@ import (
 
 // Engine engine
 type Engine struct {
-	Dao      *Dao              `inject:""`
-	Db       *gorm.DB          `inject:""`
-	Security *web.Security     `inject:""`
-	I18n     *web.I18n         `inject:""`
-	Jwt      *Jwt              `inject:""`
-	Server   *machinery.Server `inject:""`
-	Uploader web.Uploader      `inject:""`
-	Settings *web.Settings     `inject:""`
+	Dao      *Dao          `inject:""`
+	Db       *gorm.DB      `inject:""`
+	Security *web.Security `inject:""`
+	I18n     *web.I18n     `inject:""`
+	Jwt      *Jwt          `inject:""`
+	Uploader web.Uploader  `inject:""`
+	Settings *web.Settings `inject:""`
+	Queue    *web.Queue    `inject:""`
 }
 
 // Atom rss.atom

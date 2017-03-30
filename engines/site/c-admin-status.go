@@ -127,15 +127,9 @@ func (p *Engine) _dbStatus() (gin.H, error) {
 }
 
 func (p *Engine) _jobsStatus() (gin.H, error) {
-	cfg := p.Server.GetConfig()
-	return gin.H{
-		"tasks":             p.Server.GetRegisteredTaskNames(),
-		"broker":            cfg.Broker,
-		"result broker":     cfg.ResultBackend,
-		"results expire in": cfg.ResultsExpireIn,
-		"default queue":     cfg.DefaultQueue,
-	}, nil
+	return gin.H{}, nil
 }
+
 func (p *Engine) getAdminSiteStatus(c *gin.Context) (interface{}, error) {
 	data := gin.H{}
 	var err error

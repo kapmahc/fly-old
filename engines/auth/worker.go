@@ -1,10 +1,10 @@
 package auth
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
-	"github.com/RichardKnop/machinery/v1/signatures"
 	"github.com/SermoDigital/jose/jws"
 	log "github.com/Sirupsen/logrus"
 	"github.com/kapmahc/fly/web"
@@ -22,7 +22,13 @@ const (
 
 // RegisterWorker register worker
 func (p *Engine) RegisterWorker() {
-	p.Server.RegisterTask(sendEmailJob, p.doSendEmail)
+	p.Queue.Register(sendEmailJob, func(buf []byte) error {
+		var msg map[string]string
+		if err := json.Unmarshal(buf, &msg); err != nil {
+			return err
+		}
+		return p.doSendEmail(msg["to"], msg["subject"], msg["body"])
+	})
 }
 
 func (p *Engine) sendEmail(lng string, user *User, act string) {
@@ -56,27 +62,11 @@ func (p *Engine) sendEmail(lng string, user *User, act string) {
 	}
 
 	// -----------------------
-	task := signatures.TaskSignature{
-		Name: sendEmailJob,
-		Args: []signatures.TaskArg{
-			signatures.TaskArg{
-				Type:  "string",
-				Value: user.Email,
-			},
-			signatures.TaskArg{
-				Type:  "string",
-				Value: subject,
-			},
-			signatures.TaskArg{
-				Type:  "string",
-				Value: body,
-			},
-		},
-	}
-
-	if _, err := p.Server.SendTask(&task); err != nil {
-		log.Error(err)
-	}
+	p.Queue.Send("", sendEmailJob, map[string]string{
+		"to":      user.Email,
+		"subject": subject,
+		"body":    body,
+	})
 }
 
 func (p *Engine) parseToken(lng, tkn, act string) (*User, error) {
@@ -90,14 +80,14 @@ func (p *Engine) parseToken(lng, tkn, act string) (*User, error) {
 	return p.Dao.GetUserByUID(cm.Get("uid").(string))
 }
 
-func (p *Engine) doSendEmail(to, subject, body string) (interface{}, error) {
+func (p *Engine) doSendEmail(to, subject, body string) error {
 	if !(web.IsProduction()) {
 		log.Debugf("send to %s: %s\n%s", to, subject, body)
-		return "done", nil
+		return nil
 	}
 	smtp := make(map[string]interface{})
 	if err := p.Settings.Get("site.smtp", &smtp); err != nil {
-		return nil, err
+		return err
 	}
 
 	sender := smtp["username"].(string)
@@ -114,9 +104,5 @@ func (p *Engine) doSendEmail(to, subject, body string) (interface{}, error) {
 		smtp["password"].(string),
 	)
 
-	if err := dia.DialAndSend(msg); err != nil {
-		return nil, err
-	}
-
-	return "done", nil
+	return dia.DialAndSend(msg)
 }

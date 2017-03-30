@@ -1,7 +1,6 @@
 package site
 
 import (
-	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/garyburd/redigo/redis"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
@@ -14,15 +13,15 @@ import (
 
 // Engine engine
 type Engine struct {
-	Server   *machinery.Server `inject:""`
-	Cache    *web.Cache        `inject:""`
-	I18n     *web.I18n         `inject:""`
-	Settings *web.Settings     `inject:""`
-	Db       *gorm.DB          `inject:""`
-	Jwt      *auth.Jwt         `inject:""`
-	Redis    *redis.Pool       `inject:""`
-	Matcher  language.Matcher  `inject:""`
-	Dao      *auth.Dao         `inject:""`
+	Cache    *web.Cache       `inject:""`
+	I18n     *web.I18n        `inject:""`
+	Settings *web.Settings    `inject:""`
+	Db       *gorm.DB         `inject:""`
+	Jwt      *auth.Jwt        `inject:""`
+	Redis    *redis.Pool      `inject:""`
+	Matcher  language.Matcher `inject:""`
+	Dao      *auth.Dao        `inject:""`
+	Queue    *web.Queue       `inject:""`
 }
 
 // RegisterWorker register worker

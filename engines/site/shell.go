@@ -585,7 +585,8 @@ func (p *Engine) runWorker(c *cli.Context, _ *inject.Graph) error {
 		en.RegisterWorker()
 		return nil
 	})
-	return p.Server.NewWorker(name).Launch()
+
+	return p.Queue.Do(name)
 }
 
 func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
