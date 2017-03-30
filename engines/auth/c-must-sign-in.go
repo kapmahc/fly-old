@@ -29,6 +29,7 @@ func (p *Engine) getUsersInfo(c *gin.Context) (interface{}, error) {
 }
 func (p *Engine) postUsersInfo(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
+	lang := c.MustGet(web.LOCALE).(string)
 
 	var fm fmInfo
 	if err := c.Bind(&fm); err != nil {
@@ -42,6 +43,7 @@ func (p *Engine) postUsersInfo(c *gin.Context) (interface{}, error) {
 	}).Error; err != nil {
 		return nil, err
 	}
+	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.update-info"))
 	return gin.H{}, nil
 }
 
@@ -67,6 +69,7 @@ func (p *Engine) postUsersChangePassword(c *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 
+	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.change-password"))
 	return gin.H{}, nil
 }
 

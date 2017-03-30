@@ -6,9 +6,15 @@ import ResetPassword from './users/ResetPassword'
 import Unlock from './users/Unlock'
 import Logs from './users/Logs'
 import Info from './users/Info'
+import ChangePassword from './users/ChangePassword'
 
 export default {
   routes: [
+    {
+      path: '/users/change-password',
+      name: 'auth.users.change-password',
+      component: ChangePassword
+    },
     {
       path: '/users/info',
       name: 'auth.users.info',
@@ -62,7 +68,7 @@ export default {
         label: 'auth.dashboard.title',
         items: [
           {href: 'auth.users.info', label: 'auth.users.info.title'},
-          {href: 'home', label: 'auth.users.change-password.title'},
+          {href: 'auth.users.change-password', label: 'auth.users.change-password.title'},
           null,
           {href: 'auth.users.logs', label: 'auth.users.logs.title'}
         ]
