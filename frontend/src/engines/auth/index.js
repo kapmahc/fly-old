@@ -4,9 +4,15 @@ import Confirm from './Confirm'
 import ForgotPassword from './ForgotPassword'
 import ResetPassword from './ResetPassword'
 import Unlock from './Unlock'
+import Logs from './Logs'
 
 export default {
   routes: [
+    {
+      path: '/users/logs',
+      name: 'auth.users.logs',
+      component: Logs
+    },
     {
       path: '/users/sign-up',
       name: 'auth.users.sign-up',
@@ -44,13 +50,18 @@ export default {
       label: 'auth.users.index.title'
     }
   ],
-  dashboard: {
-    label: 'auth.dashboard.title',
-    items: [
-      {href: 'home', label: 'auth.users.info.title'},
-      {href: 'home', label: 'auth.users.change-password.title'},
-      null,
-      {href: 'home', label: 'auth.users.logs.title'}
-    ]
+  dashboard (user) {
+    if (user.uid) {
+      return {
+        label: 'auth.dashboard.title',
+        items: [
+          {href: 'home', label: 'auth.users.info.title'},
+          {href: 'home', label: 'auth.users.change-password.title'},
+          null,
+          {href: 'auth.users.logs', label: 'auth.users.logs.title'}
+        ]
+      }
+    }
+    return null
   }
 }

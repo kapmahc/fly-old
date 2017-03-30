@@ -1,7 +1,7 @@
 <template>
   <application-layout v-if="user.uid">
     <ul class="nav nav-tabs">
-      <li :key="db.label" class="nav-item dropdown" v-for="db in dashboard">
+      <li v-if="db" :key="db.label" class="nav-item dropdown" v-for="db in dashboard">
         <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
           {{$t(db.label)}}
         </a>
@@ -11,6 +11,7 @@
       </li>
     </ul>
     <br/>
+    <h2>{{title}}</h2>    
     <slot />
   </application-layout>
   <application-layout v-else>
@@ -31,17 +32,17 @@ var DropdownItem = {
 
 export default {
   name: 'dashboard-layout',
+  props: ['title'],
   components: {
     'application-layout': Layout,
     'alert-dialog': Alert,
     'dropdown-item': DropdownItem
   },
-  data () {
-    return {
-      dashboard
-    }
-  },
   computed: {
+    dashboard () {
+      var user = this.$store.state.currentUser
+      return dashboard.map(db => db(user))
+    },
     user () {
       return this.$store.state.currentUser
     }

@@ -22,3 +22,17 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
+
+// init store data
+
+import {get} from '@/ajax'
+import {TOKEN} from '@/constants'
+
+get('/site/info').then(function (rst) {
+  document.title = rst.title
+  store.commit('refresh', rst)
+})
+const token = sessionStorage.getItem(TOKEN)
+if (token) {
+  store.commit('signIn', token)
+}

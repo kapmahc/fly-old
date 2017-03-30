@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import {TOKEN} from '@/constants'
 import {_delete} from '@/ajax'
 
 export default {
@@ -31,12 +30,6 @@ export default {
   data () {
     return {
       actions: ['sign-in', 'sign-up', 'forgot-password', 'confirm', 'unlock']
-    }
-  },
-  beforeCreate () {
-    var token = sessionStorage.getItem(TOKEN)
-    if (token) {
-      this.$store.commit('signIn', token)
     }
   },
   methods: {

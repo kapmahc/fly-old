@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import {get} from '@/ajax'
 import {LOCALE} from '@/constants'
 
 export default {
@@ -29,12 +28,6 @@ export default {
     info () {
       return this.$store.state.siteInfo
     }
-  },
-  beforeCreate () {
-    get('/site/info').then(function (rst) {
-      document.title = rst.title
-      this.$store.commit('refresh', rst)
-    }.bind(this))
   },
   methods: {
     setLanguage (l) {
