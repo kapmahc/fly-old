@@ -4,7 +4,7 @@
       <span aria-hidden="true">&times;</span>
     </button>
     <h4 class="alert-heading">{{$t(`flashs.${action}`)}}</h4>
-    <p>{{new Date()}}</p>
+    <p>{{new Date().toISOString()}}</p>
     <p class="mb-0">{{message}}</p>
   </div>
 </template>
