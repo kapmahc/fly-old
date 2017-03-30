@@ -1,12 +1,8 @@
 <template>
-  <non-sign-in-layout :title="$t('auth.users.sign-in.title')" :onSubmit="onSubmit">
+  <non-sign-in-layout :title="$t(`auth.users.${action}.title`)" :onSubmit="onSubmit">
     <div class="form-group">
       <label for="email">{{$t("attributes.email")}}</label>
       <input type="email" class="form-control" id="email" v-model="item.email">
-    </div>
-    <div class="form-group">
-      <label for="password">{{$t("attributes.password")}}</label>
-      <input type="password" class="form-control" v-model="item.password" id="password" aria-describedby="passwordHelp">
     </div>
   </non-sign-in-layout>
 </template>
@@ -16,12 +12,12 @@ import {post} from '@/ajax'
 import Layout from './NonSignIn'
 
 export default {
-  name: 'auth-sign-in',
+  name: 'auth-email-form',
+  props: ['action'],
   data () {
     return {
       item: {
-        email: '',
-        password: ''
+        email: ''
       }
     }
   },
@@ -32,11 +28,10 @@ export default {
     onSubmit () {
       var data = new FormData()
       data.append('email', this.item.email)
-      data.append('password', this.item.password)
 
-      post('/users/sign-in', data).then(function (rst) {
-        this.$store.commit('signIn', rst.token)
-        this.$router.push({ name: 'home' })
+      post(`/users/${this.action}`, data).then(function (rst) {
+        alert(this.$t(`auth.messages.email-for-${this.action}`))
+        this.$router.push({ name: 'auth.users.sign-in' })
       }.bind(this)).catch((err) => {
         alert(err)
       })
