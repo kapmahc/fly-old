@@ -1,4 +1,4 @@
-# fly
+# FLY
 
 A complete open source e-commerce solution for the Go language.
 

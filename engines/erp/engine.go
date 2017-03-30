@@ -6,7 +6,6 @@ import (
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
 	"golang.org/x/tools/blog/atom"
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Engine engine
@@ -31,33 +30,6 @@ func (p *Engine) Atom(lang string) ([]*atom.Entry, error) {
 // Sitemap sitemap.xml.gz
 func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
-}
-
-// Dashboard dashboard
-func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
-	if !p.isSeller(c) {
-		return nil
-	}
-	// if IsPublic() || p.Dao.Is(user.(*auth.User), auth.RoleAdmin)
-	dd := web.Dropdown{
-		Label: "erp.dashboard.title",
-		Links: []*web.Link{
-			&web.Link{Href: "/erp/stores", Label: "erp.stores.index.title"},
-			&web.Link{Href: "/erp/products", Label: "erp.products.index.title"},
-			&web.Link{Href: "/erp/orders", Label: "erp.orders.index.title"},
-			nil,
-			&web.Link{Href: "/erp/pos", Label: "erp.pos.title"},
-		},
-	}
-
-	if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
-		dd.Links = append(
-			dd.Links,
-			nil,
-			&web.Link{Href: "/erp/tags", Label: "erp.tags.index.title"},
-		)
-	}
-	return &dd
 }
 
 func init() {

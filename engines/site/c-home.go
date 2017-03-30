@@ -29,12 +29,3 @@ func (p *Engine) getSiteInfo(c *gin.Context) (interface{}, error) {
 
 	return data, nil
 }
-
-func (p *Engine) getDashboard(c *gin.Context) (interface{}, error) {
-	var items []*web.Dropdown
-	web.Walk(func(en web.Engine) error {
-		items = append(items, en.Dashboard(c))
-		return nil
-	})
-	return items, nil
-}

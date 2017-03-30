@@ -10,7 +10,6 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	rt.GET("/locales/:lang", web.JSON(p.getLocales))
 	rt.GET("/site/info", web.JSON(p.getSiteInfo))
 	rt.POST("/install", web.JSON(p.postInstall))
-	rt.GET("/dashboard", p.Jwt.MustSignInMiddleware, web.JSON(p.getDashboard))
 
 	ag := rt.Group("/admin", p.Jwt.MustAdminMiddleware)
 
@@ -19,16 +18,6 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	ag.DELETE("/locales/:id", web.JSON(p.deleteAdminLocales))
 
 	ag.GET("/users", web.JSON(p.getAdminUsers))
-
-	ag.GET("/links", web.JSON(p.indexAdminLinks))
-	ag.POST("/links", web.JSON(p.createAdminLink))
-	ag.POST("/links/:id", web.JSON(p.updateAdminLink))
-	ag.DELETE("/links/:id", web.JSON(p.destroyAdminLink))
-
-	ag.GET("/pages", web.JSON(p.indexAdminPages))
-	ag.POST("/pages", web.JSON(p.createAdminPage))
-	ag.POST("/pages/:id", web.JSON(p.updateAdminPage))
-	ag.DELETE("/pages/:id", web.JSON(p.destroyAdminPage))
 
 	asg := ag.Group("/site")
 	asg.GET("/status", web.JSON(p.getAdminSiteStatus))

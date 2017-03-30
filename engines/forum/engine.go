@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Engine engine
@@ -80,30 +79,6 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		urls = append(urls, stm.URL{"loc": fmt.Sprintf("/forum/tags/%d", t.ID)})
 	}
 	return urls, nil
-}
-
-// Dashboard dashboard
-func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
-	if _, ok := c.Get(auth.CurrentUser); !ok {
-		return nil
-	}
-	dd := web.Dropdown{
-		Label: "forum.dashboard.title",
-		Links: []*web.Link{
-			&web.Link{Href: "/forum/articles/new", Label: "forum.articles.new.title"},
-			nil,
-			&web.Link{Href: "/forum/articles/my", Label: "forum.articles.my.title"},
-			&web.Link{Href: "/forum/comments/my", Label: "forum.comments.my.title"},
-		},
-	}
-	if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
-		dd.Links = append(
-			dd.Links,
-			nil,
-			&web.Link{Href: "/forum/admin/tags", Label: "forum.tags.index.title"},
-		)
-	}
-	return &dd
 }
 
 func init() {

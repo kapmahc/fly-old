@@ -6,8 +6,18 @@ import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
+type fmAttachmentNew struct {
+	Type string `form:"type" binding:"required,max=255"`
+	ID   uint   `form:"uint"`
+}
+
 func (p *Engine) createAttachment(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
+
+	var fm fmAttachmentNew
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
 
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
@@ -27,11 +37,13 @@ func (p *Engine) createAttachment(c *gin.Context) (interface{}, error) {
 	}
 
 	a := Attachment{
-		Title:     header.Filename,
-		URL:       url,
-		UserID:    user.ID,
-		MediaType: http.DetectContentType(buf),
-		Length:    size / 1024,
+		Title:        header.Filename,
+		URL:          url,
+		UserID:       user.ID,
+		MediaType:    http.DetectContentType(buf),
+		Length:       size / 1024,
+		ResourceType: fm.Type,
+		ResourceID:   fm.ID,
 	}
 	if err := p.Db.Create(&a).Error; err != nil {
 		return nil, err

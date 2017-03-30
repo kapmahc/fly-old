@@ -32,11 +32,6 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
 }
 
-// Dashboard dashboard
-func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
-	return nil
-}
-
 // Shell shell commands
 func (p *Engine) Shell() []cli.Command {
 	return []cli.Command{}

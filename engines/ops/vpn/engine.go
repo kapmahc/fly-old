@@ -8,7 +8,6 @@ import (
 	"github.com/kapmahc/fly/web"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Engine engine
@@ -36,22 +35,6 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		{"loc": "/ops/vpn/users/change-password"},
 	}
 	return urls, nil
-}
-
-// Dashboard dashboard
-func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
-	if admin, ok := c.Get(auth.IsAdmin); ok && admin.(bool) {
-		return &web.Dropdown{
-			Label: "ops.vpn.dashboard.title",
-			Links: []*web.Link{
-				&web.Link{Href: "/ops/vpn/users", Label: "ops.vpn.users.index.title"},
-				&web.Link{Href: "/ops/vpn/logs", Label: "ops.vpn.logs.index.title"},
-				nil,
-				&web.Link{Href: "/ops/vpn/readme", Label: "ops.vpn.readme.title"},
-			},
-		}
-	}
-	return nil
 }
 
 // Shell shell commands

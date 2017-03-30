@@ -6,7 +6,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/kapmahc/fly/engines/blog"
-	// _ "github.com/kapmahc/fly/engines/erp"
+	_ "github.com/kapmahc/fly/engines/erp"
 	_ "github.com/kapmahc/fly/engines/forum"
 	_ "github.com/kapmahc/fly/engines/mall"
 	_ "github.com/kapmahc/fly/engines/ops/mail"

@@ -5,7 +5,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/web"
 	"golang.org/x/tools/blog/atom"
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 // Engine engine
@@ -36,24 +35,6 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 		{"loc": "/users/unlock"},
 	}
 	return urls, nil
-}
-
-// Dashboard dashboard
-func (p *Engine) Dashboard(c *gin.Context) *web.Dropdown {
-	if _, ok := c.Get(CurrentUser); !ok {
-		return nil
-	}
-	return &web.Dropdown{
-		Label: "auth.dashboard.title",
-		Links: []*web.Link{
-			&web.Link{Href: "/users/info", Label: "auth.users.info.title"},
-			&web.Link{Href: "/users/change-password", Label: "auth.users.change-password.title"},
-			nil,
-			&web.Link{Href: "/users/logs", Label: "auth.users.logs.title"},
-			nil,
-			&web.Link{Href: "/attachments", Label: "auth.attachments.index.title"},
-		},
-	}
 }
 
 func init() {

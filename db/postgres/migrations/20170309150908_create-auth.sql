@@ -93,6 +93,8 @@ CREATE TABLE attachments (
   url           VARCHAR(255)                NOT NULL,
   length        INT                         NOT NULL,
   media_type    VARCHAR(32)                 NOT NULL,
+  resource_type VARCHAR(255)                NOT NULL,
+  resource_id   BIGINT                      NOT NULL,
   user_id       BIGINT                      REFERENCES users,
   created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL
@@ -103,19 +105,11 @@ CREATE INDEX idx_attachments_title
   ON attachments (title);
 CREATE INDEX idx_attachments_media_type
   ON attachments (media_type);
-
-CREATE TABLE resources (
-  type          VARCHAR(255)                NOT NULL,
-  id            BIGINT                      NOT NULL,
-  attachment_id BIGINT                      REFERENCES attachments,
-  created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
-  PRIMARY KEY (type, id, attachment_id)
-);
-CREATE INDEX idx_resources_type on resources(type);
+CREATE INDEX idx_attachments_resource_type
+  ON attachments (media_type);
 
 -- +goose Down
 -- SQL section 'Down' is executed when this migration is rolled back
-DROP TABLE resources;
 DROP TABLE attachments;
 DROP TABLE votes;
 DROP TABLE policies;

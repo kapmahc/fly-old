@@ -82,13 +82,15 @@ func (p User) String() string {
 type Attachment struct {
 	web.Model
 
-	Title     string `json:"title"`
-	URL       string `json:"url"`
-	Length    int64  `json:"length"`
-	MediaType string `json:"mediaType"`
+	Title        string `json:"title"`
+	URL          string `json:"url"`
+	Length       int64  `json:"length"`
+	MediaType    string `json:"mediaType"`
+	ResourceType string `json:"resourceType"`
+	ResourceID   uint   `json:"resourceId"`
 
-	UserID uint
-	User   User
+	UserID uint `json:"userId"`
+	User   User `json:"-"`
 }
 
 // TableName table name
