@@ -1,16 +1,8 @@
 <template>
   <div>
-    <h2>{{$t("auth.users.sign-up.title")}}</h2>
+    <h2>{{$t("auth.users.reset-password.title")}}</h2>
     <hr/>
     <form v-on:submit.prevent="onSubmit">
-      <div class="form-group">
-        <label for="name">{{$t("attributes.fullName")}}</label>
-        <input type="text" class="form-control" id="name" v-model="item.name">
-      </div>
-      <div class="form-group">
-        <label for="email">{{$t("attributes.email")}}</label>
-        <input type="email" class="form-control" id="email" v-model="item.email">
-      </div>
       <div class="form-group">
         <label for="password">{{$t("attributes.password")}}</label>
         <input type="password" class="form-control" v-model="item.password" id="password" aria-describedby="passwordHelp">
@@ -34,12 +26,10 @@ import Links from './Links'
 import Buttons from '@/components/FormButtons'
 
 export default {
-  name: 'auth-users-sign-up',
+  name: 'auth-users-reset-password',
   data () {
     return {
       item: {
-        name: '',
-        email: '',
         password: '',
         passwordConfirmation: ''
       }
@@ -52,13 +42,12 @@ export default {
   methods: {
     onSubmit () {
       var data = new FormData()
-      data.append('name', this.item.name)
-      data.append('email', this.item.email)
+      data.append('token', this.$route.params.token)
       data.append('password', this.item.password)
       data.append('passwordConfirmation', this.item.passwordConfirmation)
 
-      post('/users/sign-up', data).then(function (rst) {
-        alert(this.$t('auth.messages.email-for-confirm'))
+      post('/users/reset-password', data).then(function (rst) {
+        alert(this.$t('auth.messages.reset-password-success'))
         this.$router.push({ name: 'auth.users.sign-in' })
       }.bind(this)).catch((err) => {
         alert(err)

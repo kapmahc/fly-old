@@ -96,3 +96,4 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   - [gin](https://github.com/gin-gonic/gin)
   - [viper](https://github.com/spf13/viper)
   - [validator](https://godoc.org/gopkg.in/go-playground/validator.v9)
+  - [rabbitmq](https://www.rabbitmq.com/documentation.html)

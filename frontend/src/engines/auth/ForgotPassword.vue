@@ -9,11 +9,14 @@
       </div>
       <form-buttons />
     </form>
+    <br/>
+    <shared-links />
   </div>
 </template>
 
 <script>
 import {post} from '@/ajax'
+import Links from './Links'
 import Buttons from '@/components/FormButtons'
 
 export default {
@@ -26,6 +29,7 @@ export default {
     }
   },
   components: {
+    'shared-links': Links,
     'form-buttons': Buttons
   },
   methods: {
