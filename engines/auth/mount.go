@@ -21,6 +21,7 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	ung.POST("/reset-password", web.JSON(p.postUsersResetPassword))
 
 	umg := rt.Group("/users", p.Jwt.MustSignInMiddleware)
+	umg.GET("/info", web.JSON(p.getUsersInfo))
 	umg.POST("/info", web.JSON(p.postUsersInfo))
 	umg.POST("/change-password", web.JSON(p.postUsersChangePassword))
 	umg.GET("/logs", web.JSON(p.getUsersLogs))

@@ -18,6 +18,15 @@ type fmInfo struct {
 	Logo string `form:"logo" binding:"max=255"`
 }
 
+func (p *Engine) getUsersInfo(c *gin.Context) (interface{}, error) {
+	user := c.MustGet(CurrentUser).(*User)
+	return gin.H{
+		"email": user.Email,
+		"name":  user.Name,
+		"logo":  user.Logo,
+		"home":  user.Home,
+	}, nil
+}
 func (p *Engine) postUsersInfo(c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
 

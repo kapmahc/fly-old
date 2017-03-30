@@ -1,13 +1,19 @@
-import SignIn from './SignIn'
-import SignUp from './SignUp'
-import Confirm from './Confirm'
-import ForgotPassword from './ForgotPassword'
-import ResetPassword from './ResetPassword'
-import Unlock from './Unlock'
-import Logs from './Logs'
+import SignIn from './users/SignIn'
+import SignUp from './users/SignUp'
+import Confirm from './users/Confirm'
+import ForgotPassword from './users/ForgotPassword'
+import ResetPassword from './users/ResetPassword'
+import Unlock from './users/Unlock'
+import Logs from './users/Logs'
+import Info from './users/Info'
 
 export default {
   routes: [
+    {
+      path: '/users/info',
+      name: 'auth.users.info',
+      component: Info
+    },
     {
       path: '/users/logs',
       name: 'auth.users.logs',
@@ -55,7 +61,7 @@ export default {
       return {
         label: 'auth.dashboard.title',
         items: [
-          {href: 'home', label: 'auth.users.info.title'},
+          {href: 'auth.users.info', label: 'auth.users.info.title'},
           {href: 'home', label: 'auth.users.change-password.title'},
           null,
           {href: 'auth.users.logs', label: 'auth.users.logs.title'}

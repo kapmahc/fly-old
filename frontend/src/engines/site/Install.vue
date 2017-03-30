@@ -55,7 +55,7 @@ export default {
       data.append('passwordConfirmation', this.item.passwordConfirmation)
 
       post('/install', data).then(function (rst) {
-        alert(this.$t('success'))
+        alert(this.$t('flashs.success'))
         this.$router.push({ name: 'auth.users.sign-in' })
       }.bind(this)).catch((err) => {
         alert(err)
