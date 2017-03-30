@@ -44,15 +44,13 @@ export default {
       label: 'auth.users.index.title'
     }
   ],
-  dashboard: [
-    {
-      label: 'auth.dashboard.title',
-      links: [
-        {href: 'home', label: 'auth.users.info.title'},
-        {href: 'home', label: 'auth.users.change-password.title'},
-        null,
-        {href: 'home', label: 'auth.users.logs.title'}
-      ]
-    }
-  ]
+  dashboard: {
+    label: 'auth.dashboard.title',
+    items: [
+      {href: 'home', label: 'auth.users.info.title'},
+      {href: 'home', label: 'auth.users.change-password.title'},
+      null,
+      {href: 'home', label: 'auth.users.logs.title'}
+    ]
+  }
 }
