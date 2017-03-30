@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import I18n from 'vue-i18n'
+import Cookies from 'js-cookie'
 
 Vue.use(I18n)
 
@@ -7,6 +8,7 @@ import {api} from '@/ajax'
 import {LOCALE} from '@/constants'
 
 const locale = localStorage.getItem(LOCALE) || process.env.LOCALE
+Cookies.set(LOCALE, locale, { expires: 7 })
 const messages = {}
 messages[locale] = {}
 const i18n = new I18n({ locale, messages })

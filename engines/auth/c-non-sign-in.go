@@ -66,6 +66,8 @@ func (p *Engine) postUsersSignIn(c *gin.Context) (interface{}, error) {
 
 	cm := jws.Claims{}
 	cm.Set(UID, user.UID)
+	cm.Set("name", user.Name)
+	cm.Set(IsAdmin, p.Dao.Is(user.ID, RoleAdmin))
 	tkn, err := p.Jwt.Sum(cm, time.Hour*24*7)
 	if err != nil {
 		return nil, err
@@ -73,7 +75,6 @@ func (p *Engine) postUsersSignIn(c *gin.Context) (interface{}, error) {
 
 	return gin.H{
 		"token": string(tkn),
-		"user":  user,
 	}, nil
 }
 

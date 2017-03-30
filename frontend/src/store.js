@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import jwtDecode from 'jwt-decode'
 
 Vue.use(Vuex)
+
+import {TOKEN} from '@/constants'
 
 const store = new Vuex.Store({
   state: {
@@ -13,9 +16,17 @@ const store = new Vuex.Store({
       state.siteInfo = info
     },
     signIn: (state, token) => {
-      state.currentUser = {name: 'whoami'}
+      try {
+        state.currentUser = jwtDecode(token)
+        sessionStorage.setItem(TOKEN, token)
+      } catch (e) {
+        console.error(e)
+        sessionStorage.clear()
+        state.currentUser = {}
+      }
     },
-    siteOut: state => {
+    signOut: state => {
+      sessionStorage.clear()
       state.currentUser = {}
     }
   }

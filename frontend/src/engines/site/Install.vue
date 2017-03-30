@@ -25,14 +25,14 @@
         <input type="password" class="form-control" v-model="item.passwordConfirmation" id="passwordConfirmation" aria-describedby="passwordConfirmationHelp">
         <small id="passwordConfirmationHelp" class="form-text text-muted">{{$t("helps.passwordConfirmation")}}</small>
       </div>
-      <button type="submit" class="btn btn-primary">{{$t("buttons.submit")}}</button>
-      <button type="reset" class="btn btn-secondary">{{$t("buttons.reset")}}</button>
+      <form-buttons />
     </form>
   </div>
 </template>
 
 <script>
 import {post} from '@/ajax'
+import Buttons from '@/components/FormButtons'
 
 export default {
   name: 'site-install',
@@ -46,6 +46,9 @@ export default {
         passwordConfirmation: ''
       }
     }
+  },
+  components: {
+    'form-buttons': Buttons
   },
   methods: {
     onSubmit () {
