@@ -1,5 +1,8 @@
 import SignIn from './SignIn'
 import SignUp from './SignUp'
+import Confirm from './Confirm'
+import ForgotPassword from './ForgotPassword'
+import Unlock from './Unlock'
 
 export default {
   routes: [
@@ -16,17 +19,17 @@ export default {
     {
       path: '/users/forgot-password',
       name: 'auth.users.forgot-password',
-      component: SignIn
+      component: ForgotPassword
     },
     {
       path: '/users/confirm',
       name: 'auth.users.confirm',
-      component: SignIn
+      component: Confirm
     },
     {
       path: '/users/unlock',
       name: 'auth.users.unlock',
-      component: SignIn
+      component: Unlock
     }
   ],
   links: [

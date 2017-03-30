@@ -6,6 +6,7 @@ import (
 
 	"github.com/SermoDigital/jose/jws"
 	"github.com/kapmahc/fly/web"
+	"github.com/spf13/viper"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -96,7 +97,7 @@ func (p *Engine) getUsersConfirm(c *gin.Context) {
 	}
 	p.Db.Model(user).Update("confirmed_at", time.Now())
 	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.confirm"))
-	c.Redirect(http.StatusFound, "/")
+	c.Redirect(http.StatusFound, viper.GetString("server.frontend"))
 }
 func (p *Engine) postUsersConfirm(c *gin.Context) (interface{}, error) {
 	lang := c.MustGet(web.LOCALE).(string)
@@ -134,7 +135,7 @@ func (p *Engine) getUsersUnlock(c *gin.Context) {
 
 	p.Db.Model(user).Update(map[string]interface{}{"locked_at": nil})
 	p.Dao.Log(user.ID, c.ClientIP(), p.I18n.T(lang, "auth.logs.unlock"))
-	c.Redirect(http.StatusFound, "/")
+	c.Redirect(http.StatusFound, viper.GetString("server.frontend"))
 }
 
 func (p *Engine) postUsersUnlock(c *gin.Context) (interface{}, error) {
