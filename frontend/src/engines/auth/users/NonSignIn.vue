@@ -1,12 +1,8 @@
 <template>
   <application-layout>
-    <h2>{{ title }}</h2>
-    <hr/>
-    <form v-on:submit.prevent="onSubmit">
+    <form-panel :title="title" :onSubmit="onSubmit">
       <slot />
-      <button type="submit" class="btn btn-primary">{{$t("buttons.submit")}}</button>
-      <button type="reset" class="btn btn-secondary">{{$t("buttons.reset")}}</button>
-    </form>
+    </form-panel>
     <br/>
     <ul>
       <li :key="a" v-for="a in actions">
@@ -23,12 +19,14 @@
 
 <script>
 import Application from '@/layouts/Application'
+import Form from '@/components/Form'
 
 export default {
   name: 'auth-non-sign-in-layout',
   props: ['title', 'onSubmit'],
   components: {
-    'application-layout': Application
+    'application-layout': Application,
+    'form-panel': Form
   },
   data () {
     return {

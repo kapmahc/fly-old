@@ -1,33 +1,36 @@
 <template>
-  <form-layout :title="$t('site.install.title')" :onSubmit="onSubmit">
-    <div class="form-group">
-      <label for="title">{{$t("site.attributes.title")}}</label>
-      <input type="text" class="form-control" id="title" v-model="item.title">
-    </div>
-    <div class="form-group">
-      <label for="subTitle">{{$t("site.attributes.subTitle")}}</label>
-      <input type="text" class="form-control" id="subTitle" v-model="item.subTitle">
-    </div>
-    <div class="form-group">
-      <label for="email">{{$t("attributes.email")}}</label>
-      <input type="email" class="form-control" id="email" v-model="item.email">
-    </div>
-    <div class="form-group">
-      <label for="password">{{$t("attributes.password")}}</label>
-      <input type="password" class="form-control" v-model="item.password" id="password" aria-describedby="passwordHelp">
-      <small id="passwordHelp" class="form-text text-muted">{{$t("helps.password")}}</small>
-    </div>
-    <div class="form-group">
-      <label for="passwordConfirmation">{{$t("attributes.passwordConfirmation")}}</label>
-      <input type="password" class="form-control" v-model="item.passwordConfirmation" id="passwordConfirmation" aria-describedby="passwordConfirmationHelp">
-      <small id="passwordConfirmationHelp" class="form-text text-muted">{{$t("helps.passwordConfirmation")}}</small>
-    </div>
-  </form-layout>
+  <application-layout>
+    <form-panel :title="$t('site.install.title')" :onSubmit="onSubmit">
+      <div class="form-group">
+        <label for="title">{{$t("site.attributes.title")}}</label>
+        <input type="text" class="form-control" id="title" v-model="item.title">
+      </div>
+      <div class="form-group">
+        <label for="subTitle">{{$t("site.attributes.subTitle")}}</label>
+        <input type="text" class="form-control" id="subTitle" v-model="item.subTitle">
+      </div>
+      <div class="form-group">
+        <label for="email">{{$t("attributes.email")}}</label>
+        <input type="email" class="form-control" id="email" v-model="item.email">
+      </div>
+      <div class="form-group">
+        <label for="password">{{$t("attributes.password")}}</label>
+        <input type="password" class="form-control" v-model="item.password" id="password" aria-describedby="passwordHelp">
+        <small id="passwordHelp" class="form-text text-muted">{{$t("helps.password")}}</small>
+      </div>
+      <div class="form-group">
+        <label for="passwordConfirmation">{{$t("attributes.passwordConfirmation")}}</label>
+        <input type="password" class="form-control" v-model="item.passwordConfirmation" id="passwordConfirmation" aria-describedby="passwordConfirmationHelp">
+        <small id="passwordConfirmationHelp" class="form-text text-muted">{{$t("helps.passwordConfirmation")}}</small>
+      </div>
+    </form-panel>
+  </application-layout>
 </template>
 
 <script>
 import {post} from '@/ajax'
-import Form from '@/layouts/Form'
+import Layout from '@/layouts/Application'
+import Form from '@/components/Form'
 
 export default {
   name: 'site-install',
@@ -43,7 +46,8 @@ export default {
     }
   },
   components: {
-    'form-layout': Form
+    'application-layout': Layout,
+    'form-panel': Form
   },
   methods: {
     onSubmit () {
