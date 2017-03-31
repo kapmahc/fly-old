@@ -11,7 +11,6 @@
       </li>
     </ul>
     <br/>
-    <h2>{{title}}</h2>    
     <slot />
   </application-layout>
   <application-layout v-else>
@@ -32,7 +31,6 @@ var DropdownItem = {
 
 export default {
   name: 'dashboard-layout',
-  props: ['title'],
   components: {
     'application-layout': Layout,
     'alert-dialog': Alert,

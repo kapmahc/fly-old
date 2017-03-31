@@ -1,5 +1,7 @@
 <template>
-  <dashboard-layout :title="$t('auth.users.logs.title')">
+  <dashboard-layout>
+    <h2>{{$t('auth.users.logs.title')}}</h2>
+    <hr/>
     <ul class="list-group">
       <li v-for="it in items" class="list-group-item list-group-item-action">
         [{{it.ip}}] {{it.createdAt}}: {{it.message}}

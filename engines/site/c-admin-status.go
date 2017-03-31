@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/user"
 	"runtime"
-	"strings"
 	"syscall"
 	"time"
 
@@ -74,14 +73,15 @@ func (p *Engine) _networkStatus() (gin.H, error) {
 	}
 	return sts, nil
 }
-func (p *Engine) _cacheStatus() ([]string, error) {
+func (p *Engine) _cacheStatus() (string, error) {
 	c := p.Redis.Get()
 	defer c.Close()
 	sts, err := redis.String(c.Do("INFO"))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return strings.Split(sts, "\n"), nil
+	// return strings.Split(sts, "\r\n"), nil
+	return sts, nil
 }
 
 func (p *Engine) _dbStatus() (gin.H, error) {
@@ -126,8 +126,8 @@ func (p *Engine) _dbStatus() (gin.H, error) {
 	return val, nil
 }
 
-func (p *Engine) _jobsStatus() (gin.H, error) {
-	return gin.H{}, nil
+func (p *Engine) _jobsStatus() (interface{}, error) {
+	return p.Queue.Status(), nil
 }
 
 func (p *Engine) getAdminSiteStatus(c *gin.Context) (interface{}, error) {

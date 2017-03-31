@@ -1,10 +1,12 @@
 <template>
   <application-layout>
-    <div class="row" v-if="user.uid">
-      <div :key="db.label" class="col-md-4" v-for="db in dashboard" v-if="db">
-        <h4>{{$t(db.label)}}</h4>
-        <hr/>
-        <div class="list-group">
+    <div class="card-columns" v-if="user.uid">
+      <div class="card"  :key="db.label" v-for="db in dashboard" v-if="db">
+        <div class="card-block">
+          <h4 class="card-title">{{$t(db.label)}}</h4>
+          <p class="card-text"></p>
+        </div>
+        <div class="list-group list-group-flush">
           <router-link :key="it.label" v-for="it in db.items" v-if="it" :to="{name: it.href}" class="list-group-item list-group-item-action">
             {{$t(it.label)}}
           </router-link>

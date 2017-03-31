@@ -3,6 +3,8 @@ package web
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
+	"runtime"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/google/uuid"
@@ -18,6 +20,15 @@ func NewQueue() *Queue {
 // Queue message queue
 type Queue struct {
 	tasks map[string]func([]byte) error
+}
+
+// Status status
+func (p *Queue) Status() map[string]string {
+	val := make(map[string]string)
+	for k, v := range p.tasks {
+		val[k] = runtime.FuncForPC(reflect.ValueOf(v).Pointer()).Name()
+	}
+	return val
 }
 
 // Register register job

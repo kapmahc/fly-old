@@ -5,9 +5,15 @@ import Info from './admin/Info'
 import Author from './admin/Author'
 import Seo from './admin/Seo'
 import Smtp from './admin/Smtp'
+import Status from './admin/Status'
 
 export default {
   routes: [
+    {
+      path: '/admin/site/status',
+      name: 'site.admin.status',
+      component: Status
+    },
     {
       path: '/admin/site/smtp',
       name: 'site.admin.smtp',
@@ -55,7 +61,7 @@ export default {
       return {
         label: 'site.dashboard.title',
         items: [
-          {href: 'home', label: 'site.admin.status.title'},
+          {href: 'site.admin.status', label: 'site.admin.status.title'},
           null,
           {href: 'site.admin.info', label: 'site.admin.info.title'},
           {href: 'site.admin.author', label: 'site.admin.author.title'},
