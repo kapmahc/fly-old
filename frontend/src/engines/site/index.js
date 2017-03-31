@@ -7,9 +7,33 @@ import Seo from './admin/Seo'
 import Smtp from './admin/Smtp'
 import Status from './admin/Status'
 import Locales from './admin/Locales'
+import AdminNotices from './admin/Notices'
+import AdminLeaveWords from './admin/LeaveWords'
+import NewLeaveWord from './leave-words/New'
+import AdminUsers from './admin/Users'
 
 export default {
   routes: [
+    {
+      path: '/admin/users',
+      name: 'site.admin.users',
+      component: AdminUsers
+    },
+    {
+      path: '/leave-words/new',
+      name: 'site.leave-words.new',
+      component: NewLeaveWord
+    },
+    {
+      path: '/admin/leave-words',
+      name: 'site.admin.leave-words',
+      component: AdminLeaveWords
+    },
+    {
+      path: '/admin/notices',
+      name: 'site.admin.notices',
+      component: AdminNotices
+    },
     {
       path: '/admin/site/locales',
       name: 'site.admin.locales',
@@ -75,10 +99,10 @@ export default {
           {href: 'site.admin.smtp', label: 'site.admin.smtp.title'},
           null,
           {href: 'site.admin.locales', label: 'site.admin.locales.index.title'},
-          {href: 'home', label: 'site.admin.users.index.title'},
+          {href: 'site.admin.users', label: 'site.admin.users.index.title'},
           null,
-          {href: 'home', label: 'site.admin.notices.index.title'},
-          {href: 'home', label: 'site.admin.leave-words.index.title'}
+          {href: 'site.admin.notices', label: 'site.admin.notices.index.title'},
+          {href: 'site.admin.leave-words', label: 'site.admin.leave-words.index.title'}
         ]
       }
     }

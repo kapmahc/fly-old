@@ -11,7 +11,7 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{name: 'home'}">{{$t("site.leave-words.new.title")}}</router-link>
+        <router-link :to="{name: 'site.leave-words.new'}">{{$t("site.leave-words.new.title")}}</router-link>
       </li>
     </ul>
   </application-layout>
