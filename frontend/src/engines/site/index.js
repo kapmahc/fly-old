@@ -11,9 +11,15 @@ import AdminNotices from './admin/Notices'
 import AdminLeaveWords from './admin/LeaveWords'
 import NewLeaveWord from './leave-words/New'
 import AdminUsers from './admin/Users'
+import IndexNotices from './notices/Index'
 
 export default {
   routes: [
+    {
+      path: '/notices',
+      name: 'site.notices.index',
+      component: IndexNotices
+    },
     {
       path: '/admin/users',
       name: 'site.admin.users',
@@ -82,7 +88,7 @@ export default {
   ],
   links: [
     {
-      href: 'home',
+      href: 'site.notices.index',
       label: 'site.notices.index.title'
     }
   ],

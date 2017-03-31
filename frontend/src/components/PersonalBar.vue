@@ -17,7 +17,7 @@
       <router-link :key="a" :to="{name: `auth.users.${a}`}" class="dropdown-item" v-for="a in actions">
         {{$t(`auth.users.${a}.title`)}}
       </router-link>
-      <router-link :to="{name: 'home'}" class="dropdown-item">{{$t("site.leave-words.new.title")}}</router-link>
+      <router-link :to="{name: 'site.leave-words.new'}" class="dropdown-item">{{$t("site.leave-words.new.title")}}</router-link>
     </div>
   </li>
 </template>

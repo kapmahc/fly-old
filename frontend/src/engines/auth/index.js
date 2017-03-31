@@ -7,9 +7,15 @@ import Unlock from './users/Unlock'
 import Logs from './users/Logs'
 import Info from './users/Info'
 import ChangePassword from './users/ChangePassword'
+import IndexUsers from './users/Index'
 
 export default {
   routes: [
+    {
+      path: '/users',
+      name: 'auth.users.index',
+      component: IndexUsers
+    },
     {
       path: '/users/change-password',
       name: 'auth.users.change-password',
@@ -58,7 +64,7 @@ export default {
   ],
   links: [
     {
-      href: 'home',
+      href: 'auth.users.index',
       label: 'auth.users.index.title'
     }
   ],
