@@ -6,9 +6,15 @@ import Author from './admin/Author'
 import Seo from './admin/Seo'
 import Smtp from './admin/Smtp'
 import Status from './admin/Status'
+import Locales from './admin/Locales'
 
 export default {
   routes: [
+    {
+      path: '/admin/site/locales',
+      name: 'site.admin.locales',
+      component: Locales
+    },
     {
       path: '/admin/site/status',
       name: 'site.admin.status',
@@ -68,7 +74,7 @@ export default {
           {href: 'site.admin.seo', label: 'site.admin.seo.title'},
           {href: 'site.admin.smtp', label: 'site.admin.smtp.title'},
           null,
-          {href: 'home', label: 'site.admin.locales.index.title'},
+          {href: 'site.admin.locales', label: 'site.admin.locales.index.title'},
           {href: 'home', label: 'site.admin.users.index.title'},
           null,
           {href: 'home', label: 'site.admin.notices.index.title'},

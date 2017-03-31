@@ -10,6 +10,10 @@
         <input type="text" class="form-control" id="baiduVerifyCode" v-model="item.baiduVerifyCode">
       </div>
     </form-panel>
+    <br/>
+    <div class="list-group">
+      <a :key="it" class="list-group-item list-group-item-action" target="_blank" :href="`/${it}`" v-for="it in languages.map((l)=>`${l}.atom`).concat(['sitemap.xml.gz', 'robots.txt', `google${item.googleVerifyCode}.html`, `baidu_verify_${item.baiduVerifyCode}.html`])">{{it}}</a>
+    </div>
   </dashboard-layout>
 </template>
 
@@ -26,6 +30,11 @@ export default {
         googleVerifyCode: '',
         baiduVerifyCode: ''
       }
+    }
+  },
+  computed: {
+    languages () {
+      return this.$store.state.siteInfo.languages
     }
   },
   beforeCreate () {

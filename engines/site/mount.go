@@ -14,7 +14,7 @@ func (p *Engine) Mount(rt *gin.Engine) {
 	ag := rt.Group("/admin", p.Jwt.MustAdminMiddleware)
 
 	ag.GET("/locales", web.JSON(p.getAdminLocales))
-	ag.POST("/locales/edit", web.JSON(p.postAdminLocales))
+	ag.POST("/locales", web.JSON(p.postAdminLocales))
 	ag.DELETE("/locales/:id", web.JSON(p.deleteAdminLocales))
 
 	ag.GET("/users", web.JSON(p.getAdminUsers))
