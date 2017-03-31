@@ -1,5 +1,6 @@
 module.exports = {
   NODE_ENV: '"production"',
   BACKEND: '"/api/v1"',
-  LOCALE: '"en-US"'
+  LOCALE: '"en-US"',
+  HOME: '"site.notices.index"'
 }

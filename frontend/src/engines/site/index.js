@@ -1,4 +1,3 @@
-import Home from './Home'
 import Install from './Install'
 import Dashboard from './Dashboard'
 import Info from './admin/Info'
@@ -72,8 +71,8 @@ export default {
     },
     {
       path: '/',
-      name: 'home',
-      component: Home
+      redirect: {name: process.env.HOME},
+      name: 'home'
     },
     {
       path: '/dashboard',
