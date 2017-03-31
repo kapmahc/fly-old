@@ -1,9 +1,21 @@
 import Home from './Home'
 import Install from './Install'
 import Dashboard from './Dashboard'
+import Info from './admin/Info'
+import Author from './admin/Author'
 
 export default {
   routes: [
+    {
+      path: '/admin/site/author',
+      name: 'site.admin.author',
+      component: Author
+    },
+    {
+      path: '/admin/site/info',
+      name: 'site.admin.info',
+      component: Info
+    },
     {
       path: '/',
       name: 'home',
@@ -33,8 +45,8 @@ export default {
         items: [
           {href: 'home', label: 'site.admin.status.title'},
           null,
-          {href: 'home', label: 'site.admin.info.title'},
-          {href: 'home', label: 'site.admin.author.title'},
+          {href: 'site.admin.info', label: 'site.admin.info.title'},
+          {href: 'site.admin.author', label: 'site.admin.author.title'},
           {href: 'home', label: 'site.admin.seo.title'},
           {href: 'home', label: 'site.admin.smtp.title'},
           null,
