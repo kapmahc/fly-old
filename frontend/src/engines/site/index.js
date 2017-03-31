@@ -3,9 +3,21 @@ import Install from './Install'
 import Dashboard from './Dashboard'
 import Info from './admin/Info'
 import Author from './admin/Author'
+import Seo from './admin/Seo'
+import Smtp from './admin/Smtp'
 
 export default {
   routes: [
+    {
+      path: '/admin/site/smtp',
+      name: 'site.admin.smtp',
+      component: Smtp
+    },
+    {
+      path: '/admin/site/seo',
+      name: 'site.admin.seo',
+      component: Seo
+    },
     {
       path: '/admin/site/author',
       name: 'site.admin.author',
@@ -47,8 +59,8 @@ export default {
           null,
           {href: 'site.admin.info', label: 'site.admin.info.title'},
           {href: 'site.admin.author', label: 'site.admin.author.title'},
-          {href: 'home', label: 'site.admin.seo.title'},
-          {href: 'home', label: 'site.admin.smtp.title'},
+          {href: 'site.admin.seo', label: 'site.admin.seo.title'},
+          {href: 'site.admin.smtp', label: 'site.admin.smtp.title'},
           null,
           {href: 'home', label: 'site.admin.locales.index.title'},
           {href: 'home', label: 'site.admin.users.index.title'},
