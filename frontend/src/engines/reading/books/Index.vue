@@ -2,7 +2,7 @@
   <application-layout>
     <h2>{{$t('reading.books.index.title')}}</h2>
     <hr/>
-    <pagination-panel :item="pager"/>
+    <pagination-panel :item="pager" :href="{name: 'reading.books.pages'}"/>
     <div class="card-columns">
       <div class="card" v-for="it in pager.items">
         <div class="card-block">
@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    
+
   </application-layout>
 </template>
 
@@ -41,13 +41,28 @@ export default {
   },
   data () {
     return {
-      pager: {}
+      page: null,
+      pager: {
+        total: 0,
+        size: 60
+      }
     }
   },
-  beforeCreate () {
-    get('/reading/books').then(function (rst) {
-      this.pager = rst
-    }.bind(this))
+  created () {
+    this.fetchData()
+  },
+  watch: {
+    '$route': 'fetchData'
+  },
+  methods: {
+    fetchData () {
+      var page = this.$route.params.page
+      if (page) {
+        get(`/reading/books?page=${page}`).then(function (rst) {
+          this.pager = rst
+        }.bind(this))
+      }
+    }
   }
 }
 </script>
