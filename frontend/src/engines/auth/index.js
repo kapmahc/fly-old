@@ -64,7 +64,7 @@ export default {
   ],
   links: [
     {
-      href: 'auth.users.index',
+      href: {name: 'auth.users.index'},
       label: 'auth.users.index.title'
     }
   ],
@@ -73,10 +73,10 @@ export default {
       return {
         label: 'auth.dashboard.title',
         items: [
-          {href: 'auth.users.info', label: 'auth.users.info.title'},
-          {href: 'auth.users.change-password', label: 'auth.users.change-password.title'},
+          {href: {name: 'auth.users.info'}, label: 'auth.users.info.title'},
+          {href: {name: 'auth.users.change-password'}, label: 'auth.users.change-password.title'},
           null,
-          {href: 'auth.users.logs', label: 'auth.users.logs.title'}
+          {href: {name: 'auth.users.logs'}, label: 'auth.users.logs.title'}
         ]
       }
     }

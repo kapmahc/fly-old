@@ -7,7 +7,7 @@
           <p class="card-text"></p>
         </div>
         <div class="list-group list-group-flush">
-          <router-link :key="it.label" v-for="it in db.items" v-if="it" :to="{name: it.href}" class="list-group-item list-group-item-action">
+          <router-link :key="it.label" v-for="it in db.items" v-if="it" :to="it.href" class="list-group-item list-group-item-action">
             {{$t(it.label)}}
           </router-link>
         </div>

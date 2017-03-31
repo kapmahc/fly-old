@@ -16,7 +16,7 @@ export default {
   ],
   links: [
     {
-      href: 'blog.index',
+      href: {name: 'blog.index'},
       label: 'blog.index.title'
     }
   ],

@@ -87,7 +87,7 @@ export default {
   ],
   links: [
     {
-      href: 'site.notices.index',
+      href: {name: 'site.notices.index'},
       label: 'site.notices.index.title'
     }
   ],
@@ -96,18 +96,18 @@ export default {
       return {
         label: 'site.dashboard.title',
         items: [
-          {href: 'site.admin.status', label: 'site.admin.status.title'},
+          {href: {name: 'site.admin.status'}, label: 'site.admin.status.title'},
           null,
-          {href: 'site.admin.info', label: 'site.admin.info.title'},
-          {href: 'site.admin.author', label: 'site.admin.author.title'},
-          {href: 'site.admin.seo', label: 'site.admin.seo.title'},
-          {href: 'site.admin.smtp', label: 'site.admin.smtp.title'},
+          {href: {name: 'site.admin.info'}, label: 'site.admin.info.title'},
+          {href: {name: 'site.admin.author'}, label: 'site.admin.author.title'},
+          {href: {name: 'site.admin.seo'}, label: 'site.admin.seo.title'},
+          {href: {name: 'site.admin.smtp'}, label: 'site.admin.smtp.title'},
           null,
-          {href: 'site.admin.locales', label: 'site.admin.locales.index.title'},
-          {href: 'site.admin.users', label: 'site.admin.users.index.title'},
+          {href: {name: 'site.admin.locales'}, label: 'site.admin.locales.index.title'},
+          {href: {name: 'site.admin.users'}, label: 'site.admin.users.index.title'},
           null,
-          {href: 'site.admin.notices', label: 'site.admin.notices.index.title'},
-          {href: 'site.admin.leave-words', label: 'site.admin.leave-words.index.title'}
+          {href: {name: 'site.admin.notices'}, label: 'site.admin.notices.index.title'},
+          {href: {name: 'site.admin.leave-words'}, label: 'site.admin.leave-words.index.title'}
         ]
       }
     }

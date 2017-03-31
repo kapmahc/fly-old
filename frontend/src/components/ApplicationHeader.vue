@@ -14,7 +14,7 @@
             </router-link>
           </li>
           <li :key="l.href" v-for="l in links">
-            <router-link class="nav-link" :to="{name: l.href}">{{ $t(l.label) }}</router-link>
+            <router-link class="nav-link" :to="l.href">{{ $t(l.label) }}</router-link>
           </li>
           <li v-if="user.uid">
             <router-link class="nav-link" :to="{name: 'dashboard'}">{{ $t('header.dashboard') }}</router-link>

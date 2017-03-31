@@ -25,7 +25,7 @@ import {dashboard} from '@/engines'
 
 var DropdownItem = {
   name: 'dropdown-item',
-  template: '<router-link v-if="item" :to="{name: item.href}" class="dropdown-item">{{$t(item.label)}}</router-link><div v-else class="dropdown-divider"></div>',
+  template: '<router-link v-if="item" :to="item.href" class="dropdown-item">{{$t(item.label)}}</router-link><div v-else class="dropdown-divider"></div>',
   props: ['item']
 }
 

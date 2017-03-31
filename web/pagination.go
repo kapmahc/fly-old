@@ -23,18 +23,10 @@ func NewPagination(r *http.Request, total int64) *Pagination {
 		}
 	}
 
-	var count = total / size
-	if total < size {
-		count = 1
-	} else if total%page != 0 {
-		count++
-	}
-
 	return &Pagination{
 		Page:  page,
 		Size:  size,
 		Total: total,
-		Count: count,
 		Items: make([]interface{}, 0),
 	}
 }
@@ -44,7 +36,6 @@ type Pagination struct {
 	Page  int64         `json:"page"`
 	Size  int64         `json:"size"`
 	Total int64         `json:"total"`
-	Count int64         `json:"count"`
 	Items []interface{} `json:"items"`
 }
 
