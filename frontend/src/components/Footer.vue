@@ -11,8 +11,8 @@
         </p>
         <p>
           &copy; {{ $t("site.copyright") }}
-          &middot; <router-link :to="{name: 'home'}">{{$t("footer.privacy")}}</router-link>
-          &middot; <router-link :to="{name: 'home'}">{{$t("footer.teams")}}</router-link>
+          &middot; <router-link :to="{name: 'blog.show', params: ['privacy.md']}">{{$t("footer.privacy")}}</router-link>
+          &middot; <router-link :to="{name: 'blog.show', params: ['teams.md']}">{{$t("footer.teams")}}</router-link>
         </p>
       </footer>
     </div>
