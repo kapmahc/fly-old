@@ -2,23 +2,21 @@ package auth
 
 import (
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
+	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/fly/web"
-	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
 )
 
 // Engine engine
 type Engine struct {
+	Dao  *Dao      `inject:""`
+	I18n *web.I18n `inject:""`
+	Db   *gorm.DB  `inject:""`
 }
 
 // Mount web mount points
 func (p *Engine) Mount(*web.Router) {
 
-}
-
-// Shell shell commands
-func (p *Engine) Shell() []cli.Command {
-	return []cli.Command{}
 }
 
 // Workers job workers
@@ -38,12 +36,12 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 
 // Navbar navbar
 func (p *Engine) Navbar(*web.Context) []*web.Dropdown {
-	return nil
+	return []*web.Dropdown{}
 }
 
 // Dashboard dashboard
 func (p *Engine) Dashboard(*web.Context) []*web.Dropdown {
-	return nil
+	return []*web.Dropdown{}
 }
 
 func init() {

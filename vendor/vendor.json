@@ -7,6 +7,48 @@
 			"revision": ""
 		},
 		{
+			"checksumSHA1": "pPH/BoINXxzYDObljpsGZbysMrw=",
+			"path": "github.com/BurntSushi/toml",
+			"revision": "b26d9c308763d68093482582cea63d69be07a0f0",
+			"revisionTime": "2017-03-28T06:15:53Z"
+		},
+		{
+			"checksumSHA1": "t+uej2kiyqRyQYguygI8t9nJH2w=",
+			"path": "github.com/SermoDigital/jose",
+			"revision": "2bd9b81ac51d6d6134fcd4fd846bd2e7347a15f9",
+			"revisionTime": "2016-12-05T22:51:55Z"
+		},
+		{
+			"checksumSHA1": "u92C5yEz1FLBeoXp8jujn3tUNFI=",
+			"path": "github.com/SermoDigital/jose/crypto",
+			"revision": "2bd9b81ac51d6d6134fcd4fd846bd2e7347a15f9",
+			"revisionTime": "2016-12-05T22:51:55Z"
+		},
+		{
+			"checksumSHA1": "FJP5enLaw1JzZNu6Fen+eEKY7Lo=",
+			"path": "github.com/SermoDigital/jose/jws",
+			"revision": "2bd9b81ac51d6d6134fcd4fd846bd2e7347a15f9",
+			"revisionTime": "2016-12-05T22:51:55Z"
+		},
+		{
+			"checksumSHA1": "3gGGWQ3PcKHE+2cVlkJmIlBfBlw=",
+			"path": "github.com/SermoDigital/jose/jwt",
+			"revision": "2bd9b81ac51d6d6134fcd4fd846bd2e7347a15f9",
+			"revisionTime": "2016-12-05T22:51:55Z"
+		},
+		{
+			"checksumSHA1": "ZKxETlJdB2XubMrZnXB0FQimVA8=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "10f801ebc38b33738c9d17d50860f484a0988ff5",
+			"revisionTime": "2017-03-17T14:32:14Z"
+		},
+		{
+			"checksumSHA1": "63vHVSiItUfflK3tUwe6mrI84BQ=",
+			"path": "github.com/Sirupsen/logrus/hooks/syslog",
+			"revision": "10f801ebc38b33738c9d17d50860f484a0988ff5",
+			"revisionTime": "2017-03-17T14:32:14Z"
+		},
+		{
 			"checksumSHA1": "7N25Nj1APtvRF3NElp7gNrHYJkE=",
 			"path": "github.com/aws/aws-sdk-go/aws",
 			"revision": "3d7575d4f838ee6743d1d64cd2435af2f7745920",
@@ -169,6 +211,18 @@
 			"revisionTime": "2017-02-11T01:26:11Z"
 		},
 		{
+			"checksumSHA1": "GqkBIw2lUA6lv/jgh9WIyR0YdWY=",
+			"path": "github.com/facebookgo/inject",
+			"revision": "cc1aa653e50f6a9893bcaef89e673e5b24e1e97b",
+			"revisionTime": "2016-10-06T17:47:21Z"
+		},
+		{
+			"checksumSHA1": "i7FZ2nvv/aE37h5KD2b5hW+fHUo=",
+			"path": "github.com/facebookgo/structtag",
+			"revision": "217e25fb96916cc60332e399c9aa63f5c422ceed",
+			"revisionTime": "2015-02-14T07:43:06Z"
+		},
+		{
 			"checksumSHA1": "40Ns85VYa4smQPcewZ7SOdfLnKU=",
 			"path": "github.com/fatih/structs",
 			"revision": "a720dfa8df582c51dee1b36feabb906bde1588bd",
@@ -179,6 +233,24 @@
 			"path": "github.com/fsnotify/fsnotify",
 			"revision": "4da3e2cfbabc9f751898f250b49f2439785783a1",
 			"revisionTime": "2017-03-29T04:21:07Z"
+		},
+		{
+			"checksumSHA1": "q9bsaNA05ney3eon3nKAE+eLwO4=",
+			"path": "github.com/fvbock/endless",
+			"revision": "447134032cb6a86814f570257390a379982dfc61",
+			"revisionTime": "2017-01-09T17:00:31Z"
+		},
+		{
+			"checksumSHA1": "2UmMbNHc8FBr98mJFN1k8ISOIHk=",
+			"path": "github.com/garyburd/redigo/internal",
+			"revision": "0d253a66e6e1349f4581d6d2b300ee434ee2da9f",
+			"revisionTime": "2017-02-16T21:49:44Z"
+		},
+		{
+			"checksumSHA1": "81OSg/NapmTaRpSS+oYsPVE0b1Y=",
+			"path": "github.com/garyburd/redigo/redis",
+			"revision": "0d253a66e6e1349f4581d6d2b300ee434ee2da9f",
+			"revisionTime": "2017-02-16T21:49:44Z"
 		},
 		{
 			"checksumSHA1": "+IH9gXMht4fL/fxKRZ4sqGBps1g=",
@@ -193,10 +265,28 @@
 			"revisionTime": "2017-03-27T11:30:21Z"
 		},
 		{
+			"checksumSHA1": "WMTjT/WhwABW0CP22n1KeXxb96w=",
+			"path": "github.com/google/uuid",
+			"revision": "6a5e28554805e78ea6141142aba763936c4761c0",
+			"revisionTime": "2017-03-06T14:51:42Z"
+		},
+		{
+			"checksumSHA1": "mgJ5/0r3XHh/iz99QSrCVpO3zt4=",
+			"path": "github.com/gorilla/csrf",
+			"revision": "0790a82825913cb077e3eb4f446023f46c3e931d",
+			"revisionTime": "2017-03-24T14:11:26Z"
+		},
+		{
 			"checksumSHA1": "zmCk+lgIeiOf0Ng9aFP9aFy8ksE=",
 			"path": "github.com/gorilla/mux",
 			"revision": "599cba5e7b6137d46ddf58fb1765f5d928e69604",
 			"revisionTime": "2017-02-28T22:43:54Z"
+		},
+		{
+			"checksumSHA1": "ucTBCc7dDRKLGPsYfAzu/Gq63qA=",
+			"path": "github.com/gorilla/securecookie",
+			"revision": "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983",
+			"revisionTime": "2017-02-24T19:38:04Z"
 		},
 		{
 			"checksumSHA1": "Ok3Csn6Voou7pQT6Dv2mkwpqFtw=",
@@ -265,6 +355,12 @@
 			"revisionTime": "2017-03-26T20:45:27Z"
 		},
 		{
+			"checksumSHA1": "eBTTDO5xSz9V75yoBzSeI+5jvU0=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "45ccb134373e7d9fa76d5987a6fed6cd5a5adfd4",
+			"revisionTime": "2017-03-27T15:13:47Z"
+		},
+		{
 			"checksumSHA1": "eECxSkwh0WmhLwaxHfkvcLOWS08=",
 			"path": "github.com/jinzhu/gorm/dialects/mysql",
 			"revision": "45ccb134373e7d9fa76d5987a6fed6cd5a5adfd4",
@@ -277,10 +373,22 @@
 			"revisionTime": "2017-03-27T15:13:47Z"
 		},
 		{
+			"checksumSHA1": "VIp1lZm6joWhlNdwhady8u//qRw=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "1c35d901db3da928c72a72d8458480cc9ade058f",
+			"revisionTime": "2017-01-02T12:52:26Z"
+		},
+		{
 			"checksumSHA1": "0ZrwvB6KoGPj2PoDNSEJwxQ6Mog=",
 			"path": "github.com/jmespath/go-jmespath",
 			"revision": "bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d",
 			"revisionTime": "2016-08-03T19:07:31Z"
+		},
+		{
+			"checksumSHA1": "p+Bj1OSkp9/zxr6oZGzBAvYsdm0=",
+			"path": "github.com/kylelemons/go-gypsy/yaml",
+			"revision": "08cad365cd28a7fba23bb1e57aa43c5e18ad8bb8",
+			"revisionTime": "2016-09-05T02:00:20Z"
 		},
 		{
 			"checksumSHA1": "uTUsjF7bymOuKvXbW2BpkK/w4Vg=",
@@ -325,6 +433,12 @@
 			"revisionTime": "2017-04-05T01:41:05Z"
 		},
 		{
+			"checksumSHA1": "ynJSWoF6v+3zMnh9R0QmmG6iGV8=",
+			"path": "github.com/pkg/errors",
+			"revision": "ff09b135c25aae272398c51a07235b90a75aa4f0",
+			"revisionTime": "2017-03-16T20:15:38Z"
+		},
+		{
 			"checksumSHA1": "lBehULzb2/kIK3wZ0gz2yNmHq9s=",
 			"path": "github.com/spf13/afero",
 			"revision": "9be650865eab0c12963d8753212f4f9c66cdcf12",
@@ -359,6 +473,24 @@
 			"path": "github.com/spf13/viper",
 			"revision": "84f94806c67f59dd7ae87bc5351f7a9c94a4558d",
 			"revisionTime": "2017-03-15T13:43:09Z"
+		},
+		{
+			"checksumSHA1": "YvQ7WnFMOBjofstj6eVn7uuEkn0=",
+			"path": "github.com/steinbacher/goose",
+			"revision": "dc457c3195032dd1c3848e21dc95ed02c92f8cfa",
+			"revisionTime": "2016-07-25T13:16:29Z"
+		},
+		{
+			"checksumSHA1": "Om0cn0L5ewCIBcORQAXD8guTa9M=",
+			"path": "github.com/streadway/amqp",
+			"revision": "afe8eee29a74d213b1f3fb2586058157c397da60",
+			"revisionTime": "2017-03-13T17:48:48Z"
+		},
+		{
+			"checksumSHA1": "XQ2GsdTmZgUO2xycRg02vxBYi50=",
+			"path": "github.com/unrolled/render",
+			"revision": "50716a0a853771bb36bfce61a45cdefdb98c2e6e",
+			"revisionTime": "2017-01-09T14:32:44Z"
 		},
 		{
 			"checksumSHA1": "K/CP3EBR0TUpw8DPpjRExGEYNkY=",

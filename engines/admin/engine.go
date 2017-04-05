@@ -2,23 +2,22 @@ package admin
 
 import (
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
+	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/fly/web"
-	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
 )
 
 // Engine engine
 type Engine struct {
+	Cache *web.Cache `inject:""`
+	I18n  *web.I18n  `inject:""`
+	Queue *web.Queue `inject:""`
+	Jwt   *auth.Jwt  `inject:""`
 }
 
 // Mount web mount points
 func (p *Engine) Mount(*web.Router) {
 
-}
-
-// Shell shell commands
-func (p *Engine) Shell() []cli.Command {
-	return []cli.Command{}
 }
 
 // Workers job workers
