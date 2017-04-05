@@ -3,6 +3,7 @@
 A complete open source e-commerce solution for the Go language.
 
 ## Some packages
+
 ```bash
 sudo apt-get install libmagickwand-dev
 ```
@@ -64,6 +65,7 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 
   ## Documents
 
+  - [cdnjs](https://cdnjs.com/libraries)
   - [gorm](http://jinzhu.me/gorm/)
   - [cli](https://github.com/urfave/cli)
   - [govendor](https://github.com/kardianos/govendor)

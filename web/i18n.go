@@ -47,6 +47,7 @@ type I18n struct {
 
 // Middleware locale-middleware
 func (p *I18n) Middleware(c *gin.Context) {
+	write := false
 	// 1. Check URL arguments.
 	lang := c.Request.URL.Query().Get(LOCALE)
 
@@ -55,7 +56,10 @@ func (p *I18n) Middleware(c *gin.Context) {
 		if ck, er := c.Request.Cookie(LOCALE); er == nil {
 			lang = ck.Value
 		}
+	} else {
+		write = true
 	}
+
 	// 3. Get language information from 'Accept-Language'.
 	if len(lang) == 0 {
 		al := c.Request.Header.Get("Accept-Language")
@@ -67,6 +71,9 @@ func (p *I18n) Middleware(c *gin.Context) {
 	tag, _, _ := p.Matcher.Match(language.Make(lang))
 	ts := tag.String()
 	if ts != lang {
+		write = true
+	}
+	if write {
 		http.SetCookie(c.Writer, &http.Cookie{
 			Name:    LOCALE,
 			Value:   ts,

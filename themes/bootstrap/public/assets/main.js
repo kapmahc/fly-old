@@ -4,14 +4,6 @@ import hljs from 'highlight.js'
 import Dropzone from 'dropzone'
 import Clipboard from 'clipboard'
 
-require("./main.css");
-
-require("file-loader?emitFile=false!./fail.png")
-require("file-loader?emitFile=false!./up.png")
-require("file-loader?emitFile=false!./down.png")
-require("file-loader?emitFile=false!./favicon.png")
-require("file-loader?emitFile=false!./clippy.svg")
-
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
         if (settings.type == 'POST' || settings.type == 'PUT' || settings.type == 'DELETE') {
