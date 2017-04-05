@@ -1,10 +1,20 @@
 package web
 
-import "github.com/urfave/cli"
+import (
+	"github.com/ikeikeikeike/go-sitemap-generator/stm"
+	"github.com/urfave/cli"
+	"golang.org/x/tools/blog/atom"
+)
 
 // Engine engine
 type Engine interface {
+	Mount(*Router)
 	Shell() []cli.Command
+	Workers() map[string]Worker
+	Atom(lang string) ([]*atom.Entry, error)
+	Sitemap() ([]stm.URL, error)
+	Navbar(*Context) []*Dropdown
+	Dashboard(*Context) []*Dropdown
 }
 
 // -----------------------------------------------------------------------------
