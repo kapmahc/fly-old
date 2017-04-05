@@ -2,15 +2,8 @@
 {{template "application-header" .}}
 {{template "form-header" .}}
 <form method="post">
-  <div class="form-group">
-    <label for="email">{{t .l "attributes.email"}}</label>
-    <input type="email" class="form-control" id="email" name="email">
-  </div>
-  <div class="form-group">
-    <label for="password">{{t .l "attributes.password"}}</label>
-    <input type="password" class="form-control" name="password" id="password" aria-describedby="passwordHelp">
-    <small id="passwordHelp" class="form-text text-muted">{{t .l "helps.password"}}</small>
-  </div>
+  {{template "form-field-email" dict "id" "email" "label" "attributes.email" "lng" .l}}
+  {{template "form-field-password" dict "id" "password" "label" "attributes.password" "lng" .l "help" "helps.password"}}
   {{template "form-buttons" .}}
 </form>
 {{template "auth-users-links" .}}

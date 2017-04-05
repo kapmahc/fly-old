@@ -1,6 +1,7 @@
 package site
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"os"
@@ -11,6 +12,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/gin-gonic/gin"
 	"github.com/kapmahc/fly/web"
 )
 
@@ -49,6 +51,17 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 		"t": p.I18n.T,
 		"tn": func(v interface{}) string {
 			return reflect.TypeOf(v).String()
+		},
+		"dict": func(values ...interface{}) (gin.H, error) {
+			dict := gin.H{}
+			for i := 0; i < len(values); i += 2 {
+				key, ok := values[i].(string)
+				if !ok {
+					return nil, errors.New("dict keys must be strings")
+				}
+				dict[key] = values[i+1]
+			}
+			return dict, nil
 		},
 		// "asset": func(k string) string {
 		// 	if web.IsProduction() {
