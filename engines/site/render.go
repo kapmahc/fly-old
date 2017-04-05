@@ -15,33 +15,33 @@ import (
 )
 
 func (p *Engine) openRender(theme string) (*template.Template, error) {
-	assets := make(map[string]string)
-	if err := filepath.Walk(
-		path.Join("themes", theme, "public", "assets"),
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if info.IsDir() {
-				return nil
-			}
-			name := info.Name()
-
-			switch filepath.Ext(name) {
-			case ".css", ".js", ".png", ".svg":
-				ss := strings.Split(name, ".")
-				if len(ss) == 3 {
-					assets[fmt.Sprintf("%s.%s", ss[0], ss[2])] = name
-				}
-			}
-			return nil
-		},
-	); err != nil {
-		return nil, err
-	}
-	for k, v := range assets {
-		log.Debugf("assets %-16s => %s", k, v)
-	}
+	// assets := make(map[string]string)
+	// if err := filepath.Walk(
+	// 	path.Join("themes", theme, "public", "assets"),
+	// 	func(path string, info os.FileInfo, err error) error {
+	// 		if err != nil {
+	// 			return err
+	// 		}
+	// 		if info.IsDir() {
+	// 			return nil
+	// 		}
+	// 		name := info.Name()
+	//
+	// 		switch filepath.Ext(name) {
+	// 		case ".css", ".js", ".png", ".svg":
+	// 			ss := strings.Split(name, ".")
+	// 			if len(ss) == 3 {
+	// 				assets[fmt.Sprintf("%s.%s", ss[0], ss[2])] = name
+	// 			}
+	// 		}
+	// 		return nil
+	// 	},
+	// ); err != nil {
+	// 	return nil, err
+	// }
+	// for k, v := range assets {
+	// 	log.Debugf("assets %-16s => %s", k, v)
+	// }
 
 	// ----------------
 
@@ -50,12 +50,12 @@ func (p *Engine) openRender(theme string) (*template.Template, error) {
 		"tn": func(v interface{}) string {
 			return reflect.TypeOf(v).String()
 		},
-		"asset": func(k string) string {
-			if web.IsProduction() {
-				return fmt.Sprintf("/assets/%s", assets[k])
-			}
-			return fmt.Sprintf("/public/assets/%s", assets[k])
-		},
+		// "asset": func(k string) string {
+		// 	if web.IsProduction() {
+		// 		return fmt.Sprintf("/assets/%s", assets[k])
+		// 	}
+		// 	return fmt.Sprintf("/public/assets/%s", assets[k])
+		// },
 		"even": func(i interface{}) bool {
 			if i != nil {
 				switch i.(type) {
