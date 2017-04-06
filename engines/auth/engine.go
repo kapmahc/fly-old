@@ -1,12 +1,23 @@
 package auth
 
 import (
+	"crypto/aes"
+	"fmt"
+	"time"
+
+	"github.com/SermoDigital/jose/crypto"
 	"github.com/facebookgo/inject"
+	_redis "github.com/garyburd/redigo/redis"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/sky"
+	"github.com/kapmahc/sky/cache/redis"
 	"github.com/kapmahc/sky/i18n"
+	s_orm "github.com/kapmahc/sky/i18n/orm"
 	"github.com/kapmahc/sky/job"
+	"github.com/kapmahc/sky/job/rabbitmq"
+	"github.com/kapmahc/sky/security"
+	i_orm "github.com/kapmahc/sky/settings/orm"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 	"golang.org/x/tools/blog/atom"
@@ -14,9 +25,10 @@ import (
 
 // Engine engine
 type Engine struct {
-	Dao  *Dao       `inject:""`
-	I18n *i18n.I18n `inject:""`
-	Db   *gorm.DB   `inject:""`
+	Dao    *Dao             `inject:""`
+	I18n   *i18n.I18n       `inject:""`
+	Db     *gorm.DB         `inject:""`
+	Cipher *security.Cipher `inject:""`
 }
 
 // Map map object
@@ -29,7 +41,7 @@ func (p *Engine) Map(inj *inject.Graph) error {
 		db.LogMode(true)
 	}
 
-	if err := db.DB().Ping(); err != nil {
+	if err = db.DB().Ping(); err != nil {
 		return err
 	}
 
@@ -39,17 +51,69 @@ func (p *Engine) Map(inj *inject.Graph) error {
 	// -------------
 	var tags []language.Tag
 	for _, l := range viper.GetStringSlice("languages") {
-		if lng, err := language.Parse(l); err == nil {
-			tags = append(tags, lng)
-		} else {
-			return err
+		lng, er := language.Parse(l)
+		if er != nil {
+			return er
 		}
+		tags = append(tags, lng)
+	}
+	// -----------
+	cip, err := aes.NewCipher([]byte(viper.GetString("secrets.aes")))
+	if err != nil {
+		return err
 	}
 	// -----------
 
 	return inj.Provide(
+		&inject.Object{Value: &redis.Store{}},
+
 		&inject.Object{Value: db},
+		&inject.Object{Value: s_orm.New(db)},
+		&inject.Object{Value: i_orm.New(db)},
+		&inject.Object{Value: &_redis.Pool{
+			MaxIdle:     3,
+			IdleTimeout: 240 * time.Second,
+			Dial: func() (_redis.Conn, error) {
+				c, e := _redis.Dial(
+					"tcp",
+					fmt.Sprintf(
+						"%s:%d",
+						viper.GetString("redis.host"),
+						viper.GetInt("redis.port"),
+					),
+				)
+				if e != nil {
+					return nil, e
+				}
+				if _, e = c.Do("SELECT", viper.GetInt("redis.db")); e != nil {
+					c.Close()
+					return nil, e
+				}
+				return c, nil
+			},
+			TestOnBorrow: func(c _redis.Conn, t time.Time) error {
+				_, err := c.Do("PING")
+				return err
+			},
+		}},
+
 		&inject.Object{Value: language.NewMatcher(tags)},
+
+		&inject.Object{Value: job.New()},
+		&inject.Object{Value: rabbitmq.New(
+			viper.GetString("app.name"),
+			viper.GetString("rabbitmq.host"),
+			viper.GetInt("rabbitmq.port"),
+			viper.GetString("rabbitmq.user"),
+			viper.GetString("rabbitmq.password"),
+			viper.GetString("rabbitmq.virtual"),
+		)},
+
+		&inject.Object{Value: cip},
+		&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},
+		&inject.Object{Value: []byte(viper.GetString("secrets.jwt")), Name: "jwt.key"},
+		&inject.Object{Value: viper.GetString("app.name"), Name: "namespace"},
+		&inject.Object{Value: crypto.SigningMethodHS512, Name: "jwt.method"},
 	)
 }
 
@@ -119,9 +183,10 @@ func init() {
 		},
 	})
 
-	viper.SetDefault("httpd", map[string]interface{}{
-		"port": 3000,
-		"ssl":  true,
+	viper.SetDefault("server", map[string]interface{}{
+		"port":   3000,
+		"ssl":    true,
+		"themes": []string{"bootstrap"},
 	})
 
 	viper.SetDefault("secrets", map[string]interface{}{

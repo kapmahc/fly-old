@@ -12,10 +12,10 @@ import (
 
 // Dao auth dao
 type Dao struct {
-	Db   *gorm.DB          `inject:""`
-	Aes  *security.Factory `inject:""`
-	Hmac *security.Hmac    `inject:""`
-	I18n *i18n.I18n        `inject:""`
+	Db     *gorm.DB         `inject:""`
+	Cipher *security.Cipher `inject:""`
+	Hmac   *security.Hmac   `inject:""`
+	I18n   *i18n.I18n       `inject:""`
 }
 
 // SignIn set sign-in info

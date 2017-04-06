@@ -1,6 +1,7 @@
 package reading
 
 import (
+	"github.com/facebookgo/inject"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/sky"
 	"github.com/kapmahc/sky/job"
@@ -10,6 +11,11 @@ import (
 
 // Engine engine
 type Engine struct {
+}
+
+// Map map object
+func (p *Engine) Map(*inject.Graph) error {
+	return nil
 }
 
 // Mount web mount points
