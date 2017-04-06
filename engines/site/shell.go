@@ -1,4 +1,4 @@
-package admin
+package site
 
 import (
 	"crypto/x509/pkix"
@@ -238,14 +238,14 @@ func (p *Engine) Shell() []cli.Command {
 					en.Mount(rt)
 					return nil
 				})
-				tpl := "%-7s %16s %s\n"
-				fmt.Printf(tpl, "METHOD", "NAME", "PATH")
-				rt.Walk(func(name, method, path string) {
-					fmt.Printf(tpl, name, method, path)
+				tpl := "%-24s %s\n"
+				fmt.Printf(tpl, "NAME", "PATH")
+				return rt.Walk(func(name, method, path string) error {
+					fmt.Printf(tpl, name, path)
 					// fmt.Println(runtime.FuncForPC(reflect.ValueOf(r.Handler).Pointer()).Name())
+					return nil
 				})
 
-				return nil
 			},
 		},
 		{

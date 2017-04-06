@@ -1,4 +1,4 @@
-package admin
+package site
 
 import (
 	"github.com/facebookgo/inject"
@@ -26,11 +26,6 @@ type Engine struct {
 // Map map object
 func (p *Engine) Map(*inject.Graph) error {
 	return nil
-}
-
-// Mount web mount points
-func (p *Engine) Mount(*sky.Router) {
-
 }
 
 // Workers job workers

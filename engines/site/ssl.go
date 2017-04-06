@@ -1,4 +1,4 @@
-package admin
+package site
 
 import (
 	"crypto/rand"
