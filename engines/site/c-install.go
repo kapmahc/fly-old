@@ -9,7 +9,7 @@ import (
 )
 
 func (p *Engine) getInstall(c *sky.Context) error {
-	c.HTML(http.StatusOK, "site/install", sky.H{})
+	c.HTML(http.StatusOK, "site/install", c.Get(sky.DATA))
 	return nil
 }
 

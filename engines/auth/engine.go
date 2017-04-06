@@ -40,8 +40,8 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
 }
 
-// Navbar navbar
-func (p *Engine) Navbar(*sky.Context) []*sky.Dropdown {
+// Application application
+func (p *Engine) Application(*sky.Context) []*sky.Dropdown {
 	return []*sky.Dropdown{}
 }
 

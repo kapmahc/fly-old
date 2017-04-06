@@ -27,6 +27,7 @@ type Engine struct {
 	Jwt        *auth.Jwt          `inject:""`
 	Matcher    language.Matcher   `inject:""`
 	Router     *mux.Router        `inject:""`
+	Layout     *auth.Layout       `inject:""`
 }
 
 // Map map object
@@ -49,8 +50,8 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 	return []stm.URL{}, nil
 }
 
-// Navbar navbar
-func (p *Engine) Navbar(*sky.Context) []*sky.Dropdown {
+// Application application
+func (p *Engine) Application(*sky.Context) []*sky.Dropdown {
 	return nil
 }
 
