@@ -2,6 +2,7 @@ package site
 
 import (
 	"github.com/facebookgo/inject"
+	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/fly/engines/auth"
 	"github.com/kapmahc/sky"
@@ -9,6 +10,7 @@ import (
 	"github.com/kapmahc/sky/i18n"
 	"github.com/kapmahc/sky/job"
 	"github.com/kapmahc/sky/settings"
+	"golang.org/x/text/language"
 	"golang.org/x/tools/blog/atom"
 )
 
@@ -21,6 +23,8 @@ type Engine struct {
 	Queue      job.Queue          `inject:""`
 	Server     *job.Server        `inject:""`
 	Jwt        *auth.Jwt          `inject:""`
+	Matcher    language.Matcher   `inject:""`
+	Router     *mux.Router        `inject:""`
 }
 
 // Map map object

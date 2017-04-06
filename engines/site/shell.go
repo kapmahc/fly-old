@@ -13,11 +13,12 @@ import (
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/sky"
+	"github.com/kapmahc/sky/i18n"
 	"github.com/spf13/viper"
 	"github.com/steinbacher/goose"
-	"github.com/unrolled/render"
 	"github.com/urfave/cli"
 	"golang.org/x/text/language"
 	"golang.org/x/tools/blog/atom"
@@ -233,7 +234,7 @@ func (p *Engine) Shell() []cli.Command {
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
 			Action: func(*cli.Context) error {
-				rt := sky.NewRouter(render.Options{})
+				rt := sky.NewRouter(mux.NewRouter())
 				sky.Walk(func(en sky.Engine) error {
 					en.Mount(rt)
 					return nil
@@ -594,10 +595,10 @@ func (p *Engine) runServer(*cli.Context) error {
 	)
 
 	// TODO
-
-	rt := sky.NewRouter(render.Options{})
+	rt := sky.NewRouter(p.Router)
 
 	rt.Use(
+		i18n.NewMiddleware(p.Matcher),
 		p.Jwt.CurrentUserMiddleware,
 	)
 	sky.Walk(func(en sky.Engine) error {

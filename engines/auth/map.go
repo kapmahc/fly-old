@@ -8,6 +8,7 @@ import (
 	"github.com/SermoDigital/jose/crypto"
 	"github.com/facebookgo/inject"
 	_redis "github.com/garyburd/redigo/redis"
+	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/sky"
 	"github.com/kapmahc/sky/cache/redis"
@@ -53,6 +54,7 @@ func (p *Engine) Map(inj *inject.Graph) error {
 	// -----------
 
 	return inj.Provide(
+		&inject.Object{Value: mux.NewRouter()},
 		&inject.Object{Value: &redis.Store{}},
 
 		&inject.Object{Value: db},
