@@ -1,28 +1,41 @@
 package admin
 
 import (
+	"github.com/facebookgo/inject"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/fly/engines/auth"
-	"github.com/kapmahc/fly/web"
+	"github.com/kapmahc/sky"
+	"github.com/kapmahc/sky/cache"
+	"github.com/kapmahc/sky/i18n"
+	"github.com/kapmahc/sky/job"
+	"github.com/kapmahc/sky/settings"
 	"golang.org/x/tools/blog/atom"
 )
 
 // Engine engine
 type Engine struct {
-	Cache *web.Cache `inject:""`
-	I18n  *web.I18n  `inject:""`
-	Queue *web.Queue `inject:""`
-	Jwt   *auth.Jwt  `inject:""`
+	Settings   *settings.Settings `inject:""`
+	CacheStore cache.Store        `inject:""`
+	Cache      *cache.Cache       `inject:""`
+	I18n       *i18n.I18n         `inject:""`
+	Queue      job.Queue          `inject:""`
+	Server     *job.Server        `inject:""`
+	Jwt        *auth.Jwt          `inject:""`
+}
+
+// Map map object
+func (p *Engine) Map(*inject.Graph) error {
+	return nil
 }
 
 // Mount web mount points
-func (p *Engine) Mount(*web.Router) {
+func (p *Engine) Mount(*sky.Router) {
 
 }
 
 // Workers job workers
-func (p *Engine) Workers() map[string]web.Worker {
-	return map[string]web.Worker{}
+func (p *Engine) Workers() map[string]job.Handler {
+	return map[string]job.Handler{}
 }
 
 // Atom rss.atom
@@ -36,15 +49,15 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 }
 
 // Navbar navbar
-func (p *Engine) Navbar(*web.Context) []*web.Dropdown {
+func (p *Engine) Navbar(*sky.Context) []*sky.Dropdown {
 	return nil
 }
 
 // Dashboard dashboard
-func (p *Engine) Dashboard(*web.Context) []*web.Dropdown {
+func (p *Engine) Dashboard(*sky.Context) []*sky.Dropdown {
 	return nil
 }
 
 func init() {
-	web.Register(&Engine{})
+	sky.Register(&Engine{})
 }

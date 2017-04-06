@@ -2,7 +2,8 @@ package shop
 
 import (
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
-	"github.com/kapmahc/fly/web"
+	"github.com/kapmahc/sky"
+	"github.com/kapmahc/sky/job"
 	"github.com/urfave/cli"
 	"golang.org/x/tools/blog/atom"
 )
@@ -12,7 +13,7 @@ type Engine struct {
 }
 
 // Mount web mount points
-func (p *Engine) Mount(*web.Router) {
+func (p *Engine) Mount(*sky.Router) {
 
 }
 
@@ -22,8 +23,8 @@ func (p *Engine) Shell() []cli.Command {
 }
 
 // Workers job workers
-func (p *Engine) Workers() map[string]web.Worker {
-	return map[string]web.Worker{}
+func (p *Engine) Workers() map[string]job.Handler {
+	return map[string]job.Handler{}
 }
 
 // Atom rss.atom
@@ -37,15 +38,15 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 }
 
 // Navbar navbar
-func (p *Engine) Navbar(*web.Context) []*web.Dropdown {
+func (p *Engine) Navbar(*sky.Context) []*sky.Dropdown {
 	return nil
 }
 
 // Dashboard dashboard
-func (p *Engine) Dashboard(*web.Context) []*web.Dropdown {
+func (p *Engine) Dashboard(*sky.Context) []*sky.Dropdown {
 	return nil
 }
 
 func init() {
-	web.Register(&Engine{})
+	sky.Register(&Engine{})
 }

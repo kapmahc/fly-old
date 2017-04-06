@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/kapmahc/fly/web"
+	"github.com/kapmahc/sky"
 )
 
 const (
@@ -27,7 +27,7 @@ const (
 
 // User user
 type User struct {
-	web.Model
+	sky.Model
 
 	Name            string     `json:"name"`
 	Email           string     `json:"email"`
@@ -80,7 +80,7 @@ func (p User) String() string {
 
 // Attachment attachment
 type Attachment struct {
-	web.Model
+	sky.Model
 
 	Title     string `json:"title"`
 	URL       string `json:"url"`
@@ -120,7 +120,7 @@ func (Log) TableName() string {
 
 // Policy policy
 type Policy struct {
-	web.Model
+	sky.Model
 
 	StartUp  time.Time
 	ShutDown time.Time
@@ -144,7 +144,7 @@ func (Policy) TableName() string {
 
 // Role role
 type Role struct {
-	web.Model
+	sky.Model
 
 	Name         string
 	ResourceID   uint
@@ -162,7 +162,7 @@ func (p Role) String() string {
 
 // Vote vote
 type Vote struct {
-	web.Model
+	sky.Model
 
 	Point        int
 	ResourceID   uint

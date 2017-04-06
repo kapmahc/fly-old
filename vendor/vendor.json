@@ -385,6 +385,18 @@
 			"revisionTime": "2016-08-03T19:07:31Z"
 		},
 		{
+			"checksumSHA1": "xhUjHzNCbuuTafLHeGj+cixg3dA=",
+			"path": "github.com/kapmahc/sky",
+			"revision": "ab72c96eb80c9fb5f905027d3e5ce4d0fd6b230b",
+			"revisionTime": "2017-04-06T08:29:16Z"
+		},
+		{
+			"checksumSHA1": "JCKSBY39E/tztaJBYKMxNi4efvo=",
+			"path": "github.com/kapmahc/sky/job",
+			"revision": "ab72c96eb80c9fb5f905027d3e5ce4d0fd6b230b",
+			"revisionTime": "2017-04-06T08:29:16Z"
+		},
+		{
 			"checksumSHA1": "p+Bj1OSkp9/zxr6oZGzBAvYsdm0=",
 			"path": "github.com/kylelemons/go-gypsy/yaml",
 			"revision": "08cad365cd28a7fba23bb1e57aa43c5e18ad8bb8",

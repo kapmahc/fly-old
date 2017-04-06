@@ -6,36 +6,38 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/jinzhu/gorm"
-	"github.com/kapmahc/fly/web"
+	"github.com/kapmahc/sky/i18n"
+	"github.com/kapmahc/sky/security"
 )
 
 // Dao auth dao
 type Dao struct {
-	Db       *gorm.DB      `inject:""`
-	Security *web.Security `inject:""`
-	I18n     *web.I18n     `inject:""`
+	Db   *gorm.DB          `inject:""`
+	Aes  *security.Factory `inject:""`
+	Hmac *security.Hmac    `inject:""`
+	I18n *i18n.I18n        `inject:""`
 }
 
 // SignIn set sign-in info
-func (p *Dao) SignIn(c *web.Context, email, password, ip string) (*User, error) {
+func (p *Dao) SignIn(lang, email, password, ip string) (*User, error) {
 	user, err := p.GetByEmail(email)
 	if err != nil {
 		return nil, err
 	}
-	if !p.Security.Chk([]byte(password), user.Password) {
-		p.Log(user.ID, ip, p.I18n.T(c, "auth.logs.sign-in-failed"))
-		return nil, p.I18n.E(c, "auth.errors.email-password-not-match")
+	if !p.Hmac.Chk([]byte(password), user.Password) {
+		p.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-failed"))
+		return nil, p.I18n.E(lang, "auth.errors.email-password-not-match")
 	}
 
 	if !user.IsConfirm() {
-		return nil, p.I18n.E(c, "auth.errors.user-not-confirm")
+		return nil, p.I18n.E(lang, "auth.errors.user-not-confirm")
 	}
 
 	if user.IsLock() {
-		return nil, p.I18n.E(c, "auth.errors.user-is-lock")
+		return nil, p.I18n.E(lang, "auth.errors.user-is-lock")
 	}
 
-	p.Log(user.ID, ip, p.I18n.T(c, "auth.logs.sign-in-success"))
+	p.Log(user.ID, ip, p.I18n.T(lang, "auth.logs.sign-in-success"))
 	user.SignInCount++
 	user.LastSignInAt = user.CurrentSignInAt
 	user.LastSignInIP = user.CurrentSignInIP
@@ -82,7 +84,7 @@ func (p *Dao) AddEmailUser(name, email, password string) (*User, error) {
 
 	user := User{
 		Email:           email,
-		Password:        p.Security.Sum([]byte(password)),
+		Password:        p.Hmac.Sum([]byte(password)),
 		Name:            name,
 		ProviderType:    UserTypeEmail,
 		ProviderID:      email,

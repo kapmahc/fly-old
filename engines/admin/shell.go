@@ -5,21 +5,16 @@ import (
 	"encoding/xml"
 	"fmt"
 	"html/template"
-	"net/http"
 	"os"
 	"path"
 	"path/filepath"
-	"syscall"
 	"time"
 
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
-	"github.com/facebookgo/inject"
-	"github.com/fvbock/endless"
 	"github.com/google/uuid"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
-	"github.com/kapmahc/fly/engines/auth"
-	"github.com/kapmahc/fly/web"
+	"github.com/kapmahc/sky"
 	"github.com/spf13/viper"
 	"github.com/steinbacher/goose"
 	"github.com/unrolled/render"
@@ -39,12 +34,12 @@ func (p *Engine) Shell() []cli.Command {
 			Name:    "server",
 			Aliases: []string{"s"},
 			Usage:   "start the app server",
-			Action:  auth.Action(p.runServer),
+			Action:  sky.IocAction(p.runServer),
 		},
 		{
 			Name:  "seo",
 			Usage: "generate sitemap.xml.gz/rss.atom/robots.txt ...etc",
-			Action: auth.Action(func(*cli.Context, *inject.Graph) error {
+			Action: sky.IocAction(func(*cli.Context) error {
 				root := "public"
 				os.MkdirAll(root, 0755)
 				if err := p.writeSitemap(root); err != nil {
@@ -78,13 +73,13 @@ func (p *Engine) Shell() []cli.Command {
 					Usage: "worker's name",
 				},
 			},
-			Action: auth.Action(p.runWorker),
+			Action: sky.IocAction(p.runWorker),
 		},
 		{
 			Name:    "redis",
 			Aliases: []string{"re"},
 			Usage:   "open redis connection",
-			Action:  web.Action(p.connectRedis),
+			Action:  sky.CfgAction(p.connectRedis),
 		},
 		{
 			Name:    "cache",
@@ -95,14 +90,14 @@ func (p *Engine) Shell() []cli.Command {
 					Name:    "list",
 					Usage:   "list all cache keys",
 					Aliases: []string{"l"},
-					Action:  auth.Action(p.listCacheItems),
+					Action:  sky.IocAction(p.listCacheItems),
 				},
 				{
 					Name:    "clear",
 					Usage:   "clear cache items",
 					Aliases: []string{"c"},
-					Action: auth.Action(func(*cli.Context, *inject.Graph) error {
-						return p.Cache.Flush()
+					Action: sky.IocAction(func(*cli.Context) error {
+						return p.CacheStore.Flush()
 					}),
 				},
 			},
@@ -116,43 +111,43 @@ func (p *Engine) Shell() []cli.Command {
 					Name:    "example",
 					Usage:   "scripts example for create database and user",
 					Aliases: []string{"e"},
-					Action:  web.Action(p.databaseExample),
+					Action:  sky.CfgAction(p.databaseExample),
 				},
 				{
 					Name:    "migrate",
 					Usage:   "migrate the DB to the most recent version available",
 					Aliases: []string{"m"},
-					Action:  web.Action(p.migrateDatabase),
+					Action:  sky.CfgAction(p.migrateDatabase),
 				},
 				{
 					Name:    "rollback",
 					Usage:   "roll back the version by 1",
 					Aliases: []string{"r"},
-					Action:  web.Action(p.rollbackDatabase),
+					Action:  sky.CfgAction(p.rollbackDatabase),
 				},
 				{
 					Name:    "version",
 					Usage:   "dump the migration status for the current DB",
 					Aliases: []string{"v"},
-					Action:  web.Action(p.databaseVersion),
+					Action:  sky.CfgAction(p.databaseVersion),
 				},
 				{
 					Name:    "connect",
 					Usage:   "connect database",
 					Aliases: []string{"c"},
-					Action:  web.Action(p.connectDatabase),
+					Action:  sky.CfgAction(p.connectDatabase),
 				},
 				{
 					Name:    "create",
 					Usage:   "create database",
 					Aliases: []string{"n"},
-					Action:  web.Action(p.createDatabase),
+					Action:  sky.CfgAction(p.createDatabase),
 				},
 				{
 					Name:    "drop",
 					Usage:   "drop database",
 					Aliases: []string{"d"},
-					Action:  web.Action(p.dropDatabase),
+					Action:  sky.CfgAction(p.dropDatabase),
 				},
 			},
 		},
@@ -178,7 +173,7 @@ func (p *Engine) Shell() []cli.Command {
 					Name:    "nginx",
 					Aliases: []string{"ng"},
 					Usage:   "generate nginx.conf",
-					Action:  web.Action(p.generateNginxConf),
+					Action:  sky.CfgAction(p.generateNginxConf),
 				},
 				{
 					Name:    "openssl",
@@ -217,7 +212,7 @@ func (p *Engine) Shell() []cli.Command {
 							Usage: "name",
 						},
 					},
-					Action: web.Action(p.generateMigration),
+					Action: sky.CfgAction(p.generateMigration),
 				},
 				{
 					Name:    "locale",
@@ -229,7 +224,7 @@ func (p *Engine) Shell() []cli.Command {
 							Usage: "locale name",
 						},
 					},
-					Action: web.Action(p.generateLocale),
+					Action: sky.CfgAction(p.generateLocale),
 				},
 			},
 		},
@@ -238,8 +233,8 @@ func (p *Engine) Shell() []cli.Command {
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
 			Action: func(*cli.Context) error {
-				rt := web.NewRouter(render.Options{})
-				web.Walk(func(en web.Engine) error {
+				rt := sky.NewRouter(render.Options{})
+				sky.Walk(func(en sky.Engine) error {
 					en.Mount(rt)
 					return nil
 				})
@@ -261,8 +256,8 @@ func (p *Engine) Shell() []cli.Command {
 					Name:    "sync",
 					Aliases: []string{"s"},
 					Usage:   "sync locales from files",
-					Action: auth.Action(func(*cli.Context, *inject.Graph) error {
-						return p.I18n.Sync("locales")
+					Action: sky.IocAction(func(*cli.Context) error {
+						return p.I18n.Load("locales")
 					}),
 				},
 			},
@@ -503,7 +498,7 @@ func (p *Engine) connectDatabase(*cli.Context) error {
 	var err error
 	switch drv {
 	case postgresqlDriver:
-		err = web.Shell("psql",
+		err = sky.Shell("psql",
 			"-h", args["host"],
 			"-p", args["port"],
 			"-U", args["user"],
@@ -521,7 +516,7 @@ func (p *Engine) createDatabase(*cli.Context) error {
 	var err error
 	switch drv {
 	case postgresqlDriver:
-		err = web.Shell("psql",
+		err = sky.Shell("psql",
 			"-h", args["host"],
 			"-p", args["port"],
 			"-U", "postgres",
@@ -542,7 +537,7 @@ func (p *Engine) dropDatabase(*cli.Context) error {
 	var err error
 	switch drv {
 	case postgresqlDriver:
-		err = web.Shell("psql",
+		err = sky.Shell("psql",
 			"-h", args["host"],
 			"-p", args["port"],
 			"-U", "postgres",
@@ -554,8 +549,8 @@ func (p *Engine) dropDatabase(*cli.Context) error {
 	return err
 }
 
-func (p *Engine) listCacheItems(*cli.Context, *inject.Graph) error {
-	keys, err := p.Cache.Keys()
+func (p *Engine) listCacheItems(*cli.Context) error {
+	keys, err := p.CacheStore.Keys()
 	if err != nil {
 		return err
 	}
@@ -566,7 +561,7 @@ func (p *Engine) listCacheItems(*cli.Context, *inject.Graph) error {
 }
 
 func (p *Engine) connectRedis(*cli.Context) error {
-	return web.Shell(
+	return sky.Shell(
 		"redis-cli",
 		"-h", viper.GetString("redis.host"),
 		"-p", viper.GetString("redis.port"),
@@ -574,23 +569,23 @@ func (p *Engine) connectRedis(*cli.Context) error {
 	)
 }
 
-func (p *Engine) runWorker(c *cli.Context, _ *inject.Graph) error {
+func (p *Engine) runWorker(c *cli.Context) error {
 	name := c.String("name")
 	if name == "" {
 		cli.ShowSubcommandHelp(c)
 		return nil
 	}
-	web.Walk(func(en web.Engine) error {
+	sky.Walk(func(en sky.Engine) error {
 		for k, v := range en.Workers() {
-			p.Queue.Register(k, v)
+			p.Server.Register(k, v)
 		}
 		return nil
 	})
 
-	return p.Queue.Do(name)
+	return p.Server.Do(name)
 }
 
-func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
+func (p *Engine) runServer(*cli.Context) error {
 	port := viper.GetInt("server.port")
 	log.Infof(
 		"application starting in %s on http://localhost:%d",
@@ -599,36 +594,19 @@ func (p *Engine) runServer(*cli.Context, *inject.Graph) error {
 	)
 
 	// TODO
-	rt := web.NewRouter(render.Options{})
+
+	rt := sky.NewRouter(render.Options{})
 
 	rt.Use(
-		p.I18n.Middleware,
 		p.Jwt.CurrentUserMiddleware,
 	)
-	web.Walk(func(en web.Engine) error {
+	sky.Walk(func(en sky.Engine) error {
 		en.Mount(rt)
 		return nil
 	})
 
 	// ---------------
-	addr := fmt.Sprintf(":%d", port)
-	if web.IsProduction() {
-		srv := endless.NewServer(addr, rt)
-		srv.BeforeBegin = func(add string) {
-			fd, err := os.OpenFile(path.Join("tmp", "pid"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
-			if err != nil {
-				log.Error(err)
-				return
-			}
-			defer fd.Close()
-			pid := syscall.Getpid()
-			log.Printf("pid is %d", pid)
-			fmt.Fprint(fd, pid)
-		}
-		return srv.ListenAndServe()
-	}
-
-	return http.ListenAndServe(addr, rt)
+	return rt.Start(port)
 }
 
 func (p *Engine) writeSitemap(root string) error {
@@ -639,7 +617,7 @@ func (p *Engine) writeSitemap(root string) error {
 	sm.SetSitemapsPath("/")
 	sm.Create()
 
-	if err := web.Walk(func(en web.Engine) error {
+	if err := sky.Walk(func(en sky.Engine) error {
 		urls, err := en.Sitemap()
 		if err != nil {
 			return err
@@ -651,7 +629,7 @@ func (p *Engine) writeSitemap(root string) error {
 	}); err != nil {
 		return err
 	}
-	if web.IsProduction() {
+	if sky.IsProduction() {
 		sm.Finalize().PingSearchEngines()
 	} else {
 		sm.Finalize()
@@ -672,7 +650,7 @@ func (p *Engine) writeRssAtom(root string, lang string) error {
 		Entry: make([]*atom.Entry, 0),
 	}
 	home := viper.GetString("server.frontend")
-	if err := web.Walk(func(en web.Engine) error {
+	if err := sky.Walk(func(en sky.Engine) error {
 		items, err := en.Atom(lang)
 		if err != nil {
 			return err

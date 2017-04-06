@@ -8,7 +8,8 @@ import (
 	"github.com/SermoDigital/jose/jws"
 	"github.com/SermoDigital/jose/jwt"
 	"github.com/google/uuid"
-	"github.com/kapmahc/fly/web"
+	"github.com/kapmahc/sky"
+	"github.com/kapmahc/sky/i18n"
 )
 
 const (
@@ -27,7 +28,7 @@ type Jwt struct {
 	Key    []byte               `inject:"jwt.key"`
 	Method crypto.SigningMethod `inject:"jwt.method"`
 	Dao    *Dao                 `inject:""`
-	I18n   *web.I18n            `inject:""`
+	I18n   *i18n.I18n           `inject:""`
 }
 
 //Validate check jwt
@@ -71,8 +72,8 @@ func (p *Jwt) Sum(cm jws.Claims, exp time.Duration) ([]byte, error) {
 	return jt.Serialize(p.Key)
 }
 
-func (p *Jwt) getUserFromRequest(c *web.Context) (*User, error) {
-
+func (p *Jwt) getUserFromRequest(c *sky.Context) (*User, error) {
+	lang := c.Get(i18n.LOCALE).(string)
 	cm, err := p.parse(c.Request)
 	if err != nil {
 		return nil, err
@@ -82,16 +83,16 @@ func (p *Jwt) getUserFromRequest(c *web.Context) (*User, error) {
 		return nil, err
 	}
 	if !user.IsConfirm() {
-		return nil, p.I18n.E(c, "auth.errors.user-not-confirm")
+		return nil, p.I18n.E(lang, "auth.errors.user-not-confirm")
 	}
 	if user.IsLock() {
-		return nil, p.I18n.E(c, "auth.errors.user-is-lock")
+		return nil, p.I18n.E(lang, "auth.errors.user-is-lock")
 	}
 	return user, nil
 }
 
 // CurrentUserMiddleware current-user middleware
-func (p *Jwt) CurrentUserMiddleware(c *web.Context) error {
+func (p *Jwt) CurrentUserMiddleware(c *sky.Context) error {
 	if user, err := p.getUserFromRequest(c); err == nil {
 		c.Set(CurrentUser, user)
 		c.Set(IsAdmin, p.Dao.Is(user.ID, RoleAdmin))
@@ -100,19 +101,21 @@ func (p *Jwt) CurrentUserMiddleware(c *web.Context) error {
 }
 
 // MustSignInMiddleware must-sign-in middleware
-func (p *Jwt) MustSignInMiddleware(c *web.Context) error {
+func (p *Jwt) MustSignInMiddleware(c *sky.Context) error {
+	lang := c.Get(i18n.LOCALE).(string)
 	user := c.Get(CurrentUser)
 	if user == nil {
-		c.Abort(http.StatusForbidden, p.I18n.E(c, "errors.forbidden"))
+		c.Abort(http.StatusForbidden, p.I18n.E(lang, "errors.forbidden"))
 	}
 	return nil
 }
 
 // MustAdminMiddleware must-admin middleware
-func (p *Jwt) MustAdminMiddleware(c *web.Context) error {
+func (p *Jwt) MustAdminMiddleware(c *sky.Context) error {
+	lang := c.Get(i18n.LOCALE).(string)
 	is := c.Get(IsAdmin)
 	if is == nil || !is.(bool) {
-		c.Abort(http.StatusForbidden, p.I18n.E(c, "errors.forbidden"))
+		c.Abort(http.StatusForbidden, p.I18n.E(lang, "errors.forbidden"))
 	}
 	return nil
 }

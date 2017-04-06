@@ -3,7 +3,7 @@ package auth
 import (
 	"fmt"
 
-	"github.com/facebookgo/inject"
+	"github.com/kapmahc/sky"
 	"github.com/urfave/cli"
 )
 
@@ -19,7 +19,7 @@ func (p *Engine) Shell() []cli.Command {
 					Name:    "list",
 					Aliases: []string{"l"},
 					Usage:   "list users",
-					Action: Action(func(*cli.Context, *inject.Graph) error {
+					Action: sky.IocAction(func(*cli.Context) error {
 						var users []User
 						if err := p.Db.
 							Select([]string{"name", "email", "uid"}).
@@ -58,7 +58,7 @@ func (p *Engine) Shell() []cli.Command {
 							Usage: "deny mode",
 						},
 					},
-					Action: Action(func(c *cli.Context, _ *inject.Graph) error {
+					Action: sky.IocAction(func(c *cli.Context) error {
 						uid := c.String("user")
 						name := c.String("name")
 						deny := c.Bool("deny")
