@@ -234,7 +234,7 @@ func (p *Engine) Shell() []cli.Command {
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
 			Action: func(*cli.Context) error {
-				rt := sky.NewRouter(mux.NewRouter())
+				rt := sky.NewRouter(mux.NewRouter(), viper.GetString("server.theme"))
 				sky.Walk(func(en sky.Engine) error {
 					en.Mount(rt)
 					return nil
@@ -594,9 +594,7 @@ func (p *Engine) runServer(*cli.Context) error {
 		port,
 	)
 
-	// TODO
-	rt := sky.NewRouter(p.Router)
-
+	rt := sky.NewRouter(p.Router, viper.GetString("server.theme"))
 	rt.Use(
 		i18n.NewMiddleware(p.Matcher),
 		p.Jwt.CurrentUserMiddleware,

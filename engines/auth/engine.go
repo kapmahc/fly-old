@@ -87,9 +87,9 @@ func init() {
 	})
 
 	viper.SetDefault("server", map[string]interface{}{
-		"port":   3000,
-		"ssl":    true,
-		"themes": []string{"bootstrap"},
+		"port":  3000,
+		"ssl":   true,
+		"theme": "bootstrap",
 	})
 
 	viper.SetDefault("secrets", map[string]interface{}{

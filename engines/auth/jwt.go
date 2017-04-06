@@ -97,7 +97,7 @@ func (p *Jwt) CurrentUserMiddleware(c *sky.Context) error {
 		c.Set(CurrentUser, user)
 		c.Set(IsAdmin, p.Dao.Is(user.ID, RoleAdmin))
 	}
-	return nil
+	return c.Next()
 }
 
 // MustSignInMiddleware must-sign-in middleware
@@ -107,7 +107,7 @@ func (p *Jwt) MustSignInMiddleware(c *sky.Context) error {
 	if user == nil {
 		c.Abort(http.StatusForbidden, p.I18n.E(lang, "errors.forbidden"))
 	}
-	return nil
+	return c.Next()
 }
 
 // MustAdminMiddleware must-admin middleware
@@ -117,5 +117,5 @@ func (p *Jwt) MustAdminMiddleware(c *sky.Context) error {
 	if is == nil || !is.(bool) {
 		c.Abort(http.StatusForbidden, p.I18n.E(lang, "errors.forbidden"))
 	}
-	return nil
+	return c.Next()
 }
