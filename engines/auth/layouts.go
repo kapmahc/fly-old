@@ -64,7 +64,7 @@ func (p *Layout) Dashboard(c *sky.Context) error {
 
 func (p *Layout) payload(c *sky.Context, links []*sky.Dropdown) error {
 	c.Set(sky.DATA, sky.H{
-		"nav":       links,
+		"navbar":    links,
 		CurrentUser: c.Get(CurrentUser),
 		"l":         c.Get(sky.LOCALE),
 		"languages": viper.GetStringSlice("languages"),

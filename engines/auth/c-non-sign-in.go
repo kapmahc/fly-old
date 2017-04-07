@@ -19,12 +19,14 @@ func (p *Engine) getUsersSignIn(c *sky.Context) error {
 	data := c.Get(sky.DATA).(sky.H)
 	lang := c.Get(sky.LOCALE).(string)
 
+	title := p.I18n.T(lang, "auth.users.sign-in.title")
+	data["title"] = title
 	data["form"] = widgets.NewForm(
 		c.Request,
 		lang,
 		p.Layout.URLFor("auth.users.sign-in"),
-		p.Layout.URLFor("site.home"),
-		p.I18n.T(lang, "auth.users.sign-in.title"),
+		p.Layout.URLFor("site.dashboard"),
+		title,
 		widgets.NewEmailField("email", p.I18n.T(lang, "attributes.email"), ""),
 		widgets.NewPasswordField("password", p.I18n.T(lang, "attributes.password"), ""),
 	)
@@ -38,7 +40,7 @@ func (p *Engine) postUsersSignIn(c *sky.Context) error {
 		return err
 	}
 
-	user, err := p.Dao.SignIn(fm.Email, fm.Password, lang, c.ClientIP())
+	user, err := p.Dao.SignIn(lang, fm.Email, fm.Password, c.ClientIP())
 	if err != nil {
 		return err
 	}
@@ -72,12 +74,14 @@ func (p *Engine) getUsersSignUp(c *sky.Context) error {
 	data := c.Get(sky.DATA).(sky.H)
 	lang := c.Get(sky.LOCALE).(string)
 
+	title := p.I18n.T(lang, "auth.users.sign-up.title")
+	data["title"] = title
 	data["form"] = widgets.NewForm(
 		c.Request,
 		lang,
 		p.Layout.URLFor("auth.users.sign-up"),
 		p.Layout.URLFor("auth.users.sign-in"),
-		p.I18n.T(lang, "auth.users.sign-up.title"),
+		title,
 		widgets.NewTextField("name", p.I18n.T(lang, "attributes.fullName"), ""),
 		widgets.NewEmailField("email", p.I18n.T(lang, "attributes.email"), ""),
 		widgets.NewPasswordField("password", p.I18n.T(lang, "attributes.password"), p.I18n.T(lang, "helpers.password")),
@@ -126,12 +130,14 @@ func (p *Engine) getUsersEmailForm(act string) sky.Handler {
 		data := c.Get(sky.DATA).(sky.H)
 		lang := c.Get(sky.LOCALE).(string)
 
+		title := p.I18n.T(lang, "auth.users."+act+".title")
+		data["title"] = title
 		data["form"] = widgets.NewForm(
 			c.Request,
 			lang,
 			p.Layout.URLFor("auth.users."+act),
 			p.Layout.URLFor("auth.users.sign-in"),
-			p.I18n.T(lang, "auth.users."+act+".title"),
+			title,
 			widgets.NewEmailField("email", p.I18n.T(lang, "attributes.email"), ""),
 		)
 		c.HTML(http.StatusOK, "auth/users/non-sign-in", data)
@@ -239,12 +245,14 @@ func (p *Engine) getUsersResetPassword(c *sky.Context) error {
 	data := c.Get(sky.DATA).(sky.H)
 	lang := c.Get(sky.LOCALE).(string)
 
+	title := p.I18n.T(lang, "auth.users.reset-password.title")
+	data["title"] = title
 	data["form"] = widgets.NewForm(
 		c.Request,
 		lang,
 		p.Layout.URLFor("auth.users.reset-password"),
 		p.Layout.URLFor("auth.users.sign-in"),
-		p.I18n.T(lang, "auth.users.reset-password.title"),
+		title,
 		widgets.NewHiddenField("token", c.Param("token")),
 		widgets.NewPasswordField("password", p.I18n.T(lang, "attributes.password"), p.I18n.T(lang, "helpers.password")),
 		widgets.NewPasswordField("passwordConfirmation", p.I18n.T(lang, "attributes.passwordConfirmation"), p.I18n.T(lang, "helpers.passwordConfirmation")),

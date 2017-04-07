@@ -1,0 +1,23 @@
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" id="personal-bar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    {{if .currentUser}}
+      {{t .l "personal-bar.welcome" .currentUser.Name}}
+    {{else}}
+      {{t .l "personal-bar.sign-in-or-up"}}
+    {{end}}
+  </a>
+  <div class="dropdown-menu" aria-labelledby="personal-bar">
+    {{if .currentUser}}
+      <a class="dropdown-item" href="{{uf "site.dashboard"}}">{{t .l "personal-bar.dashboard"}}</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="{{uf "auth.users.sign-out"}}">{{t .l "personal-bar.sign-out"}}</a>
+    {{else}}
+      <a class="dropdown-item" href="{{uf "auth.users.sign-in"}}">{{t .l "auth.users.sign-in.title"}}</a>
+      <a class="dropdown-item" href="{{uf "auth.users.sign-up"}}">{{t .l "auth.users.sign-up.title"}}</a>
+      <a class="dropdown-item" href="{{uf "auth.users.forgot-password"}}">{{t .l "auth.users.forgot-password.title"}}</a>
+      <a class="dropdown-item" href="{{uf "auth.users.confirm"}}">{{t .l "auth.users.confirm.title"}}</a>
+      <a class="dropdown-item" href="{{uf "auth.users.unlock"}}">{{t .l "auth.users.unlock.title"}}</a>
+      <a class="dropdown-item" href="{{uf "site.leave-words.new"}}">{{t .l "site.leave-words.new.title"}}</a>
+    {{end}}
+  </div>
+</li>

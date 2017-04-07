@@ -13,12 +13,14 @@ func (p *Engine) getInstall(c *sky.Context) error {
 	data := c.Get(sky.DATA).(sky.H)
 	lang := c.Get(sky.LOCALE).(string)
 
+	title := p.I18n.T(lang, "site.install.title")
+	data["title"] = title
 	data["form"] = widgets.NewForm(
 		c.Request,
 		lang,
 		p.Layout.URLFor("site.install"),
 		p.Layout.URLFor("auth.users.sign-in"),
-		p.I18n.T(lang, "site.install.title"),
+		title,
 		widgets.NewTextField("title", p.I18n.T(lang, "site.attributes.title"), ""),
 		widgets.NewTextField("subTitle", p.I18n.T(lang, "site.attributes.subTitle"), ""),
 		widgets.NewEmailField("email", p.I18n.T(lang, "attributes.email"), ""),

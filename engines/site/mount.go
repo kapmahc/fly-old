@@ -6,4 +6,6 @@ import "github.com/kapmahc/sky"
 func (p *Engine) Mount(rt *sky.Router) {
 	rt.Get("site.install", "/install", p.mustDatabaseEmpty, p.Layout.Application, p.getInstall)
 	rt.Post("site.install", "/install", p.mustDatabaseEmpty, p.postInstall)
+
+	rt.Get("site.dashboard", "/dashboard", p.Jwt.MustSignInMiddleware, p.Layout.Dashboard, p.getDashboard)
 }

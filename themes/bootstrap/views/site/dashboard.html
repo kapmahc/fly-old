@@ -1,0 +1,19 @@
+<div class="col-12">
+  <div class="card-columns">
+    {{range .navbar}}
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">{{.Label}}</h4>
+          <p class="card-text"></p>
+        </div>
+        <div class="list-group list-group-flush">
+          {{range .Links}}
+            {{if .}}
+              <a class="list-group-item list-group-item-action" href="{{.Href}}">{{.Label}}</a>
+            {{end}}
+          {{end}}
+        </div>
+      </div>
+    {{end}}
+  </div>
+</div>

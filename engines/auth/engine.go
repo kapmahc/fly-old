@@ -38,13 +38,34 @@ func (p *Engine) Sitemap() ([]stm.URL, error) {
 }
 
 // Application application
-func (p *Engine) Application(*sky.Context) []*sky.Dropdown {
-	return []*sky.Dropdown{}
+func (p *Engine) Application(c *sky.Context) []*sky.Dropdown {
+	lang := c.Get(sky.LOCALE).(string)
+	return []*sky.Dropdown{
+		&sky.Dropdown{Label: p.I18n.T(lang, "auth.users.index.title"), Href: p.Layout.URLFor("auth.users.index")},
+	}
 }
 
 // Dashboard dashboard
-func (p *Engine) Dashboard(*sky.Context) []*sky.Dropdown {
-	return []*sky.Dropdown{}
+func (p *Engine) Dashboard(c *sky.Context) []*sky.Dropdown {
+	lang := c.Get(sky.LOCALE).(string)
+	user := c.Get(CurrentUser)
+
+	var items []*sky.Dropdown
+	if user != nil {
+		items = append(
+			items,
+			&sky.Dropdown{
+				Label: p.I18n.T(lang, "auth.dashboard.title"),
+				Links: []*sky.Link{
+					&sky.Link{Label: p.I18n.T(lang, "auth.users.logs.title"), Href: p.Layout.URLFor("auth.users.logs")},
+					nil,
+					&sky.Link{Label: p.I18n.T(lang, "auth.users.info.title"), Href: p.Layout.URLFor("auth.users.info")},
+					&sky.Link{Label: p.I18n.T(lang, "auth.users.change-password.title"), Href: p.Layout.URLFor("auth.users.change-password")},
+				},
+			},
+		)
+	}
+	return items
 }
 
 func init() {
