@@ -21,6 +21,7 @@ type Engine struct {
 	Settings   *settings.Settings `inject:""`
 	CacheStore cache.Store        `inject:""`
 	Cache      *cache.Cache       `inject:""`
+	I18nStore  i18n.Store         `inject:""`
 	I18n       *i18n.I18n         `inject:""`
 	Queue      job.Queue          `inject:""`
 	Server     *job.Server        `inject:""`
@@ -28,6 +29,7 @@ type Engine struct {
 	Matcher    language.Matcher   `inject:""`
 	Router     *mux.Router        `inject:""`
 	Layout     *auth.Layout       `inject:""`
+	Dao        *auth.Dao          `inject:""`
 }
 
 // Map map object

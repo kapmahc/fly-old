@@ -1,5 +1,48 @@
-<form id="{{.id}}" class="col-12" action="{{.action}}" method="{{.method}}">
+<div class="col-12">
   <h3>{{.title}}</h3>
   <hr/>
-{{ .csrfField }}
-</form>
+  <form id="form-{{.id}}" action="{{.action}}" method="{{.method}}">
+    {{ .csrfField }}
+    {{range .fields}}
+      {{if eq .type "text"}}
+        <div class="form-group">
+          <label for="{{.id}}">{{.label}}</label>
+          <input type="text" class="form-control" id="{{.id}}" name="{{.id}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
+          <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
+        </div>
+      {{else if eq .type "email"}}
+        <div class="form-group">
+          <label for="{{.id}}">{{.label}}</label>
+          <input type="email" class="form-control" id="{{.id}}" name="{{.id}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
+          <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
+        </div>
+      {{else if eq .type "password"}}
+        <div class="form-group">
+          <label for="{{.id}}">{{.label}}</label>
+          <input type="password" class="form-control" id="{{.id}}" name="{{.id}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
+          <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
+        </div>
+      {{end}}
+    {{end}}
+    <button type="submit" class="btn btn-primary">{{t .lang "buttons.submit"}}</button>
+    <button type="reset" class="btn btn-secondary">{{t .lang "buttons.reset"}}</button>
+  </form>
+</div>
+
+<script>
+$(function(){
+  $("#form-{{.id}}").submit(function(e){
+    e.preventDefault();
+    $.ajax({
+      url: e.currentTarget.action,
+      type: e.currentTarget.method,      
+      data: $("#form-{{.id}}").serialize()
+    }).done(function(data) {
+      window.location.href = "{{.next}}";
+    }).fail(function(xhr, status){
+      alert(xhr.responseText);
+    });
+
+  });
+});
+</script>

@@ -1,6 +1,8 @@
 package auth
 
 import (
+	log "github.com/Sirupsen/logrus"
+	"github.com/gorilla/mux"
 	"github.com/kapmahc/sky"
 	"github.com/spf13/viper"
 )
@@ -11,6 +13,31 @@ const (
 
 // Layout layout
 type Layout struct {
+	Router *mux.Router `inject:""`
+}
+
+// URLFor builds a url for the route.
+func (p *Layout) URLFor(name string, pairs ...interface{}) string {
+
+	rt := p.Router.Get(name)
+	if rt == nil {
+		return name
+	}
+	var params []string
+	for _, v := range pairs {
+		switch t := v.(type) {
+		case string:
+			params = append(params, v.(string))
+		default:
+			log.Warn("unknown type", t)
+		}
+	}
+	url, err := rt.URL(params...)
+	if err != nil {
+		log.Error(err)
+		return name
+	}
+	return url.String()
 }
 
 // Application application-layout
