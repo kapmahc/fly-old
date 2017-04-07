@@ -9,6 +9,7 @@ import (
 	"github.com/facebookgo/inject"
 	_redis "github.com/garyburd/redigo/redis"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	"github.com/kapmahc/sky"
 	"github.com/kapmahc/sky/cache/redis"
@@ -56,6 +57,7 @@ func (p *Engine) Map(inj *inject.Graph) error {
 	return inj.Provide(
 		&inject.Object{Value: mux.NewRouter()},
 		&inject.Object{Value: &redis.Store{}},
+		&inject.Object{Value: sessions.NewCookieStore([]byte(viper.GetString("secrets.cookie")))},
 
 		&inject.Object{Value: db},
 		&inject.Object{Value: s_orm.New(db)},
@@ -91,7 +93,7 @@ func (p *Engine) Map(inj *inject.Graph) error {
 
 		&inject.Object{Value: job.New()},
 		&inject.Object{Value: rabbitmq.New(
-			viper.GetString("app.name"),
+			viper.GetString("server.name"),
 			viper.GetString("rabbitmq.host"),
 			viper.GetInt("rabbitmq.port"),
 			viper.GetString("rabbitmq.user"),
@@ -102,7 +104,7 @@ func (p *Engine) Map(inj *inject.Graph) error {
 		&inject.Object{Value: cip},
 		&inject.Object{Value: []byte(viper.GetString("secrets.hmac")), Name: "hmac.key"},
 		&inject.Object{Value: []byte(viper.GetString("secrets.jwt")), Name: "jwt.key"},
-		&inject.Object{Value: viper.GetString("app.name"), Name: "namespace"},
+		&inject.Object{Value: viper.GetString("server.name"), Name: "namespace"},
 		&inject.Object{Value: crypto.SigningMethodHS512, Name: "jwt.method"},
 	)
 }

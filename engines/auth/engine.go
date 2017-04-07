@@ -7,6 +7,7 @@ import (
 	"github.com/kapmahc/sky/i18n"
 	"github.com/kapmahc/sky/job"
 	"github.com/kapmahc/sky/security"
+	"github.com/kapmahc/sky/settings"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 	"golang.org/x/tools/blog/atom"
@@ -14,20 +15,16 @@ import (
 
 // Engine engine
 type Engine struct {
-	Dao    *Dao             `inject:""`
-	I18n   *i18n.I18n       `inject:""`
-	Db     *gorm.DB         `inject:""`
-	Cipher *security.Cipher `inject:""`
-}
-
-// Mount web mount points
-func (p *Engine) Mount(*sky.Router) {
-
-}
-
-// Workers job workers
-func (p *Engine) Workers() map[string]job.Handler {
-	return map[string]job.Handler{}
+	Dao      *Dao               `inject:""`
+	I18n     *i18n.I18n         `inject:""`
+	Db       *gorm.DB           `inject:""`
+	Cipher   *security.Cipher   `inject:""`
+	Layout   *Layout            `inject:""`
+	Queue    job.Queue          `inject:""`
+	Jwt      *Jwt               `inject:""`
+	Server   *job.Server        `inject:""`
+	Settings *settings.Settings `inject:""`
+	Hmac     *security.Hmac     `inject:""`
 }
 
 // Atom rss.atom
@@ -55,9 +52,6 @@ func init() {
 	viper.BindEnv("env")
 	viper.SetDefault("env", "development")
 
-	viper.SetDefault("app", map[string]interface{}{
-		"name": "fly",
-	})
 	viper.SetDefault("redis", map[string]interface{}{
 		"host": "localhost",
 		"port": 6379,
@@ -87,6 +81,7 @@ func init() {
 	})
 
 	viper.SetDefault("server", map[string]interface{}{
+		"name":  "www.change-me.com",
 		"port":  3000,
 		"ssl":   true,
 		"theme": "bootstrap",

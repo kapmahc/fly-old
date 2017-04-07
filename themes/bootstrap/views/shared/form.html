@@ -7,21 +7,23 @@
       {{if eq .type "text"}}
         <div class="form-group">
           <label for="{{.id}}">{{.label}}</label>
-          <input type="text" class="form-control" id="{{.id}}" name="{{.id}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
+          <input type="text" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
           <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
         </div>
       {{else if eq .type "email"}}
         <div class="form-group">
           <label for="{{.id}}">{{.label}}</label>
-          <input type="email" class="form-control" id="{{.id}}" name="{{.id}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
+          <input type="email" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
           <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
         </div>
       {{else if eq .type "password"}}
         <div class="form-group">
           <label for="{{.id}}">{{.label}}</label>
-          <input type="password" class="form-control" id="{{.id}}" name="{{.id}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
+          <input type="password" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
           <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
         </div>
+      {{else if eq .type "hidden"}}
+        <input type="hidden" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}">
       {{end}}
     {{end}}
     <button type="submit" class="btn btn-primary">{{t .lang "buttons.submit"}}</button>
@@ -35,9 +37,12 @@ $(function(){
     e.preventDefault();
     $.ajax({
       url: e.currentTarget.action,
-      type: e.currentTarget.method,      
+      type: e.currentTarget.method,
       data: $("#form-{{.id}}").serialize()
     }).done(function(data) {
+      if(data.message){
+        alert(data.message);
+      }
       window.location.href = "{{.next}}";
     }).fail(function(xhr, status){
       alert(xhr.responseText);

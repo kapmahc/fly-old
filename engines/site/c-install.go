@@ -25,7 +25,7 @@ func (p *Engine) getInstall(c *sky.Context) error {
 		widgets.NewPasswordField("password", p.I18n.T(lang, "attributes.password"), p.I18n.T(lang, "helpers.password")),
 		widgets.NewPasswordField("passwordConfirmation", p.I18n.T(lang, "attributes.passwordConfirmation"), p.I18n.T(lang, "helpers.passwordConfirmation")),
 	)
-	c.HTML(http.StatusOK, "site/install", data)
+	c.HTML(http.StatusOK, "form", data)
 	return nil
 }
 

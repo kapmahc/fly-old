@@ -29,6 +29,7 @@ const (
 
 // Shell shell commands
 func (p *Engine) Shell() []cli.Command {
+	hn, _ := os.Hostname()
 	return []cli.Command{
 		{
 			Name:    "server",
@@ -69,7 +70,7 @@ func (p *Engine) Shell() []cli.Command {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "name, n",
-					Value: viper.GetString("app.name"),
+					Value: hn,
 					Usage: "worker's name",
 				},
 			},
@@ -238,7 +239,7 @@ func (p *Engine) Shell() []cli.Command {
 					en.Mount(rt)
 					return nil
 				})
-				tpl := "%-24s %s\n"
+				tpl := "%-32s %s\n"
 				fmt.Printf(tpl, "NAME", "PATH")
 				return rt.Walk(func(name, method, path string) error {
 					fmt.Printf(tpl, name, path)

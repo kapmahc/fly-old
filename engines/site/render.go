@@ -13,7 +13,8 @@ import (
 
 func (p *Engine) renderFuncMap() template.FuncMap {
 	return template.FuncMap{
-		"t": p.I18n.T,
+		"uf": p.Layout.URLFor,
+		"t":  p.I18n.T,
 		"tn": func(v interface{}) string {
 			return reflect.TypeOf(v).String()
 		},
