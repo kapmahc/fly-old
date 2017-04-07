@@ -8,6 +8,20 @@ CREATE TABLE leave_words (
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now()
 );
 
+CREATE TABLE posts (
+  id         BIGSERIAL PRIMARY KEY,
+  key        VARCHAR(32)                 NOT NULL,
+  lang       VARCHAR(8)                 NOT NULL,
+  title      VARCHAR(255)                NOT NULL,
+  body       TEXT                        NOT NULL,
+  type       VARCHAR(8)                  NOT NULL DEFAULT 'markdown',
+  created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+CREATE UNIQUE INDEX idx_posts_key_lang ON posts(key, lang);
+CREATE INDEX idx_posts_key ON posts(key);
+CREATE INDEX idx_posts_lang ON posts(lang);
+
 CREATE TABLE notices (
   id         BIGSERIAL PRIMARY KEY,
   body       TEXT                        NOT NULL,
@@ -46,4 +60,5 @@ CREATE INDEX idx_pages_loc ON pages (loc);
 DROP TABLE pages;
 DROP TABLE links;
 DROP TABLE notices;
+DROP TABLE posts;
 DROP TABLE leave_words;

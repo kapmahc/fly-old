@@ -6,41 +6,11 @@ import (
 	"github.com/kapmahc/sky"
 )
 
-// Model model
-type Model struct {
-	sky.Model
-
-	SiteID uint
-	Site   Site
-}
-
-// Site site
-type Site struct {
-	sky.Model
-
-	Title       string
-	SubTitle    string
-	Description string
-	Keywords    string
-	Copyright   string
-}
-
-// Host host
-type Host struct {
-	Model
-
-	Name string
-}
-
-// TableName table name
-func (Host) TableName() string {
-	return "hosts"
-}
-
 // Post post
 type Post struct {
-	Model
-
+	sky.Model
+	Key   string
+	Lang  string
 	Title string
 	Body  string
 	Type  string
@@ -53,7 +23,7 @@ func (Post) TableName() string {
 
 // Notice notice
 type Notice struct {
-	Model
+	sky.Model
 
 	Body string `json:"body"`
 	Type string `json:"type"`
@@ -70,9 +40,6 @@ type LeaveWord struct {
 	Body      string    `json:"body"`
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"createdAt"`
-
-	SiteID uint
-	Site   Site
 }
 
 // TableName table name
