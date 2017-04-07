@@ -73,7 +73,7 @@ func (p *Jwt) Sum(cm jws.Claims, exp time.Duration) ([]byte, error) {
 }
 
 func (p *Jwt) getUserFromRequest(c *sky.Context) (*User, error) {
-	lang := c.Get(i18n.LOCALE).(string)
+	lang := c.Get(sky.LOCALE).(string)
 	cm, err := p.parse(c.Request)
 	if err != nil {
 		return nil, err
@@ -102,7 +102,7 @@ func (p *Jwt) CurrentUserMiddleware(c *sky.Context) error {
 
 // MustSignInMiddleware must-sign-in middleware
 func (p *Jwt) MustSignInMiddleware(c *sky.Context) error {
-	lang := c.Get(i18n.LOCALE).(string)
+	lang := c.Get(sky.LOCALE).(string)
 	user := c.Get(CurrentUser)
 	if user == nil {
 		c.Abort(http.StatusForbidden, p.I18n.E(lang, "errors.forbidden"))
@@ -112,7 +112,7 @@ func (p *Jwt) MustSignInMiddleware(c *sky.Context) error {
 
 // MustAdminMiddleware must-admin middleware
 func (p *Jwt) MustAdminMiddleware(c *sky.Context) error {
-	lang := c.Get(i18n.LOCALE).(string)
+	lang := c.Get(sky.LOCALE).(string)
 	is := c.Get(IsAdmin)
 	if is == nil || !is.(bool) {
 		c.Abort(http.StatusForbidden, p.I18n.E(lang, "errors.forbidden"))

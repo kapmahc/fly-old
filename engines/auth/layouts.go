@@ -2,7 +2,6 @@ package auth
 
 import (
 	"github.com/kapmahc/sky"
-	"github.com/kapmahc/sky/i18n"
 	"github.com/spf13/viper"
 )
 
@@ -37,11 +36,10 @@ func (p *Layout) Dashboard(c *sky.Context) error {
 }
 
 func (p *Layout) payload(c *sky.Context, links []*sky.Dropdown) error {
-
 	c.Set(sky.DATA, sky.H{
-		"links":     links,
+		"nav":       links,
 		CurrentUser: c.Get(CurrentUser),
-		"lang":      c.Get(i18n.LOCALE),
+		"l":         c.Get(sky.LOCALE),
 		"languages": viper.GetStringSlice("languages"),
 	})
 	return c.Next()

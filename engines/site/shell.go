@@ -16,7 +16,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/ikeikeikeike/go-sitemap-generator/stm"
 	"github.com/kapmahc/sky"
-	"github.com/kapmahc/sky/i18n"
 	"github.com/spf13/viper"
 	"github.com/steinbacher/goose"
 	"github.com/urfave/cli"
@@ -234,7 +233,7 @@ func (p *Engine) Shell() []cli.Command {
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
 			Action: func(*cli.Context) error {
-				rt := sky.NewRouter(mux.NewRouter(), viper.GetString("server.theme"))
+				rt := sky.NewRouter(mux.NewRouter(), "", nil)
 				sky.Walk(func(en sky.Engine) error {
 					en.Mount(rt)
 					return nil
@@ -594,9 +593,13 @@ func (p *Engine) runServer(*cli.Context) error {
 		port,
 	)
 
-	rt := sky.NewRouter(p.Router, viper.GetString("server.theme"))
+	rt := sky.NewRouter(
+		p.Router,
+		viper.GetString("server.theme"),
+		p.renderFuncMap(),
+	)
 	rt.Use(
-		i18n.NewMiddleware(p.Matcher),
+		sky.LocaleMiddleware(p.Matcher),
 		p.Jwt.CurrentUserMiddleware,
 	)
 	sky.Walk(func(en sky.Engine) error {
@@ -605,7 +608,7 @@ func (p *Engine) runServer(*cli.Context) error {
 	})
 
 	// ---------------
-	return rt.Start(port)
+	return rt.Start(port, []byte(viper.GetString("secrets.csrf")))
 }
 
 func (p *Engine) writeSitemap(root string) error {

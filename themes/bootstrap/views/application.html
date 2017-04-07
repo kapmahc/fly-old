@@ -4,13 +4,19 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="/assets/favicon.png">
     <!-- CSS -->
     <link rel="stylesheet" href="/assets/main.css">
     {{ partial "css" }}
   </head>
   <body>
-
-    {{ yield }}
+    {{template "shared/header" .}}
+    <div class="container">
+      <div class="row">
+        {{ yield }}
+      </div>
+      {{template "shared/footer" .}}
+    </div>
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
