@@ -1,19 +1,19 @@
 <div class="col-12">
   <h3>{{.title}}</h3>
   <hr/>
-  <form id="form-{{.id}}" action="{{.action}}" method="{{.method}}">
+  <form id="form-{{.id}}" data-next="{{.next}}" action="{{.action}}" method="{{.method}}">
     {{ .csrfField }}
     {{range .fields}}
       {{if eq .type "text"}}
         <div class="form-group">
           <label for="{{.id}}">{{.label}}</label>
-          <input type="text" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
+          <input type="text" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}" {{if .readonly}}readonly{{end}}>
           <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
         </div>
       {{else if eq .type "email"}}
         <div class="form-group">
           <label for="{{.id}}">{{.label}}</label>
-          <input type="email" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
+          <input type="email" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}" {{if .readonly}}readonly{{end}}>
           <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
         </div>
       {{else if eq .type "password"}}
@@ -36,14 +36,14 @@ $(function(){
   $("#form-{{.id}}").submit(function(e){
     e.preventDefault();
     $.ajax({
-      url: e.currentTarget.action,
-      type: e.currentTarget.method,
+      url: e.target.action,
+      type: e.target.method,
       data: $("#form-{{.id}}").serialize()
     }).done(function(data) {
       if(data.message){
         alert(data.message);
-      }
-      window.location.href = "{{.next}}";
+      }      
+      window.location.href = e.target.dataset.next;
     }).fail(function(xhr, status){
       alert(xhr.responseText);
     });

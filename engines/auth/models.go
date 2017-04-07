@@ -120,6 +120,10 @@ func (Log) TableName() string {
 	return "logs"
 }
 
+func (p Log) String() string {
+	return fmt.Sprintf("[%s] %s: %s", p.IP, p.CreatedAt.Format(time.ANSIC), p.Message)
+}
+
 // Policy policy
 type Policy struct {
 	sky.Model

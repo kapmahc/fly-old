@@ -2,6 +2,7 @@ package auth
 
 import (
 	log "github.com/Sirupsen/logrus"
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/kapmahc/sky"
 	"github.com/spf13/viper"
@@ -67,6 +68,7 @@ func (p *Layout) payload(c *sky.Context, links []*sky.Dropdown) error {
 		"navbar":    links,
 		CurrentUser: c.Get(CurrentUser),
 		"l":         c.Get(sky.LOCALE),
+		"csrf":      csrf.Token(c.Request),
 		"languages": viper.GetStringSlice("languages"),
 	})
 	return c.Next()

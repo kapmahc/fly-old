@@ -1,0 +1,14 @@
+<div class="col-12">
+  <div class="card-columns">
+    {{range .items}}
+      <div class="card">
+        <img class="card-img-top img-fluid" src="{{.Logo}}" alt="{{.Logo}}">
+        <div class="card-block">
+          <h4 class="card-title">{{.Name}}</h4>
+          <p class="card-text"></p>
+          <a href="{{.Home}}" target="_blank" class="card-link">{{t $.l "buttons.more"}}</a>
+        </div>
+      </div>
+    {{end}}
+  </div>
+</div>

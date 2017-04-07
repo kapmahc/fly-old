@@ -105,7 +105,7 @@ func (p *Jwt) MustSignInMiddleware(c *sky.Context) error {
 	lang := c.Get(sky.LOCALE).(string)
 	user := c.Get(CurrentUser)
 	if user == nil {
-		c.Abort(http.StatusForbidden, p.I18n.E(lang, "errors.forbidden"))
+		return p.I18n.E(lang, "errors.forbidden")
 	}
 	return c.Next()
 }
@@ -115,7 +115,7 @@ func (p *Jwt) MustAdminMiddleware(c *sky.Context) error {
 	lang := c.Get(sky.LOCALE).(string)
 	is := c.Get(IsAdmin)
 	if is == nil || !is.(bool) {
-		c.Abort(http.StatusForbidden, p.I18n.E(lang, "errors.forbidden"))
+		return p.I18n.E(lang, "errors.forbidden")
 	}
 	return c.Next()
 }

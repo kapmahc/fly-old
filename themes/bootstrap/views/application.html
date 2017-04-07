@@ -4,8 +4,14 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="image/png" href="/assets/favicon.png">
+
+    <meta name="description" content="{{t .l "site.description"}}">
+    <meta name="keywords" content="{{t .l "site.keywords"}}">
+    <meta name="author" content="{{t .l "site.author.name"}}<{{t .l "site.author.email"}}>">
+    <meta name="csrf-token" content="{{.csrf}}">
     <title>{{.title}}|{{t .l "site.subTitle"}}|{{t .l "site.title"}}</title>
+
+    <link rel="icon" type="image/png" href="/assets/favicon.png">
     <!-- CSS -->
     <link rel="stylesheet" href="/assets/main.css">
     {{ partial "css" }}

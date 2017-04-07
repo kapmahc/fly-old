@@ -5,6 +5,15 @@ import "github.com/kapmahc/sky"
 // Mount web mount points
 func (p *Engine) Mount(rt *sky.Router) {
 	rt.Group("/users", func(r *sky.Router) {
+		r.Get("auth.users.index", "/", p.Layout.Application, p.indexUsers)
+
+		r.Get("auth.users.logs", "/logs", p.Jwt.MustSignInMiddleware, p.Layout.Dashboard, p.getUsersLogs)
+		r.Get("auth.users.info", "/info", p.Jwt.MustSignInMiddleware, p.Layout.Dashboard, p.getUsersInfo)
+		r.Post("auth.users.info", "/info", p.Jwt.MustSignInMiddleware, p.postUsersInfo)
+		r.Get("auth.users.change-password", "/change-password", p.Jwt.MustSignInMiddleware, p.Layout.Dashboard, p.getUsersChangePassword)
+		r.Post("auth.users.change-password", "/change-password", p.postUsersChangePassword)
+		r.Delete("auth.users.sign-out", "/sign-out", p.Jwt.MustSignInMiddleware, p.deleteUsersSignOut)
+		// ----------
 		r.Get("auth.users.sign-in", "/sign-in", p.Layout.Application, p.getUsersSignIn)
 		r.Post("auth.users.sign-in", "/sign-in", p.postUsersSignIn)
 		r.Get("auth.users.sign-up", "/sign-up", p.Layout.Application, p.getUsersSignUp)
