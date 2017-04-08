@@ -22,6 +22,12 @@
           <input type="password" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">
           <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
         </div>
+      {{else if eq .type "textarea"}}
+        <div class="form-group">
+          <label for="{{.id}}">{{.label}}</label>
+          <textarea class="form-control" id="{{.id}}" name="{{.id}}" rows="{{.row}}" aria-describedby="{{.id}}Help" placeholder="{{.hint}}">{{.value}}</textarea>
+          <small id="{{.id}}Help" class="form-text text-muted">{{.helper}}</small>
+        </div>
       {{else if eq .type "hidden"}}
         <input type="hidden" class="form-control" id="{{.id}}" name="{{.id}}" value="{{.value}}">
       {{end}}
@@ -42,7 +48,7 @@ $(function(){
     }).done(function(data) {
       if(data.message){
         alert(data.message);
-      }      
+      }
       window.location.href = e.target.dataset.next;
     }).fail(function(xhr, status){
       alert(xhr.responseText);

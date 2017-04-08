@@ -28,9 +28,9 @@ func (p *Engine) getUsersLogs(c *sky.Context) error {
 }
 
 type fmInfo struct {
-	Name string `form:"name" binding:"required,max=255"`
-	Home string `form:"home" binding:"max=255"`
-	Logo string `form:"logo" binding:"max=255"`
+	Name string `form:"name" validate:"required,max=255"`
+	Home string `form:"home" validate:"max=255"`
+	Logo string `form:"logo" validate:"max=255"`
 }
 
 func (p *Engine) getUsersInfo(c *sky.Context) error {
@@ -79,9 +79,9 @@ func (p *Engine) postUsersInfo(c *sky.Context) error {
 }
 
 type fmChangePassword struct {
-	CurrentPassword      string `form:"currentPassword" binding:"required"`
-	NewPassword          string `form:"newPassword" binding:"min=6,max=32"`
-	PasswordConfirmation string `form:"passwordConfirmation" binding:"eqfield=NewPassword"`
+	CurrentPassword      string `form:"currentPassword" validate:"required"`
+	NewPassword          string `form:"newPassword" validate:"min=6,max=32"`
+	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=NewPassword"`
 }
 
 func (p *Engine) getUsersChangePassword(c *sky.Context) error {
