@@ -604,6 +604,9 @@ func (p *Engine) runServer(*cli.Context) error {
 		p.Jwt.CurrentUserMiddleware,
 	)
 	sky.Walk(func(en sky.Engine) error {
+		for k, v := range en.Workers() {
+			p.Server.Register(k, v)
+		}
 		en.Mount(rt)
 		return nil
 	})

@@ -48,10 +48,9 @@ func (p *Engine) Application(c *sky.Context) []*sky.Dropdown {
 // Dashboard dashboard
 func (p *Engine) Dashboard(c *sky.Context) []*sky.Dropdown {
 	lang := c.Get(sky.LOCALE).(string)
-	user := c.Get(CurrentUser)
 
 	var items []*sky.Dropdown
-	if user != nil {
+	if _, ok := c.Get(CurrentUser).(*User); ok {
 		items = append(
 			items,
 			&sky.Dropdown{
