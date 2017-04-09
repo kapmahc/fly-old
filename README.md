@@ -12,8 +12,8 @@ sudo apt-get install libmagickwand-dev
 
 ```bash
 zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
-gvm install go1.8 -B
-gvm use go1.8 --default
+gvm install go1.8.1 -B
+gvm use go1.8.1 --default
 ```
 
 ## Usage
